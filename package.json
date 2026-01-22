@@ -10,16 +10,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@tsparticles/react": "^3.0.0",
-    "@tsparticles/slim": "^3.9.1",
     "lovable-tagger": "^1.1.13",
     "lucide-react": "^0.562.0",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "react-is": "^19.2.3",
-    "recharts": "^3.6.0",
-    "three": "^0.134.0",
-    "vanta": "^0.5.24"
+    "recharts": "^3.6.0"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",
