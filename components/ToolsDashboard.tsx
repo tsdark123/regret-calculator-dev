@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { DollarSign, Clock, Target } from 'lucide-react';
 import { formatCurrency, formatCurrencyShort } from '../utils/financials';
-import { ParticleBackground } from './ParticleBackground';
 
 // Helper for slider background matching SettingsPanel
 const getBackgroundStyle = (value: number, min: number, max: number) => {
@@ -197,24 +196,19 @@ interface ToolsDashboardProps {
 
 export const ToolsDashboard: React.FC<ToolsDashboardProps> = ({ theme = 'purple' }) => {
     return (
-        <>
-            {/* Full-viewport Particle Background */}
-            <ParticleBackground theme={theme} />
-            
-            <div className="w-full animate-fade-in-up pb-12 relative min-h-screen" style={{ background: 'transparent' }}>
-                <div className="text-center mb-20 pt-10 relative z-10">
-                    <h2 className="text-5xl md:text-6xl font-bold text-[var(--text-main)] mb-6 tracking-tight">Financial Toolbox</h2>
-                    <p className="text-[var(--text-muted)] max-w-3xl mx-auto text-xl font-light leading-relaxed">
-                        Calculators to help you plan your future and understand the math behind your money.
-                    </p>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 max-w-7xl mx-auto px-4 lg:px-0 relative z-10">
-                    <InflationTool />
-                    <RuleOf72Tool />
-                    <ReverseGoalTool />
-                </div>
+        <div className="w-full animate-fade-in-up pb-12 relative min-h-screen" style={{ background: 'transparent' }}>
+            <div className="text-center mb-20 pt-10 relative z-10">
+                <h2 className="text-5xl md:text-6xl font-bold text-[var(--text-main)] mb-6 tracking-tight">Financial Toolbox</h2>
+                <p className="text-[var(--text-muted)] max-w-3xl mx-auto text-xl font-light leading-relaxed">
+                    Calculators to help you plan your future and understand the math behind your money.
+                </p>
             </div>
-        </>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 max-w-7xl mx-auto px-4 lg:px-0 relative z-10">
+                <InflationTool />
+                <RuleOf72Tool />
+                <ReverseGoalTool />
+            </div>
+        </div>
     );
 };

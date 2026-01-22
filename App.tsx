@@ -8,6 +8,7 @@ import { ResultsDashboard } from './components/ResultsDashboard';
 import { StockSelector } from './components/StockSelector';
 import { Footer } from './components/Footer';
 import { AmbientBackground } from './components/AmbientBackground';
+import { ParticleBackground } from './components/ParticleBackground';
 import { FunFactGenerator } from './components/FunFactGenerator';
 import { ToolsDashboard } from './components/ToolsDashboard';
 import { Roadmap } from './components/Roadmap';
@@ -227,9 +228,12 @@ function App() {
       {/* Main Content Router */}
       <div className="flex-grow">
           {viewMode === 'tools' ? (
-            <div className="pt-24 px-4 pb-12 w-full max-w-[96rem] mx-auto animate-fade-in-up">
-              <ToolsDashboard theme={theme} />
-            </div>
+            <>
+              <ParticleBackground theme={theme} />
+              <div className="pt-24 px-4 pb-12 w-full max-w-[96rem] mx-auto animate-fade-in-up relative z-10">
+                <ToolsDashboard theme={theme} />
+              </div>
+            </>
           ) : viewMode === 'roadmap' ? (
             /* Roadmap now takes full control of positioning to center itself */
             <div className="fixed inset-0 z-40 bg-[var(--bg-main)] pt-16 animate-fade-in-up">
