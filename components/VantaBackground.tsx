@@ -1,14 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react';
-import * as THREE from 'three';
-
-// Vanta needs to be loaded dynamically
-declare global {
-  interface Window {
-    VANTA?: {
-      DOTS: (config: any) => { destroy: () => void };
-    };
-  }
-}
 
 interface VantaBackgroundProps {
   theme: 'purple' | 'green' | 'blue';
@@ -40,46 +30,62 @@ const getThemeColors = (theme: 'purple' | 'green' | 'blue') => {
   }
 };
 
-export const VantaBackground: React.FC<VantaBackgroundProps> = ({ theme, className = '' }) => {
-  const vantaRef = useRef<HTMLDivElement>(null);
-  const vantaEffect = useRef<{ destroy: () => void } | null>(null);
-  const [vantaLoaded, setVantaLoaded] = useState(false);
-
-  // Load Vanta script dynamically
-  useEffect(() => {
-    if (window.VANTA) {
-      setVantaLoaded(true);
+// Load script dynamically
+const loadScript = (src: string): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    // Check if already loaded
+    if (document.querySelector(`script[src="${src}"]`)) {
+      resolve();
       return;
     }
-
+    
     const script = document.createElement('script');
-    script.src = 'https://cdn.jsdelivr.net/npm/vanta@0.5.24/dist/vanta.dots.min.js';
+    script.src = src;
     script.async = true;
-    script.onload = () => setVantaLoaded(true);
-    document.body.appendChild(script);
+    script.onload = () => resolve();
+    script.onerror = reject;
+    document.head.appendChild(script);
+  });
+};
 
-    return () => {
-      // Cleanup script on unmount if needed
+export const VantaBackground: React.FC<VantaBackgroundProps> = ({ theme, className = '' }) => {
+  const vantaRef = useRef<HTMLDivElement>(null);
+  const vantaEffect = useRef<any>(null);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  // Load Three.js and Vanta scripts
+  useEffect(() => {
+    const loadVanta = async () => {
+      try {
+        // Load Three.js first
+        await loadScript('https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js');
+        // Then load Vanta
+        await loadScript('https://cdn.jsdelivr.net/npm/vanta@0.5.24/dist/vanta.dots.min.js');
+        setIsLoaded(true);
+      } catch (error) {
+        console.warn('Failed to load Vanta scripts:', error);
+      }
     };
+
+    loadVanta();
   }, []);
 
-  // Initialize/update Vanta effect
+  // Initialize/update Vanta effect when loaded or theme changes
   useEffect(() => {
-    if (!vantaLoaded || !vantaRef.current || !window.VANTA) return;
+    if (!isLoaded || !vantaRef.current) return;
 
-    // Destroy previous effect if exists
+    const VANTA = (window as any).VANTA;
+    if (!VANTA?.DOTS) return;
+
+    // Destroy previous effect
     if (vantaEffect.current) {
       vantaEffect.current.destroy();
     }
 
     const colors = getThemeColors(theme);
 
-    // Make THREE available globally for Vanta
-    (window as any).THREE = THREE;
-
-    vantaEffect.current = window.VANTA.DOTS({
+    vantaEffect.current = VANTA.DOTS({
       el: vantaRef.current,
-      THREE: THREE,
       mouseControls: true,
       touchControls: true,
       gyroControls: false,
@@ -101,7 +107,7 @@ export const VantaBackground: React.FC<VantaBackgroundProps> = ({ theme, classNa
         vantaEffect.current = null;
       }
     };
-  }, [vantaLoaded, theme]);
+  }, [isLoaded, theme]);
 
   return (
     <div 
