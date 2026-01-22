@@ -23,22 +23,22 @@ export const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ theme = 
         switch (theme) {
             case 'green':
                 return {
-                    particle: 'rgba(34, 197, 94, 0.4)',
-                    link: 'rgba(34, 197, 94, 0.25)',
-                    triangle: 'rgba(34, 197, 94, 0.02)',
+                    particle: 'rgba(34, 197, 94, 0.15)',
+                    link: 'rgba(34, 197, 94, 0.1)',
+                    triangle: 'rgba(34, 197, 94, 0.01)',
                 };
             case 'blue':
                 return {
-                    particle: 'rgba(59, 130, 246, 0.4)',
-                    link: 'rgba(59, 130, 246, 0.25)',
-                    triangle: 'rgba(59, 130, 246, 0.02)',
+                    particle: 'rgba(59, 130, 246, 0.15)',
+                    link: 'rgba(59, 130, 246, 0.1)',
+                    triangle: 'rgba(59, 130, 246, 0.01)',
                 };
             case 'purple':
             default:
                 return {
-                    particle: 'rgba(155, 89, 182, 0.4)',
-                    link: 'rgba(155, 89, 182, 0.25)',
-                    triangle: 'rgba(155, 89, 182, 0.02)',
+                    particle: 'rgba(155, 89, 182, 0.15)',
+                    link: 'rgba(155, 89, 182, 0.1)',
+                    triangle: 'rgba(155, 89, 182, 0.01)',
                 };
         }
     };
@@ -136,13 +136,13 @@ export const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ theme = 
                                 ctx.lineTo(p2.x, p2.y);
                                 ctx.lineTo(p3.x, p3.y);
                                 ctx.closePath();
-                                ctx.fillStyle = colors.triangle.replace('0.02', (0.02 * avgOpacity).toFixed(3));
+                                ctx.fillStyle = colors.triangle.replace('0.01', (0.01 * avgOpacity).toFixed(3));
                                 ctx.fill();
                             }
                         }
 
                         // Draw link between p1 and p2
-                        const opacity = (1 - dist12 / linkDistance) * 0.4;
+                        const opacity = (1 - dist12 / linkDistance) * 0.15;
                         ctx.beginPath();
                         ctx.moveTo(p1.x, p1.y);
                         ctx.lineTo(p2.x, p2.y);
@@ -158,7 +158,7 @@ export const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ theme = 
                 const distMouse = Math.sqrt(dxMouse * dxMouse + dyMouse * dyMouse);
                 
                 if (distMouse < grabDistance && mouseX > 0) {
-                    const grabOpacity = (1 - distMouse / grabDistance) * 0.5;
+                    const grabOpacity = (1 - distMouse / grabDistance) * 0.2;
                     ctx.beginPath();
                     ctx.moveTo(p1.x, p1.y);
                     ctx.lineTo(mouseX, mouseY);
@@ -210,7 +210,7 @@ export const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ theme = 
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
                 ctx.fillStyle = colors.particle;
-                ctx.shadowBlur = 6;
+                ctx.shadowBlur = 3;
                 ctx.shadowColor = colors.particle;
                 ctx.fill();
                 ctx.shadowBlur = 0;
