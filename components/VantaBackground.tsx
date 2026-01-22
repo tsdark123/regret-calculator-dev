@@ -1,4 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
+import * as THREE from 'three';
+import DOTS from 'vanta/dist/vanta.dots.min';
 
 interface VantaBackgroundProps {
   theme: 'purple' | 'green' | 'blue';
@@ -30,118 +32,48 @@ const getThemeColors = (theme: 'purple' | 'green' | 'blue') => {
   }
 };
 
-// Safely load script with error boundary
-const loadScript = (src: string): Promise<void> => {
-  return new Promise((resolve, reject) => {
-    try {
-      const existing = document.querySelector(`script[src="${src}"]`);
-      if (existing) {
-        resolve();
-        return;
-      }
-      
-      const script = document.createElement('script');
-      script.src = src;
-      script.async = true;
-      script.crossOrigin = 'anonymous';
-      script.onload = () => resolve();
-      script.onerror = () => reject(new Error(`Failed to load ${src}`));
-      document.head.appendChild(script);
-    } catch (err) {
-      reject(err);
-    }
-  });
-};
-
 export const VantaBackground: React.FC<VantaBackgroundProps> = ({ theme, className = '' }) => {
   const vantaRef = useRef<HTMLDivElement>(null);
-  const vantaEffect = useRef<any>(null);
-  const [isReady, setIsReady] = useState(false);
+  const [vantaEffect, setVantaEffect] = useState<any>(null);
 
-  // Load scripts on mount
   useEffect(() => {
-    let isMounted = true;
+    if (!vantaRef.current) return;
 
-    const init = async () => {
-      try {
-        await loadScript('https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js');
-        await loadScript('https://cdn.jsdelivr.net/npm/vanta@0.5.24/dist/vanta.dots.min.js');
-        
-        if (isMounted) {
-          setIsReady(true);
-        }
-      } catch (error) {
-        console.warn('Vanta background unavailable:', error);
-      }
-    };
-
-    init();
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
-
-  // Initialize Vanta when ready
-  useEffect(() => {
-    if (!isReady || !vantaRef.current) return;
-
-    // Safely cleanup previous effect if it exists
-    if (vantaEffect.current) {
-      try {
-        const canvas = vantaRef.current.querySelector('canvas');
-        if (canvas && canvas.parentNode === vantaRef.current) {
-          vantaEffect.current.destroy();
-        }
-      } catch (e) {
-        // Ignore cleanup errors - expected in React Strict Mode
-      }
-      vantaEffect.current = null;
+    // Cleanup previous effect before creating new one
+    if (vantaEffect) {
+      vantaEffect.destroy();
     }
 
-    try {
-      const VANTA = (window as any).VANTA;
-      if (!VANTA?.DOTS) {
-        console.warn('VANTA.DOTS not available');
-        return;
-      }
+    const colors = getThemeColors(theme);
 
-      const colors = getThemeColors(theme);
+    // Initialize Vanta with THREE passed directly
+    const effect = DOTS({
+      el: vantaRef.current,
+      THREE: THREE,
+      mouseControls: true,
+      touchControls: true,
+      gyroControls: false,
+      minHeight: 200.00,
+      minWidth: 200.00,
+      scale: 1.00,
+      scaleMobile: 1.00,
+      color: colors.color,
+      color2: colors.color2,
+      backgroundColor: colors.backgroundColor,
+      size: 2.5,
+      spacing: 25,
+      showLines: false,
+    });
 
-      vantaEffect.current = VANTA.DOTS({
-        el: vantaRef.current,
-        mouseControls: true,
-        touchControls: true,
-        gyroControls: false,
-        minHeight: 200.00,
-        minWidth: 200.00,
-        scale: 1.00,
-        scaleMobile: 1.00,
-        color: colors.color,
-        color2: colors.color2,
-        backgroundColor: colors.backgroundColor,
-        size: 2.5,
-        spacing: 25,
-        showLines: false,
-      });
-    } catch (error) {
-      console.warn('Failed to initialize Vanta:', error);
-    }
+    setVantaEffect(effect);
 
+    // Cleanup on unmount
     return () => {
-      if (vantaEffect.current && vantaRef.current) {
-        try {
-          const canvas = vantaRef.current.querySelector('canvas');
-          if (canvas && canvas.parentNode === vantaRef.current) {
-            vantaEffect.current.destroy();
-          }
-        } catch (e) {
-          // Ignore cleanup errors
-        }
-        vantaEffect.current = null;
+      if (effect) {
+        effect.destroy();
       }
     };
-  }, [isReady, theme]);
+  }, [theme]);
 
   return (
     <div 
