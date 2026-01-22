@@ -84,8 +84,9 @@ export const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ theme = 
 
         const colors = getColors();
         const linkDistance = 120;
-        const repulseDistance = 100;
-        const repulseStrength = 3;
+        const repulseDistance = 150;
+        const repulseStrength = 8;
+        const spazDistance = 80;
 
         const animate = () => {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -95,20 +96,34 @@ export const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ theme = 
             for (let i = 0; i < particles.length; i++) {
                 const p = particles[i];
 
-                // Mouse repulsion
+                // Mouse interaction
                 const dx = p.x - mouseRef.current.x;
                 const dy = p.y - mouseRef.current.y;
                 const dist = Math.sqrt(dx * dx + dy * dy);
                 
-                if (dist < repulseDistance && dist > 0) {
+                if (dist < spazDistance && dist > 0) {
+                    // Intense "spaz out" effect when very close
+                    const spazIntensity = (spazDistance - dist) / spazDistance;
+                    p.vx += (Math.random() - 0.5) * spazIntensity * 4;
+                    p.vy += (Math.random() - 0.5) * spazIntensity * 4;
+                    // Also push away
+                    p.vx += (dx / dist) * spazIntensity * repulseStrength * 0.1;
+                    p.vy += (dy / dist) * spazIntensity * repulseStrength * 0.1;
+                    // Temporarily increase opacity for visual feedback
+                    p.opacity = Math.min(1, p.opacity + spazIntensity * 0.3);
+                } else if (dist < repulseDistance && dist > 0) {
+                    // Gentler repulsion in outer ring
                     const force = (repulseDistance - dist) / repulseDistance;
-                    p.vx += (dx / dist) * force * repulseStrength * 0.02;
-                    p.vy += (dy / dist) * force * repulseStrength * 0.02;
+                    p.vx += (dx / dist) * force * repulseStrength * 0.03;
+                    p.vy += (dy / dist) * force * repulseStrength * 0.03;
                 }
 
+                // Fade opacity back to normal
+                p.opacity += (0.5 - p.opacity) * 0.02;
+
                 // Apply velocity with damping
-                p.vx *= 0.99;
-                p.vy *= 0.99;
+                p.vx *= 0.96;
+                p.vy *= 0.96;
                 p.x += p.vx;
                 p.y += p.vy;
 
