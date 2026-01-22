@@ -57,7 +57,6 @@ export const VantaBackground: React.FC<VantaBackgroundProps> = ({ theme, classNa
   const vantaRef = useRef<HTMLDivElement>(null);
   const vantaEffect = useRef<any>(null);
   const [isReady, setIsReady] = useState(false);
-  const [hasError, setHasError] = useState(false);
 
   // Load scripts on mount
   useEffect(() => {
@@ -73,9 +72,6 @@ export const VantaBackground: React.FC<VantaBackgroundProps> = ({ theme, classNa
         }
       } catch (error) {
         console.warn('Vanta background unavailable:', error);
-        if (isMounted) {
-          setHasError(true);
-        }
       }
     };
 
@@ -88,18 +84,26 @@ export const VantaBackground: React.FC<VantaBackgroundProps> = ({ theme, classNa
 
   // Initialize Vanta when ready
   useEffect(() => {
-    if (!isReady || hasError || !vantaRef.current) return;
+    if (!isReady || !vantaRef.current) return;
+
+    // Safely cleanup previous effect if it exists
+    if (vantaEffect.current) {
+      try {
+        const canvas = vantaRef.current.querySelector('canvas');
+        if (canvas && canvas.parentNode === vantaRef.current) {
+          vantaEffect.current.destroy();
+        }
+      } catch (e) {
+        // Ignore cleanup errors - expected in React Strict Mode
+      }
+      vantaEffect.current = null;
+    }
 
     try {
       const VANTA = (window as any).VANTA;
       if (!VANTA?.DOTS) {
         console.warn('VANTA.DOTS not available');
         return;
-      }
-
-      // Cleanup previous
-      if (vantaEffect.current) {
-        vantaEffect.current.destroy();
       }
 
       const colors = getThemeColors(theme);
@@ -122,25 +126,22 @@ export const VantaBackground: React.FC<VantaBackgroundProps> = ({ theme, classNa
       });
     } catch (error) {
       console.warn('Failed to initialize Vanta:', error);
-      setHasError(true);
     }
 
     return () => {
-      try {
-        if (vantaEffect.current) {
-          vantaEffect.current.destroy();
-          vantaEffect.current = null;
+      if (vantaEffect.current && vantaRef.current) {
+        try {
+          const canvas = vantaRef.current.querySelector('canvas');
+          if (canvas && canvas.parentNode === vantaRef.current) {
+            vantaEffect.current.destroy();
+          }
+        } catch (e) {
+          // Ignore cleanup errors
         }
-      } catch (e) {
-        // Ignore cleanup errors
+        vantaEffect.current = null;
       }
     };
-  }, [isReady, hasError, theme]);
-
-  // Don't render anything if there's an error
-  if (hasError) {
-    return null;
-  }
+  }, [isReady, theme]);
 
   return (
     <div 
