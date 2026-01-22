@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Hero } from './components/Hero';
 import { Navbar } from './components/Navbar';
+import { MobileNav } from './components/MobileNav';
 import { QueueModule } from './components/QueueModule';
 import { SettingsPanel } from './components/SettingsPanel';
 import { ResultsDashboard } from './components/ResultsDashboard';
@@ -11,7 +12,6 @@ import { FunFactGenerator } from './components/FunFactGenerator';
 import { ToolsDashboard } from './components/ToolsDashboard';
 import { Roadmap } from './components/Roadmap';
 import { LoadingScreen } from './components/LoadingScreen';
-import { MobileMaintenance } from './components/MobileMaintenance';
 import { Expense, Assumptions, CalculationResult, StockOption, Theme } from './types';
 import { calculateResults } from './utils/financials';
 
@@ -53,15 +53,10 @@ function App() {
   // Global Decisions Count (Live Simulation + Real Input)
   const [decisionCount, setDecisionCount] = useState(543);
 
-  // Mobile Detection State
+  // Mobile Detection State - now used for responsive adjustments, not blocking
   const [isMobileView, setIsMobileView] = useState(() => {
     if (typeof window !== 'undefined') {
-       const width = window.innerWidth;
-       const height = window.innerHeight;
-       // Strict detection: 
-       // 1. Standard mobile portrait (< 768px width)
-       // 2. Landscape phones (< 1024px width AND < 600px height) - Targets iPhone Max, S24 Ultra, etc in landscape
-       return width < 768 || (width < 1024 && height < 600);
+       return window.innerWidth < 768;
     }
     return false;
   });
@@ -78,11 +73,7 @@ function App() {
   // Monitor Window Resize for Mobile Detection
   useEffect(() => {
     const handleResize = () => {
-        const width = window.innerWidth;
-        const height = window.innerHeight;
-        // Block standard mobile OR landscape mobile (wide but short screens)
-        const isMobile = width < 768 || (width < 1024 && height < 600);
-        setIsMobileView(isMobile);
+        setIsMobileView(window.innerWidth < 768);
     };
 
     window.addEventListener('resize', handleResize);
@@ -204,14 +195,20 @@ function App() {
       }
   };
 
-  // Strictly enforce Mobile View logic
-  if (isMobileView) {
-      return <MobileMaintenance />;
-  }
-
   return (
-    <div className={`flex flex-col theme-${theme} min-h-screen font-sans selection:bg-[var(--primary)] selection:text-white relative bg-[var(--bg-main)] text-[var(--text-main)] transition-colors duration-500`}>
-      <Navbar 
+    <div className={`flex flex-col theme-${theme} min-h-screen font-sans selection:bg-[var(--primary)] selection:text-white relative bg-[var(--bg-main)] text-[var(--text-main)] transition-colors duration-500 pb-20 md:pb-0`}>
+      {/* Desktop Navbar */}
+      <div className="hidden md:block">
+        <Navbar 
+          activeTab={activeTab} 
+          onNavigate={handleNavigate} 
+          currentTheme={theme}
+          onThemeChange={setTheme}
+        />
+      </div>
+      
+      {/* Mobile Bottom Nav */}
+      <MobileNav 
         activeTab={activeTab} 
         onNavigate={handleNavigate} 
         currentTheme={theme}
