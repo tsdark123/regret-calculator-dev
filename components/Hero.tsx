@@ -201,18 +201,18 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
   const [showTheory, setShowTheory] = useState(false);
 
   return (
-    <section className="min-h-[90vh] flex flex-col items-center justify-center text-center px-4 relative overflow-hidden pt-32 select-none">
+    <section className="min-h-[85vh] md:min-h-[90vh] flex flex-col items-center justify-center text-center px-4 relative overflow-hidden pt-16 md:pt-32 select-none">
       
       {/* --- Background Elements --- */}
       <BackgroundGraph />
       
-      {/* 1. Central Glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[var(--primary)] opacity-15 rounded-full blur-[120px] -z-10 pointer-events-none" />
+      {/* 1. Central Glow - Smaller on mobile */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] md:w-[600px] h-[300px] md:h-[600px] bg-[var(--primary)] opacity-15 rounded-full blur-[80px] md:blur-[120px] -z-10 pointer-events-none" />
       
       {/* 2. Animated Grid Pattern */}
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_70%_70%_at_50%_50%,black,transparent)] -z-20 pointer-events-none" />
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:2rem_2rem] md:bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_70%_70%_at_50%_50%,black,transparent)] -z-20 pointer-events-none" />
 
-      {/* 3. Left Side: Bar Graph Decoration */}
+      {/* 3. Left Side: Bar Graph Decoration - Desktop only */}
       <div className="absolute left-[5%] lg:left-[8%] top-1/2 -translate-y-1/2 hidden xl:flex flex-col gap-4 opacity-60 -z-10 pointer-events-none select-none transition-opacity duration-700 hover:opacity-80">
         <div className="w-56 p-5 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)]/80 backdrop-blur-sm transform -rotate-6 shadow-2xl">
             <div className="flex items-end gap-3 h-32 mb-3 px-2 border-b border-[var(--border)] pb-2">
@@ -228,7 +228,7 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
         </div>
       </div>
 
-      {/* 4. Right Side: Abstract Radial UI */}
+      {/* 4. Right Side: Abstract Radial UI - Desktop only */}
       <div className="absolute right-[5%] lg:right-[8%] top-1/2 -translate-y-1/2 hidden xl:flex flex-col opacity-60 -z-10 pointer-events-none select-none transition-opacity duration-700 hover:opacity-80">
         <div className="relative w-64 h-64 flex items-center justify-center transform rotate-12">
             {/* Outer Ring */}
@@ -253,63 +253,70 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
 
       {/* --- Main Content --- */}
 
-      <h1 className="text-5xl md:text-8xl font-bold tracking-tighter mb-8 text-[var(--text-main)] drop-shadow-2xl leading-[1.1] animate-fade-in-down z-10">
+      <h1 className="text-4xl sm:text-5xl md:text-8xl font-bold tracking-tighter mb-4 md:mb-8 text-[var(--text-main)] drop-shadow-2xl leading-[1.1] animate-fade-in-down z-10">
         Calculated Growth.<br />
         <span className="text-[var(--primary)]">Zero Regret.</span>
       </h1>
       
-      <p className="text-lg md:text-2xl text-[var(--text-muted)] max-w-3xl mb-8 md:mb-12 leading-relaxed font-light animate-fade-in-up delay-100 opacity-0 z-10 px-4">
+      <p className="text-base sm:text-lg md:text-2xl text-[var(--text-muted)] max-w-3xl mb-6 md:mb-12 leading-relaxed font-light animate-fade-in-up delay-100 opacity-0 z-10 px-2">
         See how the price of inaction grows over time. <br className="hidden md:block"/>
         Input your habits to see what waiting is <span className="text-[var(--text-main)] font-medium">really</span> costing you.
       </p>
 
-      {/* MOBILE EXCLUSIVE: Vertical Stats Stack */}
-      <div className="block md:hidden w-full max-w-sm mx-auto mb-8 animate-fade-in-up delay-200 opacity-0 z-10">
-          <div className="flex flex-col gap-4 bg-[var(--bg-card)]/40 backdrop-blur-md border border-[var(--border)] rounded-2xl p-6 shadow-xl">
-             <div className="flex items-center justify-between border-b border-[var(--border)] pb-3">
-                 <span className="text-xs text-[var(--text-muted)] font-semibold uppercase tracking-widest">Decisions</span>
-                 <span className="text-xl font-bold text-[var(--text-main)]"><StatCounter value={decisionCount} suffix="+" /></span>
+      {/* MOBILE EXCLUSIVE: Vertical Stats Stack - Compact */}
+      <div className="block md:hidden w-full max-w-sm mx-auto mb-6 animate-fade-in-up delay-200 opacity-0 z-10">
+          <div className="flex justify-between gap-2 bg-[var(--bg-card)]/40 backdrop-blur-md border border-[var(--border)] rounded-2xl p-4 shadow-xl">
+             <div className="flex flex-col items-center flex-1">
+                 <span className="text-lg font-bold text-[var(--text-main)]"><StatCounter value={decisionCount} suffix="+" /></span>
+                 <span className="text-[9px] text-[var(--text-muted)] font-semibold uppercase tracking-wide">Analyzed</span>
              </div>
-             <div className="flex items-center justify-between border-b border-[var(--border)] pb-3">
-                 <span className="text-xs text-[var(--text-muted)] font-semibold uppercase tracking-widest">Wasted Capital</span>
-                 <span className="text-xl font-bold text-[var(--text-main)]"><StatCounter value={960} suffix="M+" /></span>
+             <div className="w-px bg-[var(--border)]" />
+             <div className="flex flex-col items-center flex-1">
+                 <span className="text-lg font-bold text-[var(--text-main)]"><StatCounter value={960} suffix="M" /></span>
+                 <span className="text-[9px] text-[var(--text-muted)] font-semibold uppercase tracking-wide">Wasted</span>
              </div>
-             <div className="flex items-center justify-between">
-                 <span className="text-xs text-[var(--text-muted)] font-semibold uppercase tracking-widest">Yield Missed</span>
-                 <span className="text-xl font-bold text-[var(--text-main)]"><StatCounter value={667} suffix="%+" /></span>
+             <div className="w-px bg-[var(--border)]" />
+             <div className="flex flex-col items-center flex-1">
+                 <span className="text-lg font-bold text-[var(--text-main)]"><StatCounter value={667} suffix="%" /></span>
+                 <span className="text-[9px] text-[var(--text-muted)] font-semibold uppercase tracking-wide">Missed</span>
              </div>
           </div>
       </div>
 
-      {/* Button Cluster */}
-      <div className="flex flex-col md:flex-row items-center gap-4 animate-fade-in-up delay-200 opacity-0 w-full justify-center mb-16 z-20">
+      {/* Button Cluster - Mobile optimized with 48px+ touch targets */}
+      <div className="flex flex-col md:flex-row items-center gap-3 md:gap-4 animate-fade-in-up delay-200 opacity-0 w-full max-w-md md:max-w-none justify-center mb-8 md:mb-16 z-20 px-4">
          
-         {/* Left: Presets */}
-         <button 
-            onClick={() => setShowPreset(true)}
-            className="flex items-center gap-2 px-6 py-3.5 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)]/40 text-[var(--text-muted)] font-medium text-sm hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] transition-all backdrop-blur-sm w-full md:w-auto justify-center"
-         >
-            <Zap className="w-4 h-4 text-yellow-400" />
-            Quick Load
-         </button>
-
-         {/* Center: Main CTA */}
+         {/* Center: Main CTA - First on mobile for prominence */}
          <button
           onClick={onStart}
-          className="group relative inline-flex items-center justify-center px-10 py-3.5 font-semibold text-white transition-all duration-300 bg-[var(--primary)] rounded-2xl hover:bg-[var(--primary-hover)] hover:scale-[1.02] active:scale-[0.98] hover:shadow-[0_0_30px_var(--primary)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary)] focus:ring-offset-[var(--bg-main)] shadow-xl w-full md:w-auto"
+          className="group relative inline-flex items-center justify-center px-8 py-4 md:px-10 md:py-3.5 font-semibold text-white transition-all duration-300 bg-[var(--primary)] rounded-2xl hover:bg-[var(--primary-hover)] hover:scale-[1.02] active:scale-[0.98] hover:shadow-[0_0_30px_var(--primary)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary)] focus:ring-offset-[var(--bg-main)] shadow-xl w-full md:w-auto order-first md:order-none min-h-[52px]"
         >
           <span className="mr-3 text-base">Calculate Your Regret</span>
           <ArrowDown className="w-4 h-4 group-hover:translate-y-1 transition-transform duration-300" />
         </button>
 
-        {/* Right: Theory */}
-         <button 
+        {/* Secondary buttons row on mobile */}
+        <div className="flex gap-3 w-full md:contents">
+          {/* Left: Presets */}
+          <button 
+            onClick={() => setShowPreset(true)}
+            className="flex-1 md:flex-none flex items-center gap-2 px-4 py-3.5 md:px-6 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)]/40 text-[var(--text-muted)] font-medium text-sm hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] transition-all backdrop-blur-sm justify-center min-h-[48px] active:scale-[0.98]"
+          >
+            <Zap className="w-4 h-4 text-yellow-400" />
+            <span className="hidden sm:inline">Quick Load</span>
+            <span className="sm:hidden">Presets</span>
+          </button>
+
+          {/* Right: Theory */}
+          <button 
             onClick={() => setShowTheory(true)}
-            className="flex items-center gap-2 px-6 py-3.5 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)]/40 text-[var(--text-muted)] font-medium text-sm hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] transition-all backdrop-blur-sm w-full md:w-auto justify-center"
-         >
+            className="flex-1 md:flex-none flex items-center gap-2 px-4 py-3.5 md:px-6 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)]/40 text-[var(--text-muted)] font-medium text-sm hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] transition-all backdrop-blur-sm justify-center min-h-[48px] active:scale-[0.98]"
+          >
             <BookOpen className="w-4 h-4 text-blue-400" />
-            How it Works
-         </button>
+            <span className="hidden sm:inline">How it Works</span>
+            <span className="sm:hidden">Learn</span>
+          </button>
+        </div>
       </div>
 
       {/* Stats Bar (Desktop Only) */}
