@@ -218,7 +218,7 @@ export const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ theme = 
                 left: 0,
                 width: '100vw',
                 height: '100vh',
-                zIndex: -50,
+                zIndex: -1,
                 pointerEvents: 'none',
             }}
         />
