@@ -6,9 +6,6 @@ interface Particle {
     vx: number;
     vy: number;
     size: number;
-    opacity: number;
-    rotation: number;
-    rotationSpeed: number;
 }
 
 interface ParticleBackgroundProps {
@@ -21,31 +18,22 @@ export const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ theme = 
     const mouseRef = useRef({ x: -1000, y: -1000 });
     const animationRef = useRef<number>();
 
-    const getColor = useCallback(() => {
-        switch (theme) {
-            case 'green':
-                return 'rgba(74, 222, 128, 0.4)';
-            case 'blue':
-                return 'rgba(96, 165, 250, 0.4)';
-            default:
-                return 'rgba(168, 85, 247, 0.4)';
-        }
-    }, [theme]);
+    // Premium purple color: #9b59b6 at 0.3 opacity
+    const particleColor = 'rgba(155, 89, 182, 0.3)';
+    const linkColor = 'rgba(155, 89, 182, 0.2)';
+    const triangleFillColor = 'rgba(155, 89, 182, 0.08)';
 
     const initParticles = useCallback((width: number, height: number) => {
-        const particleCount = Math.floor((width * height) / 12000);
+        const particleCount = Math.floor((width * height) / 18000);
         const particles: Particle[] = [];
         
         for (let i = 0; i < particleCount; i++) {
             particles.push({
                 x: Math.random() * width,
                 y: Math.random() * height,
-                vx: (Math.random() - 0.5) * 0.3,
-                vy: (Math.random() - 0.5) * 0.3,
-                size: Math.random() * 8 + 4,
-                opacity: Math.random() * 0.3 + 0.2,
-                rotation: Math.random() * Math.PI * 2,
-                rotationSpeed: (Math.random() - 0.5) * 0.02,
+                vx: (Math.random() - 0.5) * 0.4,
+                vy: (Math.random() - 0.5) * 0.4,
+                size: Math.random() * 2 + 1.5,
             });
         }
         
@@ -69,10 +57,9 @@ export const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ theme = 
         window.addEventListener('resize', resizeCanvas);
 
         const handleMouseMove = (e: MouseEvent) => {
-            const rect = canvas.getBoundingClientRect();
             mouseRef.current = {
-                x: e.clientX - rect.left,
-                y: e.clientY - rect.top,
+                x: e.clientX,
+                y: e.clientY,
             };
         };
 
@@ -80,73 +67,114 @@ export const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ theme = 
             mouseRef.current = { x: -1000, y: -1000 };
         };
 
-        canvas.addEventListener('mousemove', handleMouseMove);
-        canvas.addEventListener('mouseleave', handleMouseLeave);
+        window.addEventListener('mousemove', handleMouseMove);
+        window.addEventListener('mouseleave', handleMouseLeave);
 
-        const particleColor = getColor();
-        const repulseDistance = 200;
-        const repulseStrength = 12;
-        const spazDistance = 100;
-
-        // Helper to draw a triangle
-        const drawTriangle = (x: number, y: number, size: number, rotation: number, opacity: number) => {
-            ctx.save();
-            ctx.translate(x, y);
-            ctx.rotate(rotation);
-            ctx.beginPath();
-            ctx.moveTo(0, -size);
-            ctx.lineTo(size * 0.866, size * 0.5);
-            ctx.lineTo(-size * 0.866, size * 0.5);
-            ctx.closePath();
-            ctx.fillStyle = particleColor.replace('0.4', opacity.toFixed(2));
-            ctx.shadowBlur = 10;
-            ctx.shadowColor = particleColor;
-            ctx.fill();
-            ctx.shadowBlur = 0;
-            ctx.restore();
-        };
+        const linkDistance = 150;
+        const grabDistance = 180;
+        const repulseDistance = 120;
+        const repulseStrength = 8;
+        const spazDistance = 60;
 
         const animate = () => {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             const particles = particlesRef.current;
+            const mouseX = mouseRef.current.x;
+            const mouseY = mouseRef.current.y;
 
+            // First pass: Draw triangle fills and links between particles
+            for (let i = 0; i < particles.length; i++) {
+                const p1 = particles[i];
+                
+                for (let j = i + 1; j < particles.length; j++) {
+                    const p2 = particles[j];
+                    const dx12 = p1.x - p2.x;
+                    const dy12 = p1.y - p2.y;
+                    const dist12 = Math.sqrt(dx12 * dx12 + dy12 * dy12);
+
+                    if (dist12 < linkDistance) {
+                        // Check for a third particle to form a triangle
+                        for (let k = j + 1; k < particles.length; k++) {
+                            const p3 = particles[k];
+                            const dx13 = p1.x - p3.x;
+                            const dy13 = p1.y - p3.y;
+                            const dist13 = Math.sqrt(dx13 * dx13 + dy13 * dy13);
+                            
+                            const dx23 = p2.x - p3.x;
+                            const dy23 = p2.y - p3.y;
+                            const dist23 = Math.sqrt(dx23 * dx23 + dy23 * dy23);
+
+                            if (dist13 < linkDistance && dist23 < linkDistance) {
+                                // Draw filled triangle
+                                const avgOpacity = (1 - dist12 / linkDistance) * 
+                                                   (1 - dist13 / linkDistance) * 
+                                                   (1 - dist23 / linkDistance);
+                                ctx.beginPath();
+                                ctx.moveTo(p1.x, p1.y);
+                                ctx.lineTo(p2.x, p2.y);
+                                ctx.lineTo(p3.x, p3.y);
+                                ctx.closePath();
+                                ctx.fillStyle = triangleFillColor.replace('0.08', (0.08 * avgOpacity).toFixed(3));
+                                ctx.fill();
+                            }
+                        }
+
+                        // Draw link between p1 and p2
+                        const opacity = (1 - dist12 / linkDistance) * 0.4;
+                        ctx.beginPath();
+                        ctx.moveTo(p1.x, p1.y);
+                        ctx.lineTo(p2.x, p2.y);
+                        ctx.strokeStyle = linkColor.replace('0.2', opacity.toFixed(2));
+                        ctx.lineWidth = 1;
+                        ctx.stroke();
+                    }
+                }
+
+                // Grab effect: Draw lines from particles to mouse cursor
+                const dxMouse = p1.x - mouseX;
+                const dyMouse = p1.y - mouseY;
+                const distMouse = Math.sqrt(dxMouse * dxMouse + dyMouse * dyMouse);
+                
+                if (distMouse < grabDistance && mouseX > 0) {
+                    const grabOpacity = (1 - distMouse / grabDistance) * 0.5;
+                    ctx.beginPath();
+                    ctx.moveTo(p1.x, p1.y);
+                    ctx.lineTo(mouseX, mouseY);
+                    ctx.strokeStyle = linkColor.replace('0.2', grabOpacity.toFixed(2));
+                    ctx.lineWidth = 1;
+                    ctx.stroke();
+                }
+            }
+
+            // Second pass: Update physics and draw particles
             for (let i = 0; i < particles.length; i++) {
                 const p = particles[i];
 
-                // Mouse interaction
-                const dx = p.x - mouseRef.current.x;
-                const dy = p.y - mouseRef.current.y;
+                // Mouse interaction - repulse + spaz
+                const dx = p.x - mouseX;
+                const dy = p.y - mouseY;
                 const dist = Math.sqrt(dx * dx + dy * dy);
                 
                 if (dist < spazDistance && dist > 0) {
                     // Intense "spaz out" effect when very close
                     const spazIntensity = (spazDistance - dist) / spazDistance;
-                    p.vx += (Math.random() - 0.5) * spazIntensity * 6;
-                    p.vy += (Math.random() - 0.5) * spazIntensity * 6;
-                    p.rotationSpeed += (Math.random() - 0.5) * spazIntensity * 0.3;
+                    p.vx += (Math.random() - 0.5) * spazIntensity * 5;
+                    p.vy += (Math.random() - 0.5) * spazIntensity * 5;
                     // Push away
-                    p.vx += (dx / dist) * spazIntensity * repulseStrength * 0.15;
-                    p.vy += (dy / dist) * spazIntensity * repulseStrength * 0.15;
-                    // Increase opacity
-                    p.opacity = Math.min(0.8, p.opacity + spazIntensity * 0.4);
+                    p.vx += (dx / dist) * spazIntensity * repulseStrength * 0.2;
+                    p.vy += (dy / dist) * spazIntensity * repulseStrength * 0.2;
                 } else if (dist < repulseDistance && dist > 0) {
                     // Gentler repulsion in outer ring
                     const force = (repulseDistance - dist) / repulseDistance;
-                    p.vx += (dx / dist) * force * repulseStrength * 0.04;
-                    p.vy += (dy / dist) * force * repulseStrength * 0.04;
+                    p.vx += (dx / dist) * force * repulseStrength * 0.05;
+                    p.vy += (dy / dist) * force * repulseStrength * 0.05;
                 }
 
-                // Fade opacity back to normal
-                p.opacity += (0.35 - p.opacity) * 0.02;
-                // Slow down rotation
-                p.rotationSpeed *= 0.98;
-
                 // Apply velocity with damping
-                p.vx *= 0.95;
-                p.vy *= 0.95;
+                p.vx *= 0.96;
+                p.vy *= 0.96;
                 p.x += p.vx;
                 p.y += p.vy;
-                p.rotation += p.rotationSpeed;
 
                 // Bounce off edges
                 if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
@@ -156,8 +184,14 @@ export const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ theme = 
                 p.x = Math.max(0, Math.min(canvas.width, p.x));
                 p.y = Math.max(0, Math.min(canvas.height, p.y));
 
-                // Draw triangle
-                drawTriangle(p.x, p.y, p.size, p.rotation, p.opacity);
+                // Draw circle particle with glow
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fillStyle = particleColor;
+                ctx.shadowBlur = 6;
+                ctx.shadowColor = particleColor;
+                ctx.fill();
+                ctx.shadowBlur = 0;
             }
 
             animationRef.current = requestAnimationFrame(animate);
@@ -167,13 +201,13 @@ export const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ theme = 
 
         return () => {
             window.removeEventListener('resize', resizeCanvas);
-            canvas.removeEventListener('mousemove', handleMouseMove);
-            canvas.removeEventListener('mouseleave', handleMouseLeave);
+            window.removeEventListener('mousemove', handleMouseMove);
+            window.removeEventListener('mouseleave', handleMouseLeave);
             if (animationRef.current) {
                 cancelAnimationFrame(animationRef.current);
             }
         };
-    }, [getColor, initParticles]);
+    }, [initParticles]);
 
     return (
         <canvas
@@ -181,8 +215,8 @@ export const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ theme = 
             style={{
                 position: 'fixed',
                 inset: 0,
-                zIndex: 0,
-                pointerEvents: 'auto',
+                zIndex: -1,
+                pointerEvents: 'none',
             }}
         />
     );
