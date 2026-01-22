@@ -228,7 +228,7 @@ function App() {
       <div className="flex-grow">
           {viewMode === 'tools' ? (
             <div className="pt-24 px-4 pb-12 w-full max-w-[96rem] mx-auto animate-fade-in-up">
-              <ToolsDashboard />
+              <ToolsDashboard theme={theme} />
             </div>
           ) : viewMode === 'roadmap' ? (
             /* Roadmap now takes full control of positioning to center itself */
