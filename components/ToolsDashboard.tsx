@@ -19,12 +19,13 @@ const InflationTool = () => {
     const futureValue = amount * Math.pow(1 + rate / 100, years);
 
     return (
-        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-3xl p-8 shadow-2xl flex flex-col h-full hover:border-[var(--text-muted)] transition-colors">
-            <div className="flex items-center gap-3 mb-3">
-                <DollarSign className="w-6 h-6 text-[var(--text-muted)]" />
-                <h3 className="text-lg font-bold text-[var(--text-main)] uppercase tracking-wider">Inflation Reality</h3>
+        // Mobile: smaller padding, tighter spacing
+        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl md:rounded-3xl p-5 md:p-8 shadow-xl md:shadow-2xl flex flex-col h-full md:hover:border-[var(--text-muted)] transition-colors">
+            <div className="flex items-center gap-2 md:gap-3 mb-2 md:mb-3">
+                <DollarSign className="w-5 h-5 md:w-6 md:h-6 text-[var(--text-muted)]" />
+                <h3 className="text-base md:text-lg font-bold text-[var(--text-main)] uppercase tracking-wider">Inflation Reality</h3>
             </div>
-            <p className="text-sm text-[var(--text-muted)] mb-8 leading-relaxed font-light">
+            <p className="text-xs md:text-sm text-[var(--text-muted)] mb-4 md:mb-8 leading-relaxed font-light">
                 See how purchasing power erodes over time.
             </p>
 
@@ -80,12 +81,12 @@ const RuleOf72Tool = () => {
     const yearsToDouble = 72 / rate;
 
     return (
-        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-3xl p-8 shadow-2xl flex flex-col h-full hover:border-[var(--text-muted)] transition-colors">
-            <div className="flex items-center gap-3 mb-3">
-                <Clock className="w-6 h-6 text-[var(--text-muted)]" />
-                <h3 className="text-lg font-bold text-[var(--text-main)] uppercase tracking-wider">Rule of 72</h3>
+        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl md:rounded-3xl p-5 md:p-8 shadow-xl md:shadow-2xl flex flex-col h-full md:hover:border-[var(--text-muted)] transition-colors">
+            <div className="flex items-center gap-2 md:gap-3 mb-2 md:mb-3">
+                <Clock className="w-5 h-5 md:w-6 md:h-6 text-[var(--text-muted)]" />
+                <h3 className="text-base md:text-lg font-bold text-[var(--text-main)] uppercase tracking-wider">Rule of 72</h3>
             </div>
-             <p className="text-sm text-[var(--text-muted)] mb-8 leading-relaxed font-light">
+             <p className="text-xs md:text-sm text-[var(--text-muted)] mb-4 md:mb-8 leading-relaxed font-light">
                  A mental math shortcut to estimate years to double your money.
              </p>
 
@@ -112,10 +113,10 @@ const RuleOf72Tool = () => {
                 </div>
             </div>
 
-            <div className="mt-10 pt-8 border-t border-[var(--border)] text-center">
-                <div className="text-8xl font-black text-[var(--text-main)] mb-2 tracking-tighter">{yearsToDouble.toFixed(1)}</div>
-                <div className="text-base text-[var(--text-muted)] uppercase tracking-widest font-bold">Years</div>
-                <p className="text-xs text-[var(--text-muted)] mt-4 italic">Time to double your investment.</p>
+            <div className="mt-6 md:mt-10 pt-6 md:pt-8 border-t border-[var(--border)] text-center">
+                <div className="text-5xl md:text-8xl font-black text-[var(--text-main)] mb-1 md:mb-2 tracking-tighter">{yearsToDouble.toFixed(1)}</div>
+                <div className="text-sm md:text-base text-[var(--text-muted)] uppercase tracking-widest font-bold">Years</div>
+                <p className="text-[10px] md:text-xs text-[var(--text-muted)] mt-2 md:mt-4 italic">Time to double your investment.</p>
             </div>
         </div>
     );
@@ -137,12 +138,12 @@ const ReverseGoalTool = () => {
         : (goal * r) / (Math.pow(1 + r, n) - 1);
 
     return (
-        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-3xl p-8 shadow-2xl flex flex-col h-full hover:border-[var(--text-muted)] transition-colors">
-            <div className="flex items-center gap-3 mb-3">
-                <Target className="w-6 h-6 text-[var(--text-muted)]" />
-                <h3 className="text-lg font-bold text-[var(--text-main)] uppercase tracking-wider">Reverse Goal</h3>
+        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl md:rounded-3xl p-5 md:p-8 shadow-xl md:shadow-2xl flex flex-col h-full md:hover:border-[var(--text-muted)] transition-colors">
+            <div className="flex items-center gap-2 md:gap-3 mb-2 md:mb-3">
+                <Target className="w-5 h-5 md:w-6 md:h-6 text-[var(--text-muted)]" />
+                <h3 className="text-base md:text-lg font-bold text-[var(--text-main)] uppercase tracking-wider">Reverse Goal</h3>
             </div>
-            <p className="text-sm text-[var(--text-muted)] mb-8 leading-relaxed font-light">
+            <p className="text-xs md:text-sm text-[var(--text-muted)] mb-4 md:mb-8 leading-relaxed font-light">
                 Calculate required monthly savings to hit a target.
             </p>
 
@@ -193,15 +194,17 @@ const ReverseGoalTool = () => {
 
 export const ToolsDashboard: React.FC = () => {
     return (
-        <div className="w-full animate-fade-in-up pb-12">
-            <div className="text-center mb-20 pt-10">
-                <h2 className="text-5xl md:text-6xl font-bold text-[var(--text-main)] mb-6 tracking-tight">Financial Toolbox</h2>
-                <p className="text-[var(--text-muted)] max-w-3xl mx-auto text-xl font-light leading-relaxed">
+        <div className="w-full pb-12">
+            {/* Mobile: tighter header, less padding */}
+            <div className="text-center mb-8 md:mb-20 pt-2 md:pt-10 px-4">
+                <h2 className="text-3xl md:text-6xl font-bold text-[var(--text-main)] mb-3 md:mb-6 tracking-tight">Financial Toolbox</h2>
+                <p className="text-[var(--text-muted)] max-w-3xl mx-auto text-sm md:text-xl font-light leading-relaxed">
                     Calculators to help you plan your future and understand the math behind your money.
                 </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 max-w-7xl mx-auto px-4 lg:px-0">
+            {/* Mobile: single column, less gap */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-10 max-w-7xl mx-auto px-4 lg:px-0">
                 <InflationTool />
                 <RuleOf72Tool />
                 <ReverseGoalTool />
