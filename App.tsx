@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Hero } from './components/Hero';
 import { Navbar } from './components/Navbar';
-import { MobileNav } from './components/MobileNav';
 import { QueueModule } from './components/QueueModule';
 import { SettingsPanel } from './components/SettingsPanel';
 import { ResultsDashboard } from './components/ResultsDashboard';
@@ -13,6 +12,7 @@ import { ToolsDashboard } from './components/ToolsDashboard';
 import { Roadmap } from './components/Roadmap';
 import { LoadingScreen } from './components/LoadingScreen';
 import { ParticleBackground } from './components/ParticleBackground';
+import { MobileMaintenance } from './components/MobileMaintenance';
 import { Expense, Assumptions, CalculationResult, StockOption, Theme } from './types';
 import { calculateResults } from './utils/financials';
 
@@ -196,23 +196,18 @@ function App() {
       }
   };
 
+  // Show maintenance screen on mobile
+  if (isMobileView) {
+    return <MobileMaintenance />;
+  }
+
   return (
-    <div className={`flex flex-col theme-${theme} min-h-screen font-sans selection:bg-[var(--primary)] selection:text-white relative bg-[var(--bg-main)] text-[var(--text-main)] transition-colors duration-500 pb-20 md:pb-0`}>
+    <div className={`flex flex-col theme-${theme} min-h-screen font-sans selection:bg-[var(--primary)] selection:text-white relative bg-[var(--bg-main)] text-[var(--text-main)] transition-colors duration-500`}>
       {/* Full-Viewport Particle Background - Outside all containers */}
       <ParticleBackground theme={theme} />
       
       {/* Desktop Navbar */}
-      <div className="hidden md:block">
-        <Navbar 
-          activeTab={activeTab} 
-          onNavigate={handleNavigate} 
-          currentTheme={theme}
-          onThemeChange={setTheme}
-        />
-      </div>
-      
-      {/* Mobile Bottom Nav */}
-      <MobileNav 
+      <Navbar 
         activeTab={activeTab} 
         onNavigate={handleNavigate} 
         currentTheme={theme}

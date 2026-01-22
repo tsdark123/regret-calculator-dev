@@ -263,25 +263,6 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
         Input your habits to see what waiting is <span className="text-[var(--text-main)] font-medium">really</span> costing you.
       </p>
 
-      {/* MOBILE EXCLUSIVE: Vertical Stats Stack - Compact */}
-      <div className="block md:hidden w-full max-w-sm mx-auto mb-6 animate-fade-in-up delay-200 opacity-0 z-10">
-          <div className="flex justify-between gap-2 bg-[var(--bg-card)]/40 backdrop-blur-md border border-[var(--border)] rounded-2xl p-4 shadow-xl">
-             <div className="flex flex-col items-center flex-1">
-                 <span className="text-lg font-bold text-[var(--text-main)]"><StatCounter value={decisionCount} suffix="+" /></span>
-                 <span className="text-[9px] text-[var(--text-muted)] font-semibold uppercase tracking-wide">Analyzed</span>
-             </div>
-             <div className="w-px bg-[var(--border)]" />
-             <div className="flex flex-col items-center flex-1">
-                 <span className="text-lg font-bold text-[var(--text-main)]"><StatCounter value={960} suffix="M" /></span>
-                 <span className="text-[9px] text-[var(--text-muted)] font-semibold uppercase tracking-wide">Wasted</span>
-             </div>
-             <div className="w-px bg-[var(--border)]" />
-             <div className="flex flex-col items-center flex-1">
-                 <span className="text-lg font-bold text-[var(--text-main)]"><StatCounter value={667} suffix="%" /></span>
-                 <span className="text-[9px] text-[var(--text-muted)] font-semibold uppercase tracking-wide">Missed</span>
-             </div>
-          </div>
-      </div>
 
       {/* Button Cluster - Mobile optimized with 48px+ touch targets */}
       <div className="flex flex-col md:flex-row items-center gap-3 md:gap-4 animate-fade-in-up delay-200 opacity-0 w-full max-w-md md:max-w-none justify-center mb-8 md:mb-16 z-20 px-4">
