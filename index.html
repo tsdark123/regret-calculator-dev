@@ -298,6 +298,18 @@
       input[type=range]:focus {
         outline: none;
       }
+
+      /* Reduced motion for accessibility */
+      @media (prefers-reduced-motion: reduce) {
+        .animate-fade-in-up,
+        .animate-fade-in-down,
+        .animate-float,
+        .animate-float-delayed {
+          animation: none !important;
+          opacity: 1 !important;
+          transform: none !important;
+        }
+      }
     </style>
   <script type="importmap">
 {
