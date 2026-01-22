@@ -54,10 +54,12 @@ function App() {
   // Global Decisions Count (Live Simulation + Real Input)
   const [decisionCount, setDecisionCount] = useState(543);
 
-  // Mobile Detection State - now used for responsive adjustments, not blocking
+  // Mobile Detection State - catches phones in BOTH portrait AND landscape orientations
+  // Uses smaller dimension to prevent bypass by rotating phone
   const [isMobileView, setIsMobileView] = useState(() => {
     if (typeof window !== 'undefined') {
-       return window.innerWidth < 768;
+       const smallerDimension = Math.min(window.innerWidth, window.innerHeight);
+       return smallerDimension < 768;
     }
     return false;
   });
@@ -71,10 +73,11 @@ function App() {
     }
   }, []);
 
-  // Monitor Window Resize for Mobile Detection
+  // Monitor Window Resize for Mobile Detection (checks smaller dimension for orientation bypass prevention)
   useEffect(() => {
     const handleResize = () => {
-        setIsMobileView(window.innerWidth < 768);
+        const smallerDimension = Math.min(window.innerWidth, window.innerHeight);
+        setIsMobileView(smallerDimension < 768);
     };
 
     window.addEventListener('resize', handleResize);
