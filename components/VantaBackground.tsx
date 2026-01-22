@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import DOTS from 'vanta/dist/vanta.dots.min';
 
@@ -34,43 +34,55 @@ const getThemeColors = (theme: 'purple' | 'green' | 'blue') => {
 
 export const VantaBackground: React.FC<VantaBackgroundProps> = ({ theme, className = '' }) => {
   const vantaRef = useRef<HTMLDivElement>(null);
-  const [vantaEffect, setVantaEffect] = useState<any>(null);
+  const vantaEffect = useRef<any>(null);
 
   useEffect(() => {
     if (!vantaRef.current) return;
 
-    // Cleanup previous effect before creating new one
-    if (vantaEffect) {
-      vantaEffect.destroy();
+    // Safely cleanup previous effect before creating new one
+    if (vantaEffect.current) {
+      try {
+        vantaEffect.current.destroy();
+      } catch (e) {
+        // Ignore cleanup errors - expected in React 19 Strict Mode
+      }
+      vantaEffect.current = null;
     }
 
     const colors = getThemeColors(theme);
 
-    // Initialize Vanta with THREE passed directly
-    const effect = DOTS({
-      el: vantaRef.current,
-      THREE: THREE,
-      mouseControls: true,
-      touchControls: true,
-      gyroControls: false,
-      minHeight: 200.00,
-      minWidth: 200.00,
-      scale: 1.00,
-      scaleMobile: 1.00,
-      color: colors.color,
-      color2: colors.color2,
-      backgroundColor: colors.backgroundColor,
-      size: 2.5,
-      spacing: 25,
-      showLines: false,
-    });
+    try {
+      // Initialize Vanta with THREE passed explicitly
+      vantaEffect.current = DOTS({
+        el: vantaRef.current,
+        THREE: THREE,
+        mouseControls: true,
+        touchControls: true,
+        gyroControls: false,
+        minHeight: 200.00,
+        minWidth: 200.00,
+        scale: 1.00,
+        scaleMobile: 1.00,
+        color: colors.color,
+        color2: colors.color2,
+        backgroundColor: colors.backgroundColor,
+        size: 2.5,
+        spacing: 25,
+        showLines: false,
+      });
+    } catch (error) {
+      console.warn('Failed to initialize Vanta:', error);
+    }
 
-    setVantaEffect(effect);
-
-    // Cleanup on unmount
+    // Cleanup on unmount - wrapped in try-catch for React 19 Strict Mode
     return () => {
-      if (effect) {
-        effect.destroy();
+      if (vantaEffect.current) {
+        try {
+          vantaEffect.current.destroy();
+        } catch (e) {
+          // Ignore removeChild errors from React 19 double-mount cleanup
+        }
+        vantaEffect.current = null;
       }
     };
   }, [theme]);
