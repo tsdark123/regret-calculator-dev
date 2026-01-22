@@ -196,7 +196,7 @@ export const ToolsDashboard: React.FC = () => {
     return (
         <div className="w-full pb-12">
             {/* Mobile: tighter header, less padding */}
-            <div className="text-center mb-8 md:mb-20 pt-2 md:pt-10 px-4">
+            <div className="text-center mb-4 md:mb-20 pt-0 md:pt-10 px-4">
                 <h2 className="text-3xl md:text-6xl font-bold text-[var(--text-main)] mb-3 md:mb-6 tracking-tight">Financial Toolbox</h2>
                 <p className="text-[var(--text-muted)] max-w-3xl mx-auto text-sm md:text-xl font-light leading-relaxed">
                     Calculators to help you plan your future and understand the math behind your money.

@@ -62,9 +62,9 @@ export const MobileRoadmap: React.FC = () => {
   ];
 
   return (
-    <div className="w-full min-h-full px-4 py-6 pb-24">
+    <div className="w-full min-h-full px-4 pt-2 pb-24">
       {/* Header */}
-      <div className="text-center mb-8">
+      <div className="text-center mb-4">
         <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-[var(--primary)]/10 border border-[var(--primary)]/20 rounded-full mb-3">
           <Rocket className="w-3.5 h-3.5 text-[var(--primary)]" />
           <span className="text-xs font-semibold text-[var(--primary)] uppercase tracking-wider">Roadmap</span>

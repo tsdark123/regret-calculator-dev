@@ -217,7 +217,7 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
 
   return (
     // Mobile: tighter layout, less padding, no excessive min-height to avoid "boxed" look
-    <section className="min-h-[70vh] md:min-h-[90vh] flex flex-col items-center justify-center text-center px-4 relative overflow-hidden pt-8 md:pt-32 pb-6 md:pb-0 select-none">
+    <section className="min-h-[55vh] md:min-h-[90vh] flex flex-col items-center justify-center text-center px-4 relative overflow-hidden pt-4 md:pt-32 pb-6 md:pb-0 select-none">
       
       {/* --- Background Elements --- */}
       {/* Desktop only: heavy background effects */}
@@ -278,7 +278,7 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
         <span className="text-[var(--primary)]">Zero Regret.</span>
       </h1>
       
-      <p className="text-sm sm:text-base md:text-2xl text-[var(--text-muted)] max-w-3xl mb-4 md:mb-12 leading-relaxed font-light md:animate-fade-in-up md:delay-100 md:opacity-0 z-10 px-2">
+      <p className="text-sm sm:text-base md:text-2xl text-[var(--text-muted)] max-w-3xl mb-4 md:mb-12 leading-relaxed font-light md:animate-fade-in-up md:delay-100 z-10 px-2">
         See how the price of inaction grows over time. <br className="hidden md:block"/>
         Input your habits to see what waiting is <span className="text-[var(--text-main)] font-medium">really</span> costing you.
       </p>
@@ -304,7 +304,7 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
       </div>
 
       {/* Button Cluster - Mobile optimized with 48px+ touch targets */}
-      <div className="flex flex-col md:flex-row items-center gap-2 md:gap-4 md:animate-fade-in-up md:delay-200 md:opacity-0 w-full max-w-sm md:max-w-none justify-center mb-4 md:mb-16 z-20 px-4">
+      <div className="flex flex-col md:flex-row items-center gap-2 md:gap-4 md:animate-fade-in-up md:delay-200 w-full max-w-sm md:max-w-none justify-center mb-4 md:mb-16 z-20 px-4">
          
          {/* Center: Main CTA - First on mobile for prominence */}
          <button
@@ -338,7 +338,7 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
       </div>
 
       {/* Stats Bar (Desktop Only) */}
-      <div className="w-full max-w-4xl mx-auto hidden md:block animate-fade-in-up delay-300 opacity-0 z-10">
+      <div className="w-full max-w-4xl mx-auto hidden md:block animate-fade-in-up delay-300 z-10">
           <div className="grid grid-cols-3 divide-x divide-white/5 bg-[var(--bg-card)]/50 backdrop-blur-md border border-[var(--border)] rounded-full py-5 px-8 shadow-2xl">
             <div className="flex flex-col items-center justify-center group">
                 <div className="flex items-center gap-2 mb-1">

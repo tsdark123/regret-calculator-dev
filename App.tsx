@@ -229,13 +229,13 @@ function App() {
       <div className="flex-grow">
           {viewMode === 'tools' ? (
             // Mobile: less padding, tighter layout
-            <div className="pt-4 md:pt-24 px-4 pb-12 w-full max-w-[96rem] mx-auto">
+            <div className="pt-2 md:pt-24 px-4 pb-12 w-full max-w-[96rem] mx-auto">
               <ToolsDashboard />
             </div>
           ) : viewMode === 'roadmap' ? (
             /* Roadmap: Use mobile-specific component on small screens */
             isMobileView ? (
-              <div className="pt-4 pb-8 bg-[var(--bg-main)]">
+              <div className="pt-0 pb-8 bg-[var(--bg-main)]">
                 <MobileRoadmap />
               </div>
             ) : (
