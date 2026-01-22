@@ -1,105 +1,113 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import DOTS from 'vanta/dist/vanta.dots.min';
+
+// Vanta needs to be loaded dynamically
+declare global {
+  interface Window {
+    VANTA?: {
+      DOTS: (config: any) => { destroy: () => void };
+    };
+  }
+}
 
 interface VantaBackgroundProps {
   theme: 'purple' | 'green' | 'blue';
   className?: string;
 }
 
-// Theme color mapping - using bright, visible colors
+// Theme color mapping
 const getThemeColors = (theme: 'purple' | 'green' | 'blue') => {
   switch (theme) {
     case 'green':
       return {
-        color: 0x10b981,
-        color2: 0x059669,
-        backgroundColor: 0x1a1a1a,
+        color: 0x10b981,  // Emerald 500
+        color2: 0x059669, // Emerald 600
+        backgroundColor: 0x0c0d10,
       };
     case 'blue':
       return {
-        color: 0x3498db,
-        color2: 0x2980b9,
-        backgroundColor: 0x1a1a1a,
+        color: 0x2563eb,  // Blue 600
+        color2: 0x1d4ed8, // Blue 700
+        backgroundColor: 0xf0f9ff, // Light blue bg
       };
     case 'purple':
     default:
       return {
-        color: 0x9b59b6,
-        color2: 0x8e44ad,
-        backgroundColor: 0x1a1a1a,
+        color: 0xa855f7,  // Purple 500
+        color2: 0x9333ea, // Purple 600
+        backgroundColor: 0x0c0d10,
       };
   }
 };
 
 export const VantaBackground: React.FC<VantaBackgroundProps> = ({ theme, className = '' }) => {
   const vantaRef = useRef<HTMLDivElement>(null);
-  const vantaEffect = useRef<any>(null);
+  const vantaEffect = useRef<{ destroy: () => void } | null>(null);
+  const [vantaLoaded, setVantaLoaded] = useState(false);
 
+  // Load Vanta script dynamically
   useEffect(() => {
-    if (!vantaRef.current) return;
+    if (window.VANTA) {
+      setVantaLoaded(true);
+      return;
+    }
 
-    // Safely cleanup previous effect before creating new one
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/vanta@0.5.24/dist/vanta.dots.min.js';
+    script.async = true;
+    script.onload = () => setVantaLoaded(true);
+    document.body.appendChild(script);
+
+    return () => {
+      // Cleanup script on unmount if needed
+    };
+  }, []);
+
+  // Initialize/update Vanta effect
+  useEffect(() => {
+    if (!vantaLoaded || !vantaRef.current || !window.VANTA) return;
+
+    // Destroy previous effect if exists
     if (vantaEffect.current) {
-      try {
-        vantaEffect.current.destroy();
-      } catch (e) {
-        // Ignore cleanup errors - expected in React 19 Strict Mode
-      }
-      vantaEffect.current = null;
+      vantaEffect.current.destroy();
     }
 
     const colors = getThemeColors(theme);
 
-    try {
-      // Initialize Vanta with THREE passed explicitly
-      vantaEffect.current = DOTS({
-        el: vantaRef.current,
-        THREE: THREE,
-        mouseControls: true,
-        touchControls: true,
-        gyroControls: false,
-        minHeight: 200.00,
-        minWidth: 200.00,
-        scale: 1.00,
-        scaleMobile: 1.00,
-        color: colors.color,
-        color2: colors.color2,
-        backgroundColor: colors.backgroundColor,
-        size: 2.5,
-        spacing: 25,
-        showLines: false,
-      });
-    } catch (error) {
-      console.warn('Failed to initialize Vanta:', error);
-    }
+    // Make THREE available globally for Vanta
+    (window as any).THREE = THREE;
 
-    // Cleanup on unmount - wrapped in try-catch for React 19 Strict Mode
+    vantaEffect.current = window.VANTA.DOTS({
+      el: vantaRef.current,
+      THREE: THREE,
+      mouseControls: true,
+      touchControls: true,
+      gyroControls: false,
+      minHeight: 200.00,
+      minWidth: 200.00,
+      scale: 1.00,
+      scaleMobile: 1.00,
+      color: colors.color,
+      color2: colors.color2,
+      backgroundColor: colors.backgroundColor,
+      size: 2.5,
+      spacing: 25,
+      showLines: false,
+    });
+
     return () => {
       if (vantaEffect.current) {
-        try {
-          vantaEffect.current.destroy();
-        } catch (e) {
-          // Ignore removeChild errors from React 19 double-mount cleanup
-        }
+        vantaEffect.current.destroy();
         vantaEffect.current = null;
       }
     };
-  }, [theme]);
+  }, [vantaLoaded, theme]);
 
   return (
     <div 
       ref={vantaRef} 
-      className={className}
-      style={{ 
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: '100%',
-        pointerEvents: 'none',
-        zIndex: -1,
-      }}
+      className={`absolute inset-0 -z-10 opacity-40 ${className}`}
+      style={{ pointerEvents: 'none' }}
     />
   );
 };

@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { DollarSign, Clock, Target } from 'lucide-react';
 import { formatCurrency, formatCurrencyShort } from '../utils/financials';
-import * as THREE from 'three';
-import DOTS from 'vanta/dist/vanta.dots.min';
+import { VantaBackground } from './VantaBackground';
 
 // Helper for slider background matching SettingsPanel
 const getBackgroundStyle = (value: number, min: number, max: number) => {
@@ -192,87 +191,28 @@ const ReverseGoalTool = () => {
         </div>
     );
 };
-
 interface ToolsDashboardProps {
     theme?: 'purple' | 'green' | 'blue';
 }
 
 export const ToolsDashboard: React.FC<ToolsDashboardProps> = ({ theme = 'purple' }) => {
-    const vantaRef = useRef<HTMLDivElement>(null);
-    const vantaEffect = useRef<any>(null);
-
-    useEffect(() => {
-        if (!vantaRef.current) return;
-
-        // Cleanup previous effect
-        if (vantaEffect.current) {
-            try {
-                vantaEffect.current.destroy();
-            } catch (e) {
-                // Ignore cleanup errors
-            }
-            vantaEffect.current = null;
-        }
-
-        try {
-            // Initialize Vanta DOTS inline with neutral colors
-            vantaEffect.current = DOTS({
-                el: vantaRef.current,
-                THREE: THREE,
-                mouseControls: true,
-                touchControls: true,
-                gyroControls: false,
-                minHeight: 200.00,
-                minWidth: 200.00,
-                scale: 1.00,
-                scaleMobile: 1.00,
-                color: 0x888888,
-                color2: 0x666666,
-                backgroundColor: 0x0,
-                size: 3,
-                spacing: 20,
-                showLines: false,
-            });
-        } catch (error) {
-            console.warn('Failed to initialize Vanta:', error);
-        }
-
-        return () => {
-            if (vantaEffect.current) {
-                try {
-                    vantaEffect.current.destroy();
-                } catch (e) {
-                    // Ignore cleanup errors
-                }
-                vantaEffect.current = null;
-            }
-        };
-    }, [theme]);
-
     return (
-        <section style={{ position: 'relative', minHeight: '600px' }} className="w-full animate-fade-in-up overflow-hidden">
-            {/* Vanta Dots Background - inline integration */}
-            <div 
-                ref={vantaRef}
-                style={{
-                    position: 'absolute',
-                    inset: 0,
-                    zIndex: 0,
-                }}
-            />
+        <div className="w-full animate-fade-in-up pb-12 relative min-h-screen">
+            {/* Vanta Dots Background */}
+            <VantaBackground theme={theme} />
             
-            <div className="text-center mb-20 pt-10" style={{ position: 'relative', zIndex: 1 }}>
+            <div className="text-center mb-20 pt-10 relative z-10">
                 <h2 className="text-5xl md:text-6xl font-bold text-[var(--text-main)] mb-6 tracking-tight">Financial Toolbox</h2>
                 <p className="text-[var(--text-muted)] max-w-3xl mx-auto text-xl font-light leading-relaxed">
                     Calculators to help you plan your future and understand the math behind your money.
                 </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 max-w-7xl mx-auto px-4 lg:px-0" style={{ position: 'relative', zIndex: 1 }}>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 max-w-7xl mx-auto px-4 lg:px-0 relative z-10">
                 <InflationTool />
                 <RuleOf72Tool />
                 <ReverseGoalTool />
             </div>
-        </section>
+        </div>
     );
 };
