@@ -236,7 +236,7 @@ function App() {
             </div>
           ) : viewMode === 'roadmap' ? (
             /* Roadmap now takes full control of positioning to center itself */
-            <div className="fixed inset-0 z-40 bg-[var(--bg-main)] pt-16 animate-fade-in-up">
+            <div className="fixed inset-0 z-40 pt-16 animate-fade-in-up">
                 <Roadmap />
             </div>
           ) : (
