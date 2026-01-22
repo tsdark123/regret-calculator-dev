@@ -197,8 +197,8 @@ interface ToolsDashboardProps {
 
 export const ToolsDashboard: React.FC<ToolsDashboardProps> = ({ theme = 'purple' }) => {
     return (
-        <div className="w-full animate-fade-in-up pb-12 relative min-h-screen">
-            {/* Vanta Dots Background */}
+        <section className="w-full animate-fade-in-up pb-12 min-h-screen overflow-hidden" style={{ position: 'relative' }}>
+            {/* Vanta Dots Background - must be first child */}
             <VantaBackground theme={theme} />
             
             <div className="text-center mb-20 pt-10 relative z-10">
@@ -213,6 +213,6 @@ export const ToolsDashboard: React.FC<ToolsDashboardProps> = ({ theme = 'purple'
                 <RuleOf72Tool />
                 <ReverseGoalTool />
             </div>
-        </div>
+        </section>
     );
 };
