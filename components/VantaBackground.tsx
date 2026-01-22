@@ -7,27 +7,27 @@ interface VantaBackgroundProps {
   className?: string;
 }
 
-// Theme color mapping
+// Theme color mapping - using bright, visible colors
 const getThemeColors = (theme: 'purple' | 'green' | 'blue') => {
   switch (theme) {
     case 'green':
       return {
         color: 0x10b981,
         color2: 0x059669,
-        backgroundColor: 0x0c0d10,
+        backgroundColor: 0x1a1a1a,
       };
     case 'blue':
       return {
-        color: 0x2563eb,
-        color2: 0x1d4ed8,
-        backgroundColor: 0xf0f9ff,
+        color: 0x3498db,
+        color2: 0x2980b9,
+        backgroundColor: 0x1a1a1a,
       };
     case 'purple':
     default:
       return {
-        color: 0xa855f7,
-        color2: 0x9333ea,
-        backgroundColor: 0x0c0d10,
+        color: 0x9b59b6,
+        color2: 0x8e44ad,
+        backgroundColor: 0x1a1a1a,
       };
   }
 };
