@@ -229,18 +229,17 @@ export const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ theme = 
                 cancelAnimationFrame(animationRef.current);
             }
         };
-    }, [initParticles]);
+    }, [initParticles, theme]);
 
     return (
         <canvas
             ref={canvasRef}
             style={{
                 position: 'fixed',
-                top: 0,
-                left: 0,
+                inset: 0,
                 width: '100vw',
                 height: '100vh',
-                zIndex: -1,
+                zIndex: 0,
                 pointerEvents: 'none',
             }}
         />
