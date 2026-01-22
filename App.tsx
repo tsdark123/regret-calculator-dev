@@ -11,6 +11,7 @@ import { AmbientBackground } from './components/AmbientBackground';
 import { FunFactGenerator } from './components/FunFactGenerator';
 import { ToolsDashboard } from './components/ToolsDashboard';
 import { Roadmap } from './components/Roadmap';
+import { MobileRoadmap } from './components/MobileRoadmap';
 import { LoadingScreen } from './components/LoadingScreen';
 import { Expense, Assumptions, CalculationResult, StockOption, Theme } from './types';
 import { calculateResults } from './utils/financials';
@@ -227,14 +228,21 @@ function App() {
       {/* Main Content Router */}
       <div className="flex-grow">
           {viewMode === 'tools' ? (
-            <div className="pt-24 px-4 pb-12 w-full max-w-[96rem] mx-auto animate-fade-in-up">
+            // Mobile: less padding, tighter layout
+            <div className="pt-4 md:pt-24 px-4 pb-12 w-full max-w-[96rem] mx-auto">
               <ToolsDashboard />
             </div>
           ) : viewMode === 'roadmap' ? (
-            /* Roadmap now takes full control of positioning to center itself */
-            <div className="fixed inset-0 z-40 bg-[var(--bg-main)] pt-16 animate-fade-in-up">
+            /* Roadmap: Use mobile-specific component on small screens */
+            isMobileView ? (
+              <div className="pt-4 pb-8 bg-[var(--bg-main)]">
+                <MobileRoadmap />
+              </div>
+            ) : (
+              <div className="fixed inset-0 z-40 bg-[var(--bg-main)] pt-16 animate-fade-in-up">
                 <Roadmap />
-            </div>
+              </div>
+            )
           ) : (
             /* VIEW: CALCULATOR (HERO + MAIN) */
             <>
@@ -244,7 +252,8 @@ function App() {
                     decisionCount={decisionCount} 
                 />
                 
-                <main className="px-4 py-8 md:px-8 w-full min-h-[600px] relative" ref={inputSectionRef}>
+                {/* Mobile: When on calculate tab, show calculator with transition */}
+                <main className={`px-4 py-4 md:py-8 md:px-8 w-full min-h-[400px] md:min-h-[600px] relative ${activeTab === 'calculate' ? 'animate-fade-in-up' : ''}`} ref={inputSectionRef}>
                     <AmbientBackground />
                     <div className="max-w-[96rem] mx-auto space-y-8 relative z-10">
                         
