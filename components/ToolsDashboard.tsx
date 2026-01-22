@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { DollarSign, Clock, Target } from 'lucide-react';
 import { formatCurrency, formatCurrencyShort } from '../utils/financials';
-import { VantaBackground } from './VantaBackground';
+import { ParticleBackground } from './ParticleBackground';
 
 // Helper for slider background matching SettingsPanel
 const getBackgroundStyle = (value: number, min: number, max: number) => {
@@ -198,8 +198,8 @@ interface ToolsDashboardProps {
 export const ToolsDashboard: React.FC<ToolsDashboardProps> = ({ theme = 'purple' }) => {
     return (
         <div className="w-full animate-fade-in-up pb-12 relative min-h-screen">
-            {/* Vanta Dots Background */}
-            <VantaBackground theme={theme} />
+            {/* Particle Background */}
+            <ParticleBackground theme={theme} />
             
             <div className="text-center mb-20 pt-10 relative z-10">
                 <h2 className="text-5xl md:text-6xl font-bold text-[var(--text-main)] mb-6 tracking-tight">Financial Toolbox</h2>
