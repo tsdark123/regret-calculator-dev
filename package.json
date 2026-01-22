@@ -1,5 +1,6 @@
 {
   "name": "the-compound-regret-calculator",
+  "build:dev": "vite build --mode development"
   "private": true,
   "version": "0.0.0",
   "type": "module",
