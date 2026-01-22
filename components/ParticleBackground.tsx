@@ -25,20 +25,20 @@ export const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ theme = 
                 return {
                     particle: 'rgba(34, 197, 94, 0.4)',
                     link: 'rgba(34, 197, 94, 0.25)',
-                    triangle: 'rgba(34, 197, 94, 0.03)',
+                    triangle: 'rgba(34, 197, 94, 0.02)',
                 };
             case 'blue':
                 return {
                     particle: 'rgba(59, 130, 246, 0.4)',
                     link: 'rgba(59, 130, 246, 0.25)',
-                    triangle: 'rgba(59, 130, 246, 0.03)',
+                    triangle: 'rgba(59, 130, 246, 0.02)',
                 };
             case 'purple':
             default:
                 return {
                     particle: 'rgba(155, 89, 182, 0.4)',
                     link: 'rgba(155, 89, 182, 0.25)',
-                    triangle: 'rgba(155, 89, 182, 0.03)',
+                    triangle: 'rgba(155, 89, 182, 0.02)',
                 };
         }
     };
@@ -136,7 +136,7 @@ export const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ theme = 
                                 ctx.lineTo(p2.x, p2.y);
                                 ctx.lineTo(p3.x, p3.y);
                                 ctx.closePath();
-                                ctx.fillStyle = colors.triangle.replace('0.03', (0.03 * avgOpacity).toFixed(3));
+                                ctx.fillStyle = colors.triangle.replace('0.02', (0.02 * avgOpacity).toFixed(3));
                                 ctx.fill();
                             }
                         }
