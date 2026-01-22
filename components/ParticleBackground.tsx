@@ -18,10 +18,32 @@ export const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ theme = 
     const mouseRef = useRef({ x: -1000, y: -1000 });
     const animationRef = useRef<number>();
 
-    // Premium purple color: #9b59b6 at 0.3 opacity
-    const particleColor = 'rgba(155, 89, 182, 0.3)';
-    const linkColor = 'rgba(155, 89, 182, 0.2)';
-    const triangleFillColor = 'rgba(155, 89, 182, 0.08)';
+    // Theme-aware colors
+    const getThemeColors = (theme: string) => {
+        switch (theme) {
+            case 'green':
+                return {
+                    particle: 'rgba(34, 197, 94, 0.4)',
+                    link: 'rgba(34, 197, 94, 0.25)',
+                    triangle: 'rgba(34, 197, 94, 0.1)',
+                };
+            case 'blue':
+                return {
+                    particle: 'rgba(59, 130, 246, 0.4)',
+                    link: 'rgba(59, 130, 246, 0.25)',
+                    triangle: 'rgba(59, 130, 246, 0.1)',
+                };
+            case 'purple':
+            default:
+                return {
+                    particle: 'rgba(155, 89, 182, 0.4)',
+                    link: 'rgba(155, 89, 182, 0.25)',
+                    triangle: 'rgba(155, 89, 182, 0.1)',
+                };
+        }
+    };
+
+    const colors = getThemeColors(theme);
 
     const initParticles = useCallback((width: number, height: number) => {
         const particleCount = Math.floor((width * height) / 18000);
@@ -114,7 +136,7 @@ export const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ theme = 
                                 ctx.lineTo(p2.x, p2.y);
                                 ctx.lineTo(p3.x, p3.y);
                                 ctx.closePath();
-                                ctx.fillStyle = triangleFillColor.replace('0.08', (0.08 * avgOpacity).toFixed(3));
+                                ctx.fillStyle = colors.triangle.replace('0.1', (0.1 * avgOpacity).toFixed(3));
                                 ctx.fill();
                             }
                         }
@@ -124,7 +146,7 @@ export const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ theme = 
                         ctx.beginPath();
                         ctx.moveTo(p1.x, p1.y);
                         ctx.lineTo(p2.x, p2.y);
-                        ctx.strokeStyle = linkColor.replace('0.2', opacity.toFixed(2));
+                        ctx.strokeStyle = colors.link.replace('0.25', opacity.toFixed(2));
                         ctx.lineWidth = 1;
                         ctx.stroke();
                     }
@@ -140,7 +162,7 @@ export const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ theme = 
                     ctx.beginPath();
                     ctx.moveTo(p1.x, p1.y);
                     ctx.lineTo(mouseX, mouseY);
-                    ctx.strokeStyle = linkColor.replace('0.2', grabOpacity.toFixed(2));
+                    ctx.strokeStyle = colors.link.replace('0.25', grabOpacity.toFixed(2));
                     ctx.lineWidth = 1;
                     ctx.stroke();
                 }
@@ -187,9 +209,9 @@ export const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ theme = 
                 // Draw circle particle with glow
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                ctx.fillStyle = particleColor;
+                ctx.fillStyle = colors.particle;
                 ctx.shadowBlur = 6;
-                ctx.shadowColor = particleColor;
+                ctx.shadowColor = colors.particle;
                 ctx.fill();
                 ctx.shadowBlur = 0;
             }

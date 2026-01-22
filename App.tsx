@@ -197,7 +197,7 @@ function App() {
   };
 
   return (
-    <div className={`flex flex-col theme-${theme} min-h-screen font-sans selection:bg-[var(--primary)] selection:text-white relative text-[var(--text-main)] transition-colors duration-500 pb-20 md:pb-0`} style={{ background: 'transparent' }}>
+    <div className={`flex flex-col theme-${theme} min-h-screen font-sans selection:bg-[var(--primary)] selection:text-white relative bg-[var(--bg-main)] text-[var(--text-main)] transition-colors duration-500 pb-20 md:pb-0`}>
       {/* Full-Viewport Particle Background - Outside all containers */}
       <ParticleBackground theme={theme} />
       
