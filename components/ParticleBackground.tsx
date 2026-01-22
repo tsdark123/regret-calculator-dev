@@ -7,6 +7,8 @@ interface Particle {
     vy: number;
     size: number;
     opacity: number;
+    rotation: number;
+    rotationSpeed: number;
 }
 
 interface ParticleBackgroundProps {
@@ -19,29 +21,31 @@ export const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ theme = 
     const mouseRef = useRef({ x: -1000, y: -1000 });
     const animationRef = useRef<number>();
 
-    const getColors = useCallback(() => {
+    const getColor = useCallback(() => {
         switch (theme) {
             case 'green':
-                return { particle: 'rgba(74, 222, 128, 0.5)', link: 'rgba(74, 222, 128, 0.12)' };
+                return 'rgba(74, 222, 128, 0.4)';
             case 'blue':
-                return { particle: 'rgba(96, 165, 250, 0.5)', link: 'rgba(96, 165, 250, 0.12)' };
+                return 'rgba(96, 165, 250, 0.4)';
             default:
-                return { particle: 'rgba(168, 85, 247, 0.5)', link: 'rgba(168, 85, 247, 0.12)' };
+                return 'rgba(168, 85, 247, 0.4)';
         }
     }, [theme]);
 
     const initParticles = useCallback((width: number, height: number) => {
-        const particleCount = Math.floor((width * height) / 15000);
+        const particleCount = Math.floor((width * height) / 12000);
         const particles: Particle[] = [];
         
         for (let i = 0; i < particleCount; i++) {
             particles.push({
                 x: Math.random() * width,
                 y: Math.random() * height,
-                vx: (Math.random() - 0.5) * 0.5,
-                vy: (Math.random() - 0.5) * 0.5,
-                size: Math.random() * 2 + 1,
-                opacity: Math.random() * 0.4 + 0.3,
+                vx: (Math.random() - 0.5) * 0.3,
+                vy: (Math.random() - 0.5) * 0.3,
+                size: Math.random() * 8 + 4,
+                opacity: Math.random() * 0.3 + 0.2,
+                rotation: Math.random() * Math.PI * 2,
+                rotationSpeed: (Math.random() - 0.5) * 0.02,
             });
         }
         
@@ -56,12 +60,9 @@ export const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ theme = 
         if (!ctx) return;
 
         const resizeCanvas = () => {
-            const parent = canvas.parentElement;
-            if (parent) {
-                canvas.width = parent.offsetWidth;
-                canvas.height = parent.offsetHeight;
-                initParticles(canvas.width, canvas.height);
-            }
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            initParticles(canvas.width, canvas.height);
         };
 
         resizeCanvas();
@@ -82,17 +83,33 @@ export const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ theme = 
         canvas.addEventListener('mousemove', handleMouseMove);
         canvas.addEventListener('mouseleave', handleMouseLeave);
 
-        const colors = getColors();
-        const linkDistance = 120;
-        const repulseDistance = 150;
-        const repulseStrength = 8;
-        const spazDistance = 80;
+        const particleColor = getColor();
+        const repulseDistance = 200;
+        const repulseStrength = 12;
+        const spazDistance = 100;
+
+        // Helper to draw a triangle
+        const drawTriangle = (x: number, y: number, size: number, rotation: number, opacity: number) => {
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.rotate(rotation);
+            ctx.beginPath();
+            ctx.moveTo(0, -size);
+            ctx.lineTo(size * 0.866, size * 0.5);
+            ctx.lineTo(-size * 0.866, size * 0.5);
+            ctx.closePath();
+            ctx.fillStyle = particleColor.replace('0.4', opacity.toFixed(2));
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = particleColor;
+            ctx.fill();
+            ctx.shadowBlur = 0;
+            ctx.restore();
+        };
 
         const animate = () => {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             const particles = particlesRef.current;
 
-            // Update and draw particles
             for (let i = 0; i < particles.length; i++) {
                 const p = particles[i];
 
@@ -104,28 +121,32 @@ export const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ theme = 
                 if (dist < spazDistance && dist > 0) {
                     // Intense "spaz out" effect when very close
                     const spazIntensity = (spazDistance - dist) / spazDistance;
-                    p.vx += (Math.random() - 0.5) * spazIntensity * 4;
-                    p.vy += (Math.random() - 0.5) * spazIntensity * 4;
-                    // Also push away
-                    p.vx += (dx / dist) * spazIntensity * repulseStrength * 0.1;
-                    p.vy += (dy / dist) * spazIntensity * repulseStrength * 0.1;
-                    // Temporarily increase opacity for visual feedback
-                    p.opacity = Math.min(1, p.opacity + spazIntensity * 0.3);
+                    p.vx += (Math.random() - 0.5) * spazIntensity * 6;
+                    p.vy += (Math.random() - 0.5) * spazIntensity * 6;
+                    p.rotationSpeed += (Math.random() - 0.5) * spazIntensity * 0.3;
+                    // Push away
+                    p.vx += (dx / dist) * spazIntensity * repulseStrength * 0.15;
+                    p.vy += (dy / dist) * spazIntensity * repulseStrength * 0.15;
+                    // Increase opacity
+                    p.opacity = Math.min(0.8, p.opacity + spazIntensity * 0.4);
                 } else if (dist < repulseDistance && dist > 0) {
                     // Gentler repulsion in outer ring
                     const force = (repulseDistance - dist) / repulseDistance;
-                    p.vx += (dx / dist) * force * repulseStrength * 0.03;
-                    p.vy += (dy / dist) * force * repulseStrength * 0.03;
+                    p.vx += (dx / dist) * force * repulseStrength * 0.04;
+                    p.vy += (dy / dist) * force * repulseStrength * 0.04;
                 }
 
                 // Fade opacity back to normal
-                p.opacity += (0.5 - p.opacity) * 0.02;
+                p.opacity += (0.35 - p.opacity) * 0.02;
+                // Slow down rotation
+                p.rotationSpeed *= 0.98;
 
                 // Apply velocity with damping
-                p.vx *= 0.96;
-                p.vy *= 0.96;
+                p.vx *= 0.95;
+                p.vy *= 0.95;
                 p.x += p.vx;
                 p.y += p.vy;
+                p.rotation += p.rotationSpeed;
 
                 // Bounce off edges
                 if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
@@ -135,32 +156,8 @@ export const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ theme = 
                 p.x = Math.max(0, Math.min(canvas.width, p.x));
                 p.y = Math.max(0, Math.min(canvas.height, p.y));
 
-                // Draw particle with glow
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                ctx.fillStyle = colors.particle;
-                ctx.shadowBlur = 8;
-                ctx.shadowColor = colors.particle;
-                ctx.fill();
-                ctx.shadowBlur = 0;
-
-                // Draw links to nearby particles
-                for (let j = i + 1; j < particles.length; j++) {
-                    const p2 = particles[j];
-                    const ldx = p.x - p2.x;
-                    const ldy = p.y - p2.y;
-                    const ldist = Math.sqrt(ldx * ldx + ldy * ldy);
-
-                    if (ldist < linkDistance) {
-                        const opacity = (1 - ldist / linkDistance) * 0.5;
-                        ctx.beginPath();
-                        ctx.moveTo(p.x, p.y);
-                        ctx.lineTo(p2.x, p2.y);
-                        ctx.strokeStyle = colors.link.replace('0.12', opacity.toFixed(2));
-                        ctx.lineWidth = 1;
-                        ctx.stroke();
-                    }
-                }
+                // Draw triangle
+                drawTriangle(p.x, p.y, p.size, p.rotation, p.opacity);
             }
 
             animationRef.current = requestAnimationFrame(animate);
@@ -176,13 +173,13 @@ export const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ theme = 
                 cancelAnimationFrame(animationRef.current);
             }
         };
-    }, [getColors, initParticles]);
+    }, [getColor, initParticles]);
 
     return (
         <canvas
             ref={canvasRef}
             style={{
-                position: 'absolute',
+                position: 'fixed',
                 inset: 0,
                 zIndex: 0,
                 pointerEvents: 'auto',
