@@ -90,8 +90,12 @@ export const VantaBackground: React.FC<VantaBackgroundProps> = ({ theme, classNa
   return (
     <div 
       ref={vantaRef} 
-      className={`absolute inset-0 -z-10 opacity-40 ${className}`}
-      style={{ pointerEvents: 'none' }}
+      className={`absolute inset-0 ${className}`}
+      style={{ 
+        pointerEvents: 'none',
+        zIndex: -1,
+        opacity: 0.6
+      }}
     />
   );
 };
