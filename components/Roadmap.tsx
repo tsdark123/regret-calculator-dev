@@ -17,7 +17,7 @@ import {
   Info
 } from 'lucide-react';
 
-// --- Custom Styles for Subtle Bounce ---
+// --- Custom Styles for Subtle Bounce & Typing Dots ---
 const CustomStyles = () => (
   <style>{`
     @keyframes sub-bounce {
@@ -33,6 +33,19 @@ const CustomStyles = () => (
     .animate-sub-bounce {
       animation: sub-bounce 1.5s infinite;
     }
+    @keyframes typing-dot {
+      0%, 60%, 100% {
+        transform: translateY(0);
+        opacity: 0.4;
+      }
+      30% {
+        transform: translateY(-4px);
+        opacity: 1;
+      }
+    }
+    .typing-dot-1 { animation: typing-dot 1.4s ease-in-out infinite; }
+    .typing-dot-2 { animation: typing-dot 1.4s ease-in-out 0.2s infinite; }
+    .typing-dot-3 { animation: typing-dot 1.4s ease-in-out 0.4s infinite; }
   `}</style>
 );
 
@@ -184,15 +197,30 @@ const ReleaseNotesDetails = () => (
 export const Roadmap: React.FC = () => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [showReleaseNotes, setShowReleaseNotes] = useState(false);
+  const [isTyping, setIsTyping] = useState(true);
 
-  // Lock body scroll
+  // Lock body scroll & typing indicator logic
   useEffect(() => {
     document.body.style.overflow = 'hidden';
     if (scrollContainerRef.current) {
         scrollContainerRef.current.scrollTop = 0;
     }
+
+    // Initial typing indicator for 4 seconds
+    const initialTimeout = setTimeout(() => {
+      setIsTyping(false);
+    }, 4000);
+
+    // Flicker every 30 seconds
+    const flickerInterval = setInterval(() => {
+      setIsTyping(true);
+      setTimeout(() => setIsTyping(false), 3000);
+    }, 30000);
+
     return () => {
       document.body.style.overflow = 'unset';
+      clearTimeout(initialTimeout);
+      clearInterval(flickerInterval);
     };
   }, []);
 
@@ -345,6 +373,18 @@ export const Roadmap: React.FC = () => {
 
         {/* Floating Input Area (Scaled Up) - Added shrink-0 */}
         <div className="p-5 bg-[var(--bg-card)] border-t border-[var(--border)] z-20 shrink-0">
+            {/* Typing Indicator */}
+            <div 
+              className={`flex items-center gap-2 mb-3 ml-2 transition-all duration-300 ${isTyping ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+            >
+              <span className="text-xs font-medium text-[var(--primary)]">Regret Calculator is typing</span>
+              <div className="flex items-center gap-0.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[var(--primary)] typing-dot-1"></span>
+                <span className="w-1.5 h-1.5 rounded-full bg-[var(--primary)] typing-dot-2"></span>
+                <span className="w-1.5 h-1.5 rounded-full bg-[var(--primary)] typing-dot-3"></span>
+              </div>
+            </div>
+
             <div className="bg-[var(--bg-input)] border border-[var(--border)] rounded-full h-16 px-3 flex items-center shadow-inner transition-colors focus-within:border-[var(--primary)]">
                 
                 <button className="w-12 h-12 rounded-full flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--primary)] hover:bg-[var(--bg-hover)] transition-all ml-1">
