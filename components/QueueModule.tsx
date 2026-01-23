@@ -229,7 +229,7 @@ export const QueueModule: React.FC<QueueModuleProps> = ({
 
               <div className="flex items-end pb-1.5">
                  <div className="w-11 h-6 bg-[var(--bg-input)] rounded-full relative border border-[var(--border)]">
-                    <div className="absolute top-[4px] left-[4px] bg-[var(--text-muted)] rounded-full h-5 w-5 opacity-50"></div>
+                    <div className="absolute top-[2px] left-[2px] bg-[var(--text-muted)] rounded-full h-5 w-5 opacity-50"></div>
                  </div>
               </div>
               
