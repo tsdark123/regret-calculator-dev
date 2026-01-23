@@ -9,11 +9,8 @@ import {
   Lock, 
   CheckCheck,
   Zap,
-  BarChart3,
-  Code2,
-  Cpu,
-  Rocket,
   ChevronDown,
+  ChevronLeft,
   Info
 } from 'lucide-react';
 
@@ -131,9 +128,47 @@ const DatePill = ({ date }: { date: string }) => (
     </div>
 );
 
+// --- Version Data ---
+
+const versionData = {
+  'v1.2.0': {
+    version: 'v1.2.0',
+    title: 'Genesis Update - V1.2.0',
+    description: 'Enhanced experience with theming, exports, and persistence.',
+    details: [
+      'Dynamic Theme Engine (Matrix & Ocean)',
+      'PNG Export System (Regret Reports)',
+      'Opportunity Cost Methodology Modal',
+      'Interactive Theme Persistence (Local Storage)',
+      'Enhanced UI Tooltips & Dynamic Arrows',
+    ],
+  },
+  'v1.0.0': {
+    version: 'v1.0.0',
+    title: 'Genesis Update',
+    description: 'The foundation is set. Calculate compound regret with real-time market data.',
+    details: [
+      'V1 Regret Algorithm',
+      'Market Data Hooks',
+      'Compound Engine',
+      'Latency -40%',
+      'Dark Mode',
+    ],
+  },
+};
+
+type VersionKey = keyof typeof versionData;
+
 // --- Rich Media Cards ---
 
-const UpdateCard1_0 = ({ onClick }: { onClick: () => void }) => (
+interface UpdateCardProps {
+  versionInfo: typeof versionData['v1.0.0'];
+  onViewNotes: () => void;
+  onNavigateBack?: () => void;
+  showBackArrow: boolean;
+}
+
+const UpdateCard = ({ versionInfo, onViewNotes, onNavigateBack, showBackArrow }: UpdateCardProps) => (
     <div className="bg-[var(--bg-input)] rounded-[24px] border border-[var(--border)] overflow-hidden w-full sm:w-[360px] h-[380px] select-none shadow-lg flex-none flex flex-col hover:border-[var(--primary)] transition-all duration-300 group relative z-10">
         {/* Top Image Area */}
         <div className="h-52 bg-gradient-to-br from-indigo-900 to-[var(--bg-card)] relative flex items-center justify-center overflow-hidden">
@@ -143,21 +178,31 @@ const UpdateCard1_0 = ({ onClick }: { onClick: () => void }) => (
             </div>
             {/* Version Tag */}
             <div className="absolute top-5 right-5 px-2.5 py-1.5 bg-black/50 backdrop-blur-sm rounded-lg text-xs font-mono text-white border border-white/10">
-                v1.0.0
+                {versionInfo.version}
             </div>
         </div>
         
         {/* Content Body */}
         <div className="p-6 bg-[var(--bg-card)] flex-1 flex flex-col justify-between">
             <div>
-                <h4 className="font-bold text-[var(--text-main)] text-xl mb-2">Genesis Update</h4>
+                <h4 className="font-bold text-[var(--text-main)] text-xl mb-2 flex items-center gap-2">
+                    {showBackArrow && (
+                        <button 
+                            onClick={onNavigateBack}
+                            className="p-1 -ml-1 hover:bg-[var(--bg-hover)] rounded-full transition-colors"
+                        >
+                            <ChevronLeft className="w-5 h-5 text-[var(--text-muted)] hover:text-[var(--primary)]" />
+                        </button>
+                    )}
+                    {versionInfo.title}
+                </h4>
                 <p className="text-sm text-[var(--text-muted)] leading-relaxed">
-                    The foundation is set. Calculate compound regret with real-time market data.
+                    {versionInfo.description}
                 </p>
             </div>
             
             <button 
-                onClick={onClick}
+                onClick={onViewNotes}
                 className="w-full mt-4 py-3 bg-[var(--bg-hover)] hover:bg-[var(--primary)] hover:text-white text-[var(--text-muted)] rounded-xl text-sm font-semibold transition-colors border border-[var(--border)] border-dashed hover:border-transparent flex items-center justify-center gap-2"
             >
                 View Release Notes <ArrowLeft className="w-4 h-4 rotate-180" />
@@ -166,20 +211,18 @@ const UpdateCard1_0 = ({ onClick }: { onClick: () => void }) => (
     </div>
 );
 
-const ReleaseNotesDetails = () => (
+interface ReleaseNotesDetailsProps {
+  details: string[];
+}
+
+const ReleaseNotesDetails = ({ details }: ReleaseNotesDetailsProps) => (
     <div className="w-full h-full bg-[var(--bg-input)]/95 backdrop-blur-md rounded-[24px] border border-[var(--border)] p-6 shadow-xl flex flex-col">
         <h4 className="font-bold text-[var(--text-main)] mb-5 flex items-center gap-2 text-base border-b border-[var(--border)] pb-3">
             <Info className="w-5 h-5 text-[var(--primary)]" />
             Details
         </h4>
         <ul className="space-y-4">
-            {[
-                "V1 Regret Algorithm",
-                "Market Data Hooks",
-                "Compound Engine",
-                "Latency -40%",
-                "Dark Mode"
-            ].map((item, i) => (
+            {details.map((item, i) => (
                 <li key={i} className="flex items-center gap-3 text-sm text-[var(--text-muted)]">
                     <CheckCheck className="w-4 h-4 text-[var(--primary)] flex-none" />
                     {item}
@@ -198,6 +241,7 @@ export const Roadmap: React.FC = () => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [showReleaseNotes, setShowReleaseNotes] = useState(false);
   const [isTyping, setIsTyping] = useState(true);
+  const [currentVersion, setCurrentVersion] = useState<VersionKey>('v1.2.0');
 
   // Lock body scroll & typing indicator logic
   useEffect(() => {
@@ -311,7 +355,12 @@ export const Roadmap: React.FC = () => {
                 content={
                     <div className="flex items-start">
                         {/* Primary Update Card - Scaled */}
-                        <UpdateCard1_0 onClick={() => setShowReleaseNotes(!showReleaseNotes)} />
+                        <UpdateCard 
+                            versionInfo={versionData[currentVersion]}
+                            onViewNotes={() => setShowReleaseNotes(!showReleaseNotes)}
+                            onNavigateBack={() => setCurrentVersion('v1.0.0')}
+                            showBackArrow={currentVersion === 'v1.2.0'}
+                        />
                         
                         {/* Animated Details Panel - Scaled */}
                         <div 
@@ -322,7 +371,7 @@ export const Roadmap: React.FC = () => {
                         >
                             {/* Fixed width inner container to prevent squashing during transition */}
                             <div className="w-[300px] h-full">
-                                <ReleaseNotesDetails />
+                                <ReleaseNotesDetails details={versionData[currentVersion].details} />
                             </div>
                         </div>
                     </div>
