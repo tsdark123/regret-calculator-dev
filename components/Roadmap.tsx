@@ -11,6 +11,7 @@ import {
   Zap,
   ChevronDown,
   ChevronLeft,
+  ChevronRight,
   Info
 } from 'lucide-react';
 
@@ -165,10 +166,12 @@ interface UpdateCardProps {
   versionInfo: typeof versionData['v1.0.0'];
   onViewNotes: () => void;
   onNavigateBack?: () => void;
+  onNavigateForward?: () => void;
   showBackArrow: boolean;
+  showForwardArrow: boolean;
 }
 
-const UpdateCard = ({ versionInfo, onViewNotes, onNavigateBack, showBackArrow }: UpdateCardProps) => (
+const UpdateCard = ({ versionInfo, onViewNotes, onNavigateBack, onNavigateForward, showBackArrow, showForwardArrow }: UpdateCardProps) => (
     <div className="bg-[var(--bg-input)] rounded-[24px] border border-[var(--border)] overflow-hidden w-full sm:w-[360px] h-[380px] select-none shadow-lg flex-none flex flex-col hover:border-[var(--primary)] transition-all duration-300 group relative z-10">
         {/* Top Image Area */}
         <div className="h-52 bg-gradient-to-br from-indigo-900 to-[var(--bg-card)] relative flex items-center justify-center overflow-hidden">
@@ -195,6 +198,14 @@ const UpdateCard = ({ versionInfo, onViewNotes, onNavigateBack, showBackArrow }:
                         </button>
                     )}
                     {versionInfo.title}
+                    {showForwardArrow && (
+                        <button 
+                            onClick={onNavigateForward}
+                            className="p-1 hover:bg-[var(--bg-hover)] rounded-full transition-colors"
+                        >
+                            <ChevronRight className="w-5 h-5 text-[var(--text-muted)] hover:text-[var(--primary)]" />
+                        </button>
+                    )}
                 </h4>
                 <p className="text-sm text-[var(--text-muted)] leading-relaxed">
                     {versionInfo.description}
@@ -216,7 +227,7 @@ interface ReleaseNotesDetailsProps {
 }
 
 const ReleaseNotesDetails = ({ details }: ReleaseNotesDetailsProps) => (
-    <div className="w-full h-full bg-[var(--bg-input)]/95 backdrop-blur-md rounded-[24px] border border-[var(--border)] p-6 shadow-lg flex flex-col">
+    <div className="w-full h-full bg-[var(--bg-input)] rounded-[24px] border border-[var(--border)] p-6 shadow-lg flex flex-col">
         <h4 className="font-bold text-[var(--text-main)] mb-5 flex items-center gap-2 text-base border-b border-[var(--border)] pb-3">
             <Info className="w-5 h-5 text-[var(--primary)]" />
             Details
@@ -359,7 +370,9 @@ export const Roadmap: React.FC = () => {
                             versionInfo={versionData[currentVersion]}
                             onViewNotes={() => setShowReleaseNotes(!showReleaseNotes)}
                             onNavigateBack={() => setCurrentVersion('v1.0.0')}
+                            onNavigateForward={() => setCurrentVersion('v1.2.0')}
                             showBackArrow={currentVersion === 'v1.2.0'}
+                            showForwardArrow={currentVersion === 'v1.0.0'}
                         />
                         
                         {/* Animated Details Panel - Scaled */}
