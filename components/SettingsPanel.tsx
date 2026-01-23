@@ -123,8 +123,8 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
         </div>
 
         {/* Bottom Section */}
-        <div className="mt-auto pt-6">
-            <div className="h-px bg-[var(--border)] mb-5" />
+        <div className="mt-auto pt-4">
+            <div className="h-px bg-[var(--border)] mb-3" />
 
             {/* Inflation Toggle */}
             <div className="flex items-center justify-between">
