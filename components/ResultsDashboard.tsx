@@ -156,18 +156,23 @@ const ShareSection = ({ results, horizon, dashboardRef }: { results: Calculation
         
         setExporting(true);
         try {
-            // Temporarily add padding for breathing room in export
-            const originalPadding = dashboardRef.current.style.padding;
-            dashboardRef.current.style.padding = '32px';
+            // Clone the element to avoid visual changes
+            const clone = dashboardRef.current.cloneNode(true) as HTMLDivElement;
+            clone.style.padding = '32px';
+            clone.style.position = 'absolute';
+            clone.style.left = '-9999px';
+            clone.style.top = '0';
+            clone.style.width = `${dashboardRef.current.offsetWidth}px`;
+            document.body.appendChild(clone);
             
-            const dataUrl = await toPng(dashboardRef.current, {
+            const dataUrl = await toPng(clone, {
                 cacheBust: true,
                 backgroundColor: '#0a0a0f',
                 pixelRatio: 2,
             });
             
-            // Restore original padding
-            dashboardRef.current.style.padding = originalPadding;
+            // Remove the clone
+            document.body.removeChild(clone);
             
             const link = document.createElement('a');
             link.download = 'my-regret-report.png';
@@ -175,10 +180,6 @@ const ShareSection = ({ results, horizon, dashboardRef }: { results: Calculation
             link.click();
         } catch (error) {
             console.error('Failed to export:', error);
-            // Restore padding on error too
-            if (dashboardRef.current) {
-                dashboardRef.current.style.padding = '';
-            }
         } finally {
             setExporting(false);
         }
