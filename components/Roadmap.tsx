@@ -186,7 +186,7 @@ const UpdateCard = ({ versionInfo, onViewNotes, onNavigateBack, onNavigateForwar
         </div>
         
         {/* Content Body */}
-        <div className="p-6 bg-[var(--bg-card)] flex-1 flex flex-col justify-between">
+        <div className="p-6 bg-[var(--bg-card)] flex-1 flex flex-col justify-between rounded-b-[24px]">
             <div>
                 <h4 className="font-bold text-[var(--text-main)] text-xl mb-2 flex items-center gap-2">
                     {showBackArrow && (
