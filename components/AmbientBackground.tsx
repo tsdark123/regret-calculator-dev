@@ -29,30 +29,30 @@ const MiniChart3 = ({ className }: { className?: string }) => (
 
 export const AmbientBackground: React.FC = () => {
   return (
-    <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none -z-0">
+    <div className="fixed inset-0 w-full h-full overflow-hidden pointer-events-none z-0">
       {/* 1. Floating Chart Top Left - Increased Opacity */}
-      <div className="absolute top-[5%] left-[-2%] md:left-[5%] w-64 h-32 text-purple-500/10 rotate-[-8deg] animate-float">
+      <div className="fixed top-[25%] left-[-2%] md:left-[5%] w-64 h-32 text-purple-500/10 rotate-[-8deg] animate-float">
          <MiniChart1 className="w-full h-full" />
       </div>
 
-      {/* 2. Floating Bar Chart Right - Increased Opacity */}
-      <div className="absolute top-[25%] right-[-5%] md:right-[2%] w-48 h-48 text-slate-700/20 rotate-[12deg] animate-float-delayed">
+      {/* 2. Floating Bar Chart Right - Anchored to viewport */}
+      <div className="fixed top-[35%] right-[-5%] md:right-[2%] w-48 h-48 text-slate-700/20 rotate-[12deg] animate-float-delayed">
          <MiniChart2 className="w-full h-full" />
       </div>
       
       {/* 3. Center Abstract Donut */}
-      <div className="absolute top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 w-96 h-96 text-purple-900/5 blur-3xl rounded-full bg-purple-900/10" />
-      <div className="absolute bottom-[20%] left-[10%] w-24 h-24 text-slate-600/10 animate-spin-slow duration-[20s]">
+      <div className="fixed top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 w-96 h-96 text-purple-900/5 blur-3xl rounded-full bg-purple-900/10" />
+      <div className="fixed bottom-[20%] left-[10%] w-24 h-24 text-slate-600/10 animate-spin-slow duration-[20s]">
           <MiniChart3 className="w-full h-full" />
       </div>
 
       {/* 4. Deep Background Ticker Lines */}
-      <div className="absolute top-[15%] left-0 w-full h-px bg-gradient-to-r from-transparent via-purple-500/10 to-transparent" />
-      <div className="absolute top-[85%] left-0 w-full h-px bg-gradient-to-r from-transparent via-white/5 to-transparent" />
+      <div className="fixed top-[15%] left-0 w-full h-px bg-gradient-to-r from-transparent via-purple-500/10 to-transparent" />
+      <div className="fixed top-[85%] left-0 w-full h-px bg-gradient-to-r from-transparent via-white/5 to-transparent" />
       
       {/* 5. Random Particles */}
-      <div className="absolute top-[20%] left-[40%] w-1.5 h-1.5 bg-purple-500 rounded-full blur-[1px] opacity-30 animate-pulse" />
-      <div className="absolute bottom-[40%] right-[30%] w-2 h-2 bg-blue-500 rounded-full blur-[2px] opacity-20 animate-float" />
+      <div className="fixed top-[30%] left-[40%] w-1.5 h-1.5 bg-purple-500 rounded-full blur-[1px] opacity-30 animate-pulse" />
+      <div className="fixed bottom-[40%] right-[30%] w-2 h-2 bg-blue-500 rounded-full blur-[2px] opacity-20 animate-float" />
     </div>
   );
 };
