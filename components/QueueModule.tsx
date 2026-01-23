@@ -244,7 +244,7 @@ export const QueueModule: React.FC<QueueModuleProps> = ({
         <div className="flex flex-col sm:flex-row gap-3 mt-auto pt-2">
           <button
             onClick={onAdd}
-            className="flex-none sm:w-40 py-3.5 md:py-3 border border-[var(--border)] bg-[var(--bg-input)] rounded-xl text-[var(--text-muted)] font-medium hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] transition-all flex items-center justify-center gap-2 text-xs min-h-[48px] active:scale-[0.98]"
+            className="flex-none sm:w-40 py-2.5 border border-[var(--border)] bg-[var(--bg-input)] rounded-xl text-[var(--text-muted)] font-medium hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] transition-all flex items-center justify-center gap-2 text-xs active:scale-[0.98]"
           >
             <Plus className="w-4 h-4" />
             Add another
@@ -252,7 +252,7 @@ export const QueueModule: React.FC<QueueModuleProps> = ({
           
           <button
             onClick={onAnalyze}
-            className="flex-1 py-3.5 md:py-3 bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-white rounded-xl font-bold shadow-lg shadow-[var(--primary)]/20 transition-all flex items-center justify-center gap-2 active:scale-[0.98] text-sm min-h-[52px]"
+            className="flex-1 py-2.5 bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-white rounded-xl font-bold shadow-lg shadow-[var(--primary)]/20 transition-all flex items-center justify-center gap-2 active:scale-[0.98] text-sm"
           >
             <Calculator className="w-4 h-4" />
             Analyze
