@@ -62,10 +62,15 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
           {/* Annual Return */}
           <div>
             <div className="flex justify-between items-center mb-3">
-              <label className="text-sm font-medium text-[var(--text-muted)] flex items-center gap-1.5 group cursor-help">
-                Expected Annual Return
-                <Info className="w-3.5 h-3.5 text-[var(--text-muted)] transition-colors group-hover:text-[var(--primary)]" />
-              </label>
+              <div className="flex items-center gap-1.5">
+                <span className="text-sm font-medium text-[var(--text-muted)]">Expected Annual Return</span>
+                <div className="group relative">
+                  <Info className="w-3.5 h-3.5 text-[var(--text-muted)] cursor-help" />
+                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-[var(--bg-card)] border border-[var(--border)] rounded text-xs text-[var(--text-main)] hidden group-hover:block z-10 shadow-xl">
+                    The average yearly growth rate you expect from your investments.
+                  </div>
+                </div>
+              </div>
               
               {/* Display Pill */}
               <div className="flex items-baseline gap-1 bg-[var(--bg-input)] rounded-xl border border-[var(--border)] px-3 py-1.5 min-w-[4.5rem] justify-center">
@@ -94,10 +99,15 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
           {/* Time Horizon */}
           <div>
             <div className="flex justify-between items-center mb-3">
-              <label className="text-sm font-medium text-[var(--text-muted)] flex items-center gap-1.5 group cursor-help">
-                Investing Years
-                <Info className="w-3.5 h-3.5 text-[var(--text-muted)] transition-colors group-hover:text-[var(--primary)]" />
-              </label>
+              <div className="flex items-center gap-1.5">
+                <span className="text-sm font-medium text-[var(--text-muted)]">Investing Years</span>
+                <div className="group relative">
+                  <Info className="w-3.5 h-3.5 text-[var(--text-muted)] cursor-help" />
+                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-[var(--bg-card)] border border-[var(--border)] rounded text-xs text-[var(--text-main)] hidden group-hover:block z-10 shadow-xl">
+                    How long you plan to keep your money invested before withdrawing.
+                  </div>
+                </div>
+              </div>
               
               {/* Display Pill */}
               <div className="flex items-baseline gap-1.5 bg-[var(--bg-input)] rounded-xl border border-[var(--border)] px-3 py-1.5 min-w-[5.5rem] justify-center">
