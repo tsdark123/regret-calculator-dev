@@ -176,7 +176,7 @@ export const QueueModule: React.FC<QueueModuleProps> = ({
                 </div>
 
                 {/* Want Toggle - inline with frequency on desktop */}
-                <div className="flex items-center md:mt-[22px]">
+                <div className="flex items-center md:mt-[18px]">
                   <label className="relative inline-flex items-center cursor-pointer group">
                     <input 
                       type="checkbox" 
