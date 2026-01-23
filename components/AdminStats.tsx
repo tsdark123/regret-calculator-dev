@@ -225,52 +225,52 @@ export const AdminStats: React.FC = () => {
     return new Intl.NumberFormat('en-US').format(num);
   };
 
-  // Loading state
+  // Loading state - hardcoded dark theme
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-[var(--bg-main)] flex items-center justify-center">
-        <div className="text-[var(--text-muted)] animate-pulse">Loading...</div>
+      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
+        <div className="text-gray-400 animate-pulse">Loading...</div>
       </div>
     );
   }
 
-  // Login form
+  // Login form - hardcoded dark theme
   if (!user) {
     return (
-      <div className="min-h-screen bg-[var(--bg-main)] flex items-center justify-center p-4">
+      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center p-4">
         <div className="w-full max-w-md">
-          <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-8 shadow-2xl">
+          <div className="bg-[#111111] border border-gray-800 rounded-xl p-8 shadow-2xl">
             <div className="flex items-center justify-center mb-6">
-              <div className="w-12 h-12 rounded-full bg-[var(--primary-20)] flex items-center justify-center">
-                <Lock className="w-6 h-6 text-[var(--primary)]" />
+              <div className="w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center">
+                <Lock className="w-6 h-6 text-purple-500" />
               </div>
             </div>
-            <h1 className="text-2xl font-bold text-center text-[var(--text-main)] mb-2">
+            <h1 className="text-2xl font-bold text-center text-gray-100 mb-2">
               Admin Portal
             </h1>
-            <p className="text-[var(--text-muted)] text-center mb-6 text-sm">
+            <p className="text-gray-400 text-center mb-6 text-sm">
               Enter your credentials to access analytics
             </p>
 
             <form onSubmit={handleLogin} className="space-y-4">
               <div>
-                <label className="block text-sm text-[var(--text-muted)] mb-1">Email</label>
+                <label className="block text-sm text-gray-400 mb-1">Email</label>
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-4 py-3 bg-[var(--bg-input)] border border-[var(--border)] rounded-lg text-[var(--text-main)] focus:outline-none focus:border-[var(--primary)] transition-colors"
+                  className="w-full px-4 py-3 bg-[#1a1a1a] border border-gray-800 rounded-lg text-gray-100 focus:outline-none focus:border-purple-500 transition-colors"
                   placeholder="admin@example.com"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm text-[var(--text-muted)] mb-1">Password</label>
+                <label className="block text-sm text-gray-400 mb-1">Password</label>
                 <input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-3 bg-[var(--bg-input)] border border-[var(--border)] rounded-lg text-[var(--text-main)] focus:outline-none focus:border-[var(--primary)] transition-colors"
+                  className="w-full px-4 py-3 bg-[#1a1a1a] border border-gray-800 rounded-lg text-gray-100 focus:outline-none focus:border-purple-500 transition-colors"
                   placeholder="••••••••"
                   required
                 />
@@ -285,7 +285,7 @@ export const AdminStats: React.FC = () => {
               <button
                 type="submit"
                 disabled={loginLoading}
-                className="w-full py-3 bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loginLoading ? 'Signing in...' : 'Sign In'}
               </button>
@@ -296,21 +296,21 @@ export const AdminStats: React.FC = () => {
     );
   }
 
-  // Dashboard
+  // Dashboard - hardcoded dark theme
   return (
-    <div className="min-h-screen bg-[var(--bg-main)] p-6">
+    <div className="min-h-screen bg-[#0a0a0a] p-6">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-3">
-            <div className="w-3 h-3 rounded-full bg-[var(--primary)] animate-pulse" />
-            <h1 className="text-2xl font-bold text-[var(--text-main)] tracking-tight">
+            <div className="w-3 h-3 rounded-full bg-purple-600 animate-pulse" />
+            <h1 className="text-2xl font-bold text-gray-100 tracking-tight">
               ADMIN ANALYTICS
             </h1>
           </div>
           <button
             onClick={handleLogout}
-            className="flex items-center gap-2 px-4 py-2 bg-[var(--bg-card)] border border-[var(--border)] rounded-lg text-[var(--text-muted)] hover:text-[var(--text-main)] hover:border-[var(--primary-50)] transition-all"
+            className="flex items-center gap-2 px-4 py-2 bg-[#111111] border border-gray-800 rounded-lg text-gray-400 hover:text-gray-100 hover:border-purple-500/50 transition-all"
           >
             <LogOut className="w-4 h-4" />
             Logout
@@ -320,14 +320,14 @@ export const AdminStats: React.FC = () => {
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           {/* Live Users */}
-          <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-6 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-20 h-20 bg-[var(--primary-20)] rounded-full blur-2xl -mr-10 -mt-10" />
+          <div className="bg-[#111111] border border-gray-800 rounded-xl p-6 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-20 h-20 bg-purple-500/20 rounded-full blur-2xl -mr-10 -mt-10" />
             <div className="flex items-center gap-3 mb-2">
-              <Users className="w-5 h-5 text-[var(--primary)]" />
-              <span className="text-sm text-[var(--text-muted)] uppercase tracking-wider">Live Users</span>
+              <Users className="w-5 h-5 text-purple-500" />
+              <span className="text-sm text-gray-400 uppercase tracking-wider">Live Users</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-4xl font-bold text-[var(--text-main)] font-mono">
+              <span className="text-4xl font-bold text-gray-100 font-mono">
                 {formatNumber(liveUsers)}
               </span>
               <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
@@ -335,23 +335,23 @@ export const AdminStats: React.FC = () => {
           </div>
 
           {/* Total Visits */}
-          <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-6">
+          <div className="bg-[#111111] border border-gray-800 rounded-xl p-6">
             <div className="flex items-center gap-3 mb-2">
-              <Eye className="w-5 h-5 text-[var(--primary)]" />
-              <span className="text-sm text-[var(--text-muted)] uppercase tracking-wider">Page Views</span>
+              <Eye className="w-5 h-5 text-purple-500" />
+              <span className="text-sm text-gray-400 uppercase tracking-wider">Page Views</span>
             </div>
-            <span className="text-4xl font-bold text-[var(--text-main)] font-mono">
+            <span className="text-4xl font-bold text-gray-100 font-mono">
               {formatNumber(totalVisits)}
             </span>
           </div>
 
           {/* Decisions Analyzed */}
-          <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-6">
+          <div className="bg-[#111111] border border-gray-800 rounded-xl p-6">
             <div className="flex items-center gap-3 mb-2">
-              <BarChart3 className="w-5 h-5 text-[var(--primary)]" />
-              <span className="text-sm text-[var(--text-muted)] uppercase tracking-wider">Decisions</span>
+              <BarChart3 className="w-5 h-5 text-purple-500" />
+              <span className="text-sm text-gray-400 uppercase tracking-wider">Decisions</span>
             </div>
-            <span className="text-4xl font-bold text-[var(--text-main)] font-mono">
+            <span className="text-4xl font-bold text-gray-100 font-mono">
               {formatNumber(totalDecisions)}
             </span>
           </div>
@@ -384,29 +384,29 @@ export const AdminStats: React.FC = () => {
         </div>
 
         {/* Top Cities */}
-        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-6">
+        <div className="bg-[#111111] border border-gray-800 rounded-xl p-6">
           <div className="flex items-center gap-3 mb-4">
-            <MapPin className="w-5 h-5 text-[var(--primary)]" />
-            <span className="text-sm text-[var(--text-muted)] uppercase tracking-wider">Top Cities</span>
+            <MapPin className="w-5 h-5 text-purple-500" />
+            <span className="text-sm text-gray-400 uppercase tracking-wider">Top Cities</span>
           </div>
           <div className="space-y-3">
             {topCities.length === 0 ? (
-              <div className="text-[var(--text-muted)] italic text-sm">No city data yet...</div>
+              <div className="text-gray-400 italic text-sm">No city data yet...</div>
             ) : (
               topCities.map((city, index) => (
                 <div key={city.city} className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <span className="text-[var(--text-muted)] text-sm w-6">{index + 1}.</span>
-                    <span className="text-[var(--text-main)]">{city.city}</span>
+                    <span className="text-gray-400 text-sm w-6">{index + 1}.</span>
+                    <span className="text-gray-100">{city.city}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <div 
-                      className="h-2 bg-[var(--primary-50)] rounded-full"
+                      className="h-2 bg-purple-500/50 rounded-full"
                       style={{ 
                         width: `${Math.max(20, (city.count / (topCities[0]?.count || 1)) * 100)}px` 
                       }}
                     />
-                    <span className="text-[var(--text-muted)] text-sm font-mono w-12 text-right">
+                    <span className="text-gray-400 text-sm font-mono w-12 text-right">
                       {formatNumber(city.count)}
                     </span>
                   </div>
@@ -417,7 +417,7 @@ export const AdminStats: React.FC = () => {
         </div>
 
         {/* Footer */}
-        <div className="mt-6 text-center text-[var(--text-muted)] text-xs">
+        <div className="mt-6 text-center text-gray-400 text-xs">
           Last updated: {lastUpdated.toLocaleTimeString()}
         </div>
       </div>
