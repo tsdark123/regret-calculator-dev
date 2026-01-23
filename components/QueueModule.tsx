@@ -184,7 +184,7 @@ export const QueueModule: React.FC<QueueModuleProps> = ({
                       onChange={(e) => onUpdate(expense.id, 'isWant', e.target.checked)}
                       className="sr-only peer" 
                     />
-                    <div className="w-11 h-6 bg-[var(--bg-input)] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-[var(--text-muted)] after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--bg-input)] peer-checked:after:bg-[var(--primary)] transition-colors border border-[var(--border)]"></div>
+                    <div className="w-11 h-6 bg-[var(--bg-input)] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-[var(--text-muted)] after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--bg-input)] peer-checked:after:bg-[var(--primary)] transition-colors border border-[var(--border)]"></div>
                     <span className="ml-2 text-xs text-[var(--text-muted)] font-medium uppercase tracking-wider group-hover:text-[var(--text-main)] transition-colors">{expense.isWant ? 'WANT' : 'NEED'}</span>
                   </label>
                 </div>
