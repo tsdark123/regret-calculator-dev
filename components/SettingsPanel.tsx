@@ -145,7 +145,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                     onChange={(e) => onChange('inflationAdjusted', e.target.checked)}
                     className="sr-only peer" 
                     />
-                    <div className="w-11 h-6 bg-[var(--bg-input)] border border-[var(--border)] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-[var(--text-muted)] after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--bg-input)] peer-checked:border-[var(--primary)] peer-checked:after:bg-[var(--primary)]"></div>
+                    <div className="w-11 h-6 bg-[var(--bg-input)] border border-[var(--border)] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-[var(--text-muted)] after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--bg-input)] peer-checked:after:bg-[var(--primary)] transition-colors"></div>
                 </label>
             </div>
             
