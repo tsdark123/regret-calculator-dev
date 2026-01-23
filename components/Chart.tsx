@@ -60,6 +60,12 @@ export const ResultsChart: React.FC<ChartProps> = ({ data, theme }) => {
 
   const primaryColor = getThemeColor(theme);
 
+  // Calculate dynamic YAxis width based on max value
+  const maxValue = Math.max(...data.map(d => d.value));
+  const maxFormattedLabel = formatCurrencyShort(maxValue);
+  // Estimate width: ~9px per character + 8px padding
+  const yAxisWidth = Math.max(50, maxFormattedLabel.length * 9 + 8);
+
   return (
     <div className="w-full h-[280px] md:h-[320px]">
       <ResponsiveContainer width="100%" height="100%">
@@ -93,7 +99,7 @@ export const ResultsChart: React.FC<ChartProps> = ({ data, theme }) => {
             tickFormatter={(val) => formatCurrencyShort(val)}
             tickLine={false}
             axisLine={false}
-            width={50}
+            width={yAxisWidth}
           />
           <Tooltip content={<CustomTooltip theme={theme} />} cursor={{ stroke: primaryColor, strokeDasharray: '4 4', strokeWidth: 1 }} />
           
