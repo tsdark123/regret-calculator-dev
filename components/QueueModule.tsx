@@ -176,7 +176,7 @@ export const QueueModule: React.FC<QueueModuleProps> = ({
                 </div>
 
                 {/* Want Toggle - inline with frequency on desktop */}
-                <div className="flex items-center">
+                <div className="flex items-center md:mt-5">
                   <label className="relative inline-flex items-center cursor-pointer group">
                     <input 
                       type="checkbox" 
@@ -192,7 +192,7 @@ export const QueueModule: React.FC<QueueModuleProps> = ({
                 {/* Delete button - inline on desktop */}
                 <button
                   onClick={() => onRemove(expense.id)}
-                  className="p-2 text-[var(--text-muted)] hover:text-red-400 transition-colors rounded-xl hover:bg-red-900/10 flex items-center justify-center active:scale-95"
+                  className="p-2 text-[var(--text-muted)] hover:text-red-400 transition-colors rounded-xl hover:bg-red-900/10 flex items-center justify-center active:scale-95 md:mt-5"
                   title="Remove decision"
                 >
                   <Trash2 className="w-4 h-4" />
@@ -227,13 +227,13 @@ export const QueueModule: React.FC<QueueModuleProps> = ({
                 </div>
               </div>
 
-              <div className="flex items-end pb-1.5">
+              <div className="flex items-center mt-5">
                  <div className="w-11 h-6 bg-[var(--bg-input)] rounded-full relative border border-[var(--border)]">
-                    <div className="absolute top-[1px] left-[1px] bg-[var(--text-muted)] rounded-full h-5 w-5 opacity-50"></div>
+                    <div className="absolute top-[2px] left-[2px] bg-[var(--text-muted)] rounded-full h-5 w-5 opacity-50"></div>
                  </div>
               </div>
               
-              <div className="p-2 mb-1 text-[var(--text-muted)] rounded-lg">
+              <div className="p-2 mt-5 text-[var(--text-muted)] rounded-lg">
                 <Trash2 className="w-4 h-4" />
               </div>
             </div>
