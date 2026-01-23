@@ -143,7 +143,7 @@ export const QueueModule: React.FC<QueueModuleProps> = ({
               className="group flex flex-col gap-3 p-4 md:p-3 rounded-xl md:rounded-2xl bg-[var(--bg-hover)] border border-[var(--border)] hover:border-[var(--primary)] transition-all duration-200"
             >
               {/* Mobile: Stack vertically, Desktop: Single row with all elements */}
-              <div className="flex flex-col md:flex-row md:items-center gap-3">
+              <div className="flex flex-col md:flex-row md:items-end gap-3">
                 {/* Expense Name */}
                 <div className="flex-1 w-full">
                   <label className="block text-[10px] font-semibold text-[var(--text-muted)] mb-1.5 ml-1 uppercase tracking-wider">Expense Name</label>
@@ -175,8 +175,8 @@ export const QueueModule: React.FC<QueueModuleProps> = ({
                   />
                 </div>
 
-                {/* Want Toggle - inline with frequency on desktop */}
-                <div className="flex items-center">
+                {/* Want Toggle - aligned with input boxes */}
+                <div className="flex items-center h-[46px]">
                   <label className="relative inline-flex items-center cursor-pointer group">
                     <input 
                       type="checkbox" 
@@ -189,10 +189,10 @@ export const QueueModule: React.FC<QueueModuleProps> = ({
                   </label>
                 </div>
 
-                {/* Delete button - inline on desktop */}
+                {/* Delete button - aligned with input boxes */}
                 <button
                   onClick={() => onRemove(expense.id)}
-                  className="p-2 text-[var(--text-muted)] hover:text-red-400 transition-colors rounded-xl hover:bg-red-900/10 flex items-center justify-center active:scale-95"
+                  className="p-2 h-[46px] text-[var(--text-muted)] hover:text-red-400 transition-colors rounded-xl hover:bg-red-900/10 flex items-center justify-center active:scale-95"
                   title="Remove decision"
                 >
                   <Trash2 className="w-4 h-4" />
@@ -203,7 +203,7 @@ export const QueueModule: React.FC<QueueModuleProps> = ({
 
           {/* GHOST ROWS: Visual placeholders to fill space, hidden on mobile */}
           {ghostRows.map((_, idx) => (
-            <div key={`ghost-${idx}`} className="hidden md:flex flex-row items-center gap-3 p-3 rounded-2xl border border-dashed border-[var(--border)] opacity-40 select-none pointer-events-none">
+            <div key={`ghost-${idx}`} className="hidden md:flex flex-row items-end gap-3 p-3 rounded-2xl border border-dashed border-[var(--border)] opacity-40 select-none pointer-events-none">
                <div className="flex-1">
                 <label className="block text-[10px] font-semibold text-[var(--text-muted)] mb-1 ml-1 uppercase tracking-wider">Expense Name</label>
                 <div className="w-full bg-[var(--bg-input)] text-[var(--text-muted)] px-4 py-3 rounded-xl border border-[var(--border)] text-sm font-medium italic">
