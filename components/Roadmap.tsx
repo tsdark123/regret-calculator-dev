@@ -206,16 +206,16 @@ export const Roadmap: React.FC = () => {
         scrollContainerRef.current.scrollTop = 0;
     }
 
-    // Initial typing indicator for 4 seconds
+    // Initial typing indicator for 5 seconds
     const initialTimeout = setTimeout(() => {
       setIsTyping(false);
-    }, 4000);
+    }, 5000);
 
-    // Flicker every 30 seconds
+    // Flicker every 12 seconds
     const flickerInterval = setInterval(() => {
       setIsTyping(true);
-      setTimeout(() => setIsTyping(false), 3000);
-    }, 30000);
+      setTimeout(() => setIsTyping(false), 5000);
+    }, 12000);
 
     return () => {
       document.body.style.overflow = 'unset';
