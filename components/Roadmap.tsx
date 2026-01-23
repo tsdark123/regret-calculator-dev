@@ -172,7 +172,7 @@ interface UpdateCardProps {
 }
 
 const UpdateCard = ({ versionInfo, onViewNotes, onNavigateBack, onNavigateForward, showBackArrow, showForwardArrow }: UpdateCardProps) => (
-    <div className="bg-[var(--bg-input)] rounded-[24px] border border-[var(--border)] overflow-hidden w-full sm:w-[360px] h-[380px] select-none shadow-lg flex-none flex flex-col hover:border-[var(--primary)] transition-all duration-300 group relative z-10">
+    <div className="bg-card rounded-3xl border border-border overflow-hidden w-full sm:w-[360px] h-[380px] select-none shadow-lg flex-none flex flex-col hover:border-primary transition-all duration-300 group relative z-10">
         {/* Top Image Area */}
         <div className="h-52 bg-gradient-to-br from-indigo-900 to-[var(--bg-card)] relative flex items-center justify-center overflow-hidden">
             <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_50%_120%,var(--primary),transparent)]"></div>
@@ -186,7 +186,7 @@ const UpdateCard = ({ versionInfo, onViewNotes, onNavigateBack, onNavigateForwar
         </div>
         
         {/* Content Body */}
-        <div className="p-6 bg-[var(--bg-card)] flex-1 flex flex-col justify-between rounded-b-[24px]">
+        <div className="p-6 bg-card flex-1 flex flex-col justify-between rounded-b-3xl">
             <div>
                 <h4 className="font-bold text-[var(--text-main)] text-xl mb-2 flex items-center gap-2">
                     {showBackArrow && (
@@ -227,7 +227,7 @@ interface ReleaseNotesDetailsProps {
 }
 
 const ReleaseNotesDetails = ({ details }: ReleaseNotesDetailsProps) => (
-    <div className="w-full h-full bg-[var(--bg-input)] rounded-[24px] border border-[var(--border)] p-6 shadow-lg flex flex-col overflow-hidden">
+    <div className="w-full h-full bg-card rounded-3xl border border-border p-6 shadow-lg flex flex-col overflow-hidden">
         <h4 className="font-bold text-[var(--text-main)] mb-5 flex items-center gap-2 text-base border-b border-[var(--border)] pb-3">
             <Info className="w-5 h-5 text-[var(--primary)]" />
             Details
