@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { CalculationResult, StockOption, Assumptions, Theme } from '../types';
 import { formatCurrency, formatCurrencyShort } from '../utils/financials';
 import { ResultsChart } from './Chart';
-import { RefreshCcw, TrendingUp, TrendingDown, DollarSign, Lightbulb, Pencil, Share2, Copy, Check, Clock, ShoppingBag, Info } from 'lucide-react';
+import { RefreshCcw, TrendingUp, TrendingDown, DollarSign, Lightbulb, Pencil, Share2, Copy, Check, Clock, ShoppingBag, Info, Download } from 'lucide-react';
+import { toPng } from 'html-to-image';
 
 interface ResultsDashboardProps {
   results: CalculationResult;
@@ -136,8 +137,9 @@ const TimeCostSection = ({ totalInvested }: { totalInvested: number }) => {
     );
 };
 
-const ShareSection = ({ results, horizon }: { results: CalculationResult, horizon: number }) => {
+const ShareSection = ({ results, horizon, dashboardRef }: { results: CalculationResult, horizon: number, dashboardRef: React.RefObject<HTMLDivElement> }) => {
     const [copied, setCopied] = useState(false);
+    const [exporting, setExporting] = useState(false);
 
     const shareText = `I could have had ${formatCurrencyShort(results.potentialValueUnlocked)} by investing my ${results.expenseSummary} money! Calculate your regret with the Compound Regret Calculator:`;
     const link = "calculated-growth.vercel.app";
@@ -149,6 +151,28 @@ const ShareSection = ({ results, horizon }: { results: CalculationResult, horizo
         setTimeout(() => setCopied(false), 2000);
     };
 
+    const handleExport = async () => {
+        if (!dashboardRef.current) return;
+        
+        setExporting(true);
+        try {
+            const dataUrl = await toPng(dashboardRef.current, {
+                cacheBust: true,
+                backgroundColor: '#0a0a0f',
+                pixelRatio: 2,
+            });
+            
+            const link = document.createElement('a');
+            link.download = 'my-regret-report.png';
+            link.href = dataUrl;
+            link.click();
+        } catch (error) {
+            console.error('Failed to export:', error);
+        } finally {
+            setExporting(false);
+        }
+    };
+
     return (
         <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl p-5 h-fit flex-none">
             <h3 className="text-sm font-bold text-[var(--text-main)] mb-2 flex items-center gap-2">
@@ -158,27 +182,49 @@ const ShareSection = ({ results, horizon }: { results: CalculationResult, horizo
                 Help friends realize the true cost of their habits.
             </p>
             
-            <div className="flex flex-col md:flex-row gap-3">
-                <div className="flex-1 bg-[var(--bg-input)] border border-[var(--border)] rounded-xl p-3 flex items-center group cursor-pointer hover:border-[var(--primary)] transition-colors h-12" onClick={handleCopy}>
-                    <div className="text-xs text-[var(--text-muted)] font-mono leading-tight overflow-hidden text-ellipsis whitespace-nowrap md:whitespace-normal line-clamp-2 w-full">
-                        <span className="text-[var(--primary)]">"</span>{shareText}<span className="text-[var(--primary)]">"</span>
-                    </div>
-                </div>
-
+            <div className="flex flex-col gap-3">
+                {/* Export Button */}
                 <button 
-                    onClick={handleCopy}
-                    className={`flex-none flex items-center justify-center gap-2 px-6 h-12 rounded-xl font-bold text-xs transition-all shadow-lg min-w-[120px] ${copied ? 'bg-green-500/10 text-green-400 border border-green-500/20' : 'bg-[var(--bg-hover)] hover:bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-main)] hover:text-[var(--primary)]'}`}
+                    onClick={handleExport}
+                    disabled={exporting}
+                    className="flex items-center justify-center gap-2 w-full px-6 h-12 rounded-xl font-bold text-xs transition-all shadow-lg bg-[var(--primary)] hover:opacity-90 text-white disabled:opacity-50"
                 >
-                    {copied ? (
+                    {exporting ? (
                         <>
-                            <Check className="w-3.5 h-3.5" /> Copied
+                            <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                            Generating...
                         </>
                     ) : (
                         <>
-                            <Copy className="w-3.5 h-3.5" /> Copy
+                            <Download className="w-3.5 h-3.5" />
+                            Export My Regret Report
                         </>
                     )}
                 </button>
+
+                {/* Share text + Copy button row */}
+                <div className="flex flex-col md:flex-row gap-3">
+                    <div className="flex-1 bg-[var(--bg-input)] border border-[var(--border)] rounded-xl p-3 flex items-center group cursor-pointer hover:border-[var(--primary)] transition-colors h-12" onClick={handleCopy}>
+                        <div className="text-xs text-[var(--text-muted)] font-mono leading-tight overflow-hidden text-ellipsis whitespace-nowrap md:whitespace-normal line-clamp-2 w-full">
+                            <span className="text-[var(--primary)]">"</span>{shareText}<span className="text-[var(--primary)]">"</span>
+                        </div>
+                    </div>
+
+                    <button 
+                        onClick={handleCopy}
+                        className={`flex-none flex items-center justify-center gap-2 px-6 h-12 rounded-xl font-bold text-xs transition-all shadow-lg min-w-[120px] ${copied ? 'bg-green-500/10 text-green-400 border border-green-500/20' : 'bg-[var(--bg-hover)] hover:bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-main)] hover:text-[var(--primary)]'}`}
+                    >
+                        {copied ? (
+                            <>
+                                <Check className="w-3.5 h-3.5" /> Copied
+                            </>
+                        ) : (
+                            <>
+                                <Copy className="w-3.5 h-3.5" /> Copy
+                            </>
+                        )}
+                    </button>
+                </div>
             </div>
         </div>
     );
@@ -234,11 +280,12 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({
   selectedStock,
   theme,
 }) => {
+  const dashboardRef = useRef<HTMLDivElement>(null);
   const comparisonName = selectedStock ? selectedStock.name : "the market";
   const comparisonColor = selectedStock ? selectedStock.color.replace('bg-', 'text-') : 'text-[var(--primary)]';
 
   return (
-    <div className="w-full pb-12">
+    <div ref={dashboardRef} className="w-full pb-12">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-8 gap-4 border-b border-[var(--border)] pb-6">
         <div>
            <h2 className="text-3xl font-bold text-[var(--text-main)] mb-2">Your Results</h2>
@@ -360,7 +407,7 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({
          {/* Right Column: Stacks and fills height */}
          <div className="flex flex-col gap-4 h-full">
             <MethodologySection assumptions={assumptions} monthlyContribution={results.totalMonthlyContribution} />
-            <ShareSection results={results} horizon={horizon} />
+            <ShareSection results={results} horizon={horizon} dashboardRef={dashboardRef} />
          </div>
       </div>
 
