@@ -264,7 +264,7 @@ function App() {
                     <div className="max-w-[96rem] mx-auto space-y-8 relative z-10">
                         
                         {viewMode === 'input' && (
-                            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch animate-fade-in-up">
+                            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start animate-fade-in-up">
                                 {/* Left Block: Inputs */}
                                 <div className="lg:col-span-7 xl:col-span-8">
                                     <QueueModule
