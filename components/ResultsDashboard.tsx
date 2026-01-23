@@ -156,27 +156,36 @@ const ShareSection = ({ results, horizon, dashboardRef }: { results: Calculation
         
         setExporting(true);
         try {
-            // Clone the element to avoid visual changes
-            const clone = dashboardRef.current.cloneNode(true) as HTMLDivElement;
-            clone.style.padding = '32px';
-            clone.style.position = 'absolute';
-            clone.style.left = '-9999px';
-            clone.style.top = '0';
-            clone.style.width = `${dashboardRef.current.offsetWidth}px`;
-            document.body.appendChild(clone);
-            
-            const dataUrl = await toPng(clone, {
+            // Capture the original element
+            const dataUrl = await toPng(dashboardRef.current, {
                 cacheBust: true,
                 backgroundColor: '#0a0a0f',
                 pixelRatio: 2,
             });
             
-            // Remove the clone
-            document.body.removeChild(clone);
+            // Add padding by drawing onto a larger canvas
+            const padding = 64; // 32px * 2 for retina
+            const img = new Image();
+            img.src = dataUrl;
+            
+            await new Promise((resolve) => { img.onload = resolve; });
+            
+            const canvas = document.createElement('canvas');
+            canvas.width = img.width + padding * 2;
+            canvas.height = img.height + padding * 2;
+            
+            const ctx = canvas.getContext('2d');
+            if (ctx) {
+                ctx.fillStyle = '#0a0a0f';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(img, padding, padding);
+            }
+            
+            const paddedDataUrl = canvas.toDataURL('image/png');
             
             const link = document.createElement('a');
             link.download = 'my-regret-report.png';
-            link.href = dataUrl;
+            link.href = paddedDataUrl;
             link.click();
         } catch (error) {
             console.error('Failed to export:', error);
