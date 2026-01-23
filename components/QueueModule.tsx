@@ -152,7 +152,7 @@ export const QueueModule: React.FC<QueueModuleProps> = ({
                     value={expense.name}
                     onChange={(e) => onUpdate(expense.id, 'name', e.target.value)}
                     placeholder="e.g. Netflix"
-                    className="w-full bg-[var(--bg-input)] text-[var(--text-main)] px-4 py-3 md:py-3 rounded-xl border border-[var(--border)] focus:border-[var(--primary)] focus:outline-none transition-colors placeholder:text-[var(--text-muted)] placeholder:opacity-50 text-sm font-medium min-h-[48px]"
+                    className="w-full bg-[var(--bg-input)] text-[var(--text-main)] px-4 py-3 rounded-xl border border-[var(--border)] focus:border-[var(--primary)] focus:outline-none transition-colors placeholder:text-[var(--text-muted)] placeholder:opacity-50 text-sm font-medium"
                   />
                 </div>
 
