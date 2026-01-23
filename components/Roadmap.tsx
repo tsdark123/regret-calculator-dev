@@ -216,7 +216,7 @@ interface ReleaseNotesDetailsProps {
 }
 
 const ReleaseNotesDetails = ({ details }: ReleaseNotesDetailsProps) => (
-    <div className="w-full h-full bg-[var(--bg-input)]/95 backdrop-blur-md rounded-[24px] border border-[var(--border)] p-6 shadow-xl flex flex-col">
+    <div className="w-full h-full bg-[var(--bg-input)]/95 backdrop-blur-md rounded-[24px] border border-[var(--border)] p-6 shadow-lg flex flex-col">
         <h4 className="font-bold text-[var(--text-main)] mb-5 flex items-center gap-2 text-base border-b border-[var(--border)] pb-3">
             <Info className="w-5 h-5 text-[var(--primary)]" />
             Details
