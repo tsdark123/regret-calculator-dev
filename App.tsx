@@ -13,6 +13,8 @@ import { Roadmap } from './components/Roadmap';
 import { LoadingScreen } from './components/LoadingScreen';
 import { ParticleBackground } from './components/ParticleBackground';
 import { MobileMaintenance } from './components/MobileMaintenance';
+import { AdminStats } from './components/AdminStats';
+import { AnalyticsTracker } from './components/AnalyticsTracker';
 import { Expense, Assumptions, CalculationResult, StockOption, Theme } from './types';
 import { calculateResults } from './utils/financials';
 import { getStoredTheme, saveTheme } from './utils/theme';
@@ -22,12 +24,30 @@ declare global {
   interface Window {
     setGlobalDecisionCount?: React.Dispatch<React.SetStateAction<number>>;
     incrementCounter?: () => void;
+    logActivityEvent?: (data: { city: string; regretAmount: number; expenseName: string }) => void;
+    userCity?: string;
+    firebaseDB?: any;
+    firebaseAuth?: any;
+    firebaseRef?: any;
+    firebaseOnValue?: any;
+    firebaseRunTransaction?: any;
+    firebasePush?: any;
+    firebaseSet?: any;
+    firebaseRemove?: any;
+    firebaseOnDisconnect?: any;
+    firebaseQuery?: any;
+    firebaseLimitToLast?: any;
+    firebaseOrderByChild?: any;
+    firebaseSignIn?: any;
+    firebaseSignOut?: any;
+    firebaseOnAuthStateChanged?: any;
   }
 }
 
 type NavTab = 'home' | 'calculate' | 'tools' | 'roadmap';
 
-function App() {
+// Main calculator app component
+function MainApp() {
   const [theme, setTheme] = useState<Theme>(() => getStoredTheme());
   const [expenses, setExpenses] = useState<Expense[]>([
     { id: '1', name: 'Subscription', amount: 15, frequency: 'Monthly', isWant: true },
@@ -179,6 +199,17 @@ function App() {
         setResultsKey(prev => prev + 1);
         setIsLoading(false);
         setViewMode('results');
+        
+        // 2. Log activity event with city, regret amount, and first expense name
+        if (typeof window.logActivityEvent === 'function') {
+          const firstExpenseName = expenses[0]?.name || 'Expense';
+          window.logActivityEvent({
+            city: window.userCity || 'Unknown',
+            regretAmount: calculated.potentialValueUnlocked,
+            expenseName: firstExpenseName
+          });
+        }
+        
         if (inputSectionRef.current) {
             inputSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
@@ -218,99 +249,120 @@ function App() {
   }
 
   return (
-    <div className={`flex flex-col theme-${theme} min-h-screen font-sans selection:bg-[var(--primary)] selection:text-white relative bg-[var(--bg-main)] text-[var(--text-main)] transition-colors duration-500`}>
-      {/* Full-Viewport Particle Background - Outside all containers */}
-      <ParticleBackground theme={theme} />
-      
-      {/* Desktop Navbar */}
-      <Navbar 
-        activeTab={activeTab} 
-        onNavigate={handleNavigate} 
-        currentTheme={theme}
-        onThemeChange={setTheme}
-      />
-      
-      {isLoading && <LoadingScreen />}
+    <>
+      <AnalyticsTracker />
+      <div className={`flex flex-col theme-${theme} min-h-screen font-sans selection:bg-[var(--primary)] selection:text-white relative bg-[var(--bg-main)] text-[var(--text-main)] transition-colors duration-500`}>
+        {/* Full-Viewport Particle Background - Outside all containers */}
+        <ParticleBackground theme={theme} />
+        
+        {/* Desktop Navbar */}
+        <Navbar 
+          activeTab={activeTab} 
+          onNavigate={handleNavigate} 
+          currentTheme={theme}
+          onThemeChange={setTheme}
+        />
+        
+        {isLoading && <LoadingScreen />}
 
-      <StockSelector 
-        isOpen={isStockModalOpen} 
-        onClose={() => setIsStockModalOpen(false)} 
-        onSelect={handleStockSelect}
-        currentStockSymbol={assumptions.selectedStock?.symbol}
-      />
+        <StockSelector 
+          isOpen={isStockModalOpen} 
+          onClose={() => setIsStockModalOpen(false)} 
+          onSelect={handleStockSelect}
+          currentStockSymbol={assumptions.selectedStock?.symbol}
+        />
 
-      {/* Main Content Router */}
-      <div className="flex-grow">
-          {viewMode === 'tools' ? (
-            <div className="pt-24 px-4 pb-12 w-full max-w-[96rem] mx-auto animate-fade-in-up">
-              <ToolsDashboard theme={theme} />
-            </div>
-          ) : viewMode === 'roadmap' ? (
-            /* Roadmap now takes full control of positioning to center itself */
-            <div className="fixed inset-0 z-40 pt-16 animate-fade-in-up">
-                <Roadmap />
-            </div>
-          ) : (
-            /* VIEW: CALCULATOR (HERO + MAIN) */
-            <>
-                <Hero 
-                    onStart={handleStart} 
-                    onLoadPreset={handleLoadPreset} 
-                    decisionCount={decisionCount} 
-                />
-                
-                <main className="px-4 py-8 md:px-8 w-full min-h-[600px] relative" ref={inputSectionRef}>
-                    <AmbientBackground />
-                    <div className="max-w-[96rem] mx-auto space-y-8 relative z-10">
-                        
-                        {viewMode === 'input' && (
-                            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch animate-fade-in-up">
-                                {/* Left Block: Inputs */}
-                                <div className="lg:col-span-7 xl:col-span-8">
-                                    <QueueModule
-                                        expenses={expenses}
-                                        onAdd={addExpense}
-                                        onRemove={removeExpense}
-                                        onUpdate={updateExpense}
-                                        onAnalyze={handleAnalyze}
-                                    />
-                                </div>
-                                
-                                {/* Right Block: Assumptions + Fun Fact */}
-                                <div className="lg:col-span-5 xl:col-span-4 flex flex-col gap-6">
-                                    <div className="flex-1">
-                                        <SettingsPanel 
-                                            assumptions={assumptions} 
-                                            onChange={updateAssumptions} 
-                                            onOpenStockSelector={() => setIsStockModalOpen(true)}
-                                        />
-                                    </div>
-                                    <FunFactGenerator />
-                                </div>
-                            </div>
-                        )}
+        {/* Main Content Router */}
+        <div className="flex-grow">
+            {viewMode === 'tools' ? (
+              <div className="pt-24 px-4 pb-12 w-full max-w-[96rem] mx-auto animate-fade-in-up">
+                <ToolsDashboard theme={theme} />
+              </div>
+            ) : viewMode === 'roadmap' ? (
+              /* Roadmap now takes full control of positioning to center itself */
+              <div className="fixed inset-0 z-40 pt-16 animate-fade-in-up">
+                  <Roadmap />
+              </div>
+            ) : (
+              /* VIEW: CALCULATOR (HERO + MAIN) */
+              <>
+                  <Hero 
+                      onStart={handleStart} 
+                      onLoadPreset={handleLoadPreset} 
+                      decisionCount={decisionCount} 
+                  />
+                  
+                  <main className="px-4 py-8 md:px-8 w-full min-h-[600px] relative" ref={inputSectionRef}>
+                      <AmbientBackground />
+                      <div className="max-w-[96rem] mx-auto space-y-8 relative z-10">
+                          
+                          {viewMode === 'input' && (
+                              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch animate-fade-in-up">
+                                  {/* Left Block: Inputs */}
+                                  <div className="lg:col-span-7 xl:col-span-8">
+                                      <QueueModule
+                                          expenses={expenses}
+                                          onAdd={addExpense}
+                                          onRemove={removeExpense}
+                                          onUpdate={updateExpense}
+                                          onAnalyze={handleAnalyze}
+                                      />
+                                  </div>
+                                  
+                                  {/* Right Block: Assumptions + Fun Fact */}
+                                  <div className="lg:col-span-5 xl:col-span-4 flex flex-col gap-6">
+                                      <div className="flex-1">
+                                          <SettingsPanel 
+                                              assumptions={assumptions} 
+                                              onChange={updateAssumptions} 
+                                              onOpenStockSelector={() => setIsStockModalOpen(true)}
+                                          />
+                                      </div>
+                                      <FunFactGenerator />
+                                  </div>
+                              </div>
+                          )}
 
-                        {viewMode === 'results' && results && (
-                            <div key={resultsKey} className="w-full animate-fade-in-up">
-                                <ResultsDashboard 
-                                    results={results} 
-                                    assumptions={assumptions}
-                                    horizon={assumptions.timeHorizonYears}
-                                    onReset={handleReset}
-                                    onEdit={handleEditInputs}
-                                    selectedStock={assumptions.selectedStock}
-                                    theme={theme}
-                                />
-                            </div>
-                        )}
-                    </div>
-                </main>
-                <Footer />
-            </>
-          )}
+                          {viewMode === 'results' && results && (
+                              <div key={resultsKey} className="w-full animate-fade-in-up">
+                                  <ResultsDashboard 
+                                      results={results} 
+                                      assumptions={assumptions}
+                                      horizon={assumptions.timeHorizonYears}
+                                      onReset={handleReset}
+                                      onEdit={handleEditInputs}
+                                      selectedStock={assumptions.selectedStock}
+                                      theme={theme}
+                                  />
+                              </div>
+                          )}
+                      </div>
+                  </main>
+                  <Footer />
+              </>
+            )}
+        </div>
       </div>
-    </div>
+    </>
   );
+}
+
+// Root App component with path-based routing
+function App() {
+  const [currentPath, setCurrentPath] = useState(() => window.location.pathname);
+
+  useEffect(() => {
+    const handlePopState = () => setCurrentPath(window.location.pathname);
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  // Render admin page if on /admin-stats route
+  if (currentPath === '/admin-stats') {
+    return <AdminStats />;
+  }
+
+  return <MainApp />;
 }
 
 export default App;
