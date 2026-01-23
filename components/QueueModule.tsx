@@ -227,13 +227,13 @@ export const QueueModule: React.FC<QueueModuleProps> = ({
                 </div>
               </div>
 
-              <div className="flex items-center">
+              <div className="flex items-center h-[46px]">
                  <div className="w-11 h-6 bg-[var(--bg-input)] rounded-full relative border border-[var(--border)]">
                     <div className="absolute top-[2px] left-[2px] bg-[var(--text-muted)] rounded-full h-5 w-5 opacity-50"></div>
                  </div>
               </div>
               
-              <div className="p-2 text-[var(--text-muted)] rounded-lg">
+              <div className="p-2 h-[46px] flex items-center text-[var(--text-muted)] rounded-lg">
                 <Trash2 className="w-4 h-4" />
               </div>
             </div>
