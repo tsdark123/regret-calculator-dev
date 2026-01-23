@@ -46,14 +46,57 @@ const getValueSizeClass = (val: number) => {
 };
 
 const OpportunityCostSection = ({ totalValue }: { totalValue: number }) => {
-    const items = [
-        { name: 'iPhone 16 Pro', price: 999, icon: '📱' },
-        { name: 'Tesla Model 3', price: 38990, icon: '🚗' },
-        { name: 'Dream Vacation', price: 5000, icon: '✈️' },
-        { name: 'Rolex Submariner', price: 9150, icon: '⌚' },
-        { name: 'Private Island Rental', price: 15000, icon: '🏝️' },
-        { name: 'Porsche 911', price: 114000, icon: '🏎️' },
-    ];
+    const itemCatalog = {
+        low: [
+            { name: 'AirPods Max', price: 550, icon: '🎧' },
+            { name: 'PS5 Pro', price: 700, icon: '🎮' },
+            { name: 'iPhone 16 Pro', price: 999, icon: '📱' },
+            { name: 'M4 MacBook Pro', price: 1600, icon: '💻' },
+        ],
+        mid: [
+            { name: 'Dream Vacation', price: 5000, icon: '✈️' },
+            { name: 'Rolex Submariner', price: 9150, icon: '⌚' },
+            { name: 'Used Tesla Model 3', price: 25000, icon: '🚗' },
+        ],
+        high: [
+            { name: 'Porsche 911', price: 120000, icon: '🏎️' },
+            { name: 'Home Down Payment', price: 150000, icon: '🏠' },
+        ],
+        elite: [
+            { name: 'Private Island Rental', price: 15000, icon: '🏝️', suffix: '/night' },
+            { name: 'Early Retirement (5 Years)', price: 250000, icon: '🌴' },
+        ],
+    };
+
+    const selectDynamicItems = () => {
+        const allItems = Object.values(itemCatalog).flat();
+        const validItems: Array<{ name: string; price: number; icon: string; suffix?: string; count: number }> = [];
+
+        allItems.forEach(item => {
+            const count = Math.floor(totalValue / item.price);
+            if (count >= 1 && count <= 50) {
+                validItems.push({ ...item, count });
+            }
+        });
+
+        // Sort by count descending for impact, take top 4
+        validItems.sort((a, b) => b.count - a.count);
+        
+        // If we have fewer than 4 valid items, also include items with count > 50 but cap display
+        if (validItems.length < 4) {
+            allItems.forEach(item => {
+                const count = Math.floor(totalValue / item.price);
+                if (count > 50 && !validItems.find(v => v.name === item.name)) {
+                    validItems.push({ ...item, count: Math.min(count, 99) });
+                }
+            });
+            validItems.sort((a, b) => b.count - a.count);
+        }
+
+        return validItems.slice(0, 4);
+    };
+
+    const selectedItems = selectDynamicItems();
 
     return (
         <div className="bg-[var(--bg-card)] border border-[var(--border)] p-5 rounded-2xl h-full flex flex-col">
@@ -64,25 +107,24 @@ const OpportunityCostSection = ({ totalValue }: { totalValue: number }) => {
             <p className="text-xs text-[var(--text-muted)] mb-4">Instead of this result, you could have purchased:</p>
             
             <div className="space-y-3 flex-grow overflow-y-auto pr-1 custom-scrollbar min-h-[200px]">
-                {items.map(item => {
-                    const count = Math.floor(totalValue / item.price);
-                    if (count === 0) return null;
-                    return (
+                {selectedItems.length > 0 ? (
+                    selectedItems.map(item => (
                         <div key={item.name} className="flex items-center justify-between bg-[var(--bg-hover)] p-3 rounded-xl border border-[var(--border)]">
                             <div className="flex items-center gap-3">
                                 <span className="text-xl">{item.icon}</span>
                                 <div>
-                                    <div className="text-[var(--text-main)] text-xs font-bold">{item.name}</div>
+                                    <div className="text-[var(--text-main)] text-xs font-bold">
+                                        {item.name}{item.suffix ? ` ${item.suffix}` : ''}
+                                    </div>
                                     <div className="text-[10px] text-[var(--text-muted)]">{formatCurrency(item.price)} ea</div>
                                 </div>
                             </div>
                             <div className="bg-[var(--primary-20)] text-[var(--primary)] text-xs font-bold px-2 py-1 rounded-lg">
-                                x{count}
+                                x{item.count}
                             </div>
                         </div>
-                    );
-                })}
-                {totalValue < 999 && (
+                    ))
+                ) : (
                     <div className="text-center text-xs text-[var(--text-muted)] italic py-4">
                         Keep saving... not enough for cool toys yet.
                     </div>
