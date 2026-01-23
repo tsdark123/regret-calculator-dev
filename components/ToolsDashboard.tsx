@@ -137,7 +137,7 @@ const ReverseGoalTool = () => {
         : (goal * r) / (Math.pow(1 + r, n) - 1);
 
     return (
-        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-3xl p-8 shadow-2xl flex flex-col h-full hover:border-[var(--text-muted)] transition-colors">
+        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-3xl p-8 shadow-2xl flex flex-col h-full hover:border-[var(--text-muted)] transition-colors md:col-span-2 md:max-w-[calc(50%-1.25rem)] md:justify-self-center lg:col-span-1 lg:max-w-none">
             <div className="flex items-center gap-3 mb-3">
                 <Target className="w-6 h-6 text-[var(--text-muted)]" />
                 <h3 className="text-lg font-bold text-[var(--text-main)] uppercase tracking-wider">Reverse Goal</h3>
