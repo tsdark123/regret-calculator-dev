@@ -142,7 +142,7 @@ export const QueueModule: React.FC<QueueModuleProps> = ({
               key={expense.id}
               className="group flex flex-col gap-3 p-4 md:p-3 rounded-xl md:rounded-2xl bg-[var(--bg-hover)] border border-[var(--border)] hover:border-[var(--primary)] transition-all duration-200"
             >
-              {/* Mobile: Stack vertically, Desktop: Row */}
+              {/* Mobile: Stack vertically, Desktop: Single row with all elements */}
               <div className="flex flex-col md:flex-row md:items-end gap-3">
                 {/* Expense Name */}
                 <div className="flex-1 w-full">
@@ -156,65 +156,62 @@ export const QueueModule: React.FC<QueueModuleProps> = ({
                   />
                 </div>
 
-                {/* Amount & Frequency Row on Mobile */}
-                <div className="flex gap-3 w-full md:w-auto">
-                  <div className="flex-1 md:w-32">
-                    <label className="block text-[10px] font-semibold text-[var(--text-muted)] mb-1.5 ml-1 uppercase tracking-wider">Amount</label>
-                    <AmountInput 
-                      value={expense.amount} 
-                      onChange={(val) => onUpdate(expense.id, 'amount', val)} 
-                    />
-                  </div>
-
-                  <div className="flex-1 md:w-40 relative">
-                    <label className="block text-[10px] font-semibold text-[var(--text-muted)] mb-1.5 ml-1 uppercase tracking-wider">Frequency</label>
-                    <CustomSelect 
-                      value={expense.frequency}
-                      options={['Weekly', 'Monthly', 'Yearly', 'One-time']}
-                      onChange={(val) => onUpdate(expense.id, 'frequency', val as Frequency)}
-                    />
-                  </div>
+                {/* Amount */}
+                <div className="flex-1 md:flex-none md:w-32">
+                  <label className="block text-[10px] font-semibold text-[var(--text-muted)] mb-1.5 ml-1 uppercase tracking-wider">Amount</label>
+                  <AmountInput 
+                    value={expense.amount} 
+                    onChange={(val) => onUpdate(expense.id, 'amount', val)} 
+                  />
                 </div>
-              </div>
 
-              {/* Bottom row: Toggle + Delete */}
-              <div className="flex items-center justify-between pt-1 border-t border-[var(--border)] md:border-0 md:pt-0 md:w-auto md:pb-0">
-                 <div className="flex flex-col justify-end h-full">
-                    <label className="relative inline-flex items-center cursor-pointer group min-h-[44px]">
-                      <input 
-                        type="checkbox" 
-                        checked={expense.isWant}
-                        onChange={(e) => onUpdate(expense.id, 'isWant', e.target.checked)}
-                        className="sr-only peer" 
-                      />
-                      {/* Toggle Styling */}
-                      <div className="w-11 h-6 bg-[var(--bg-input)] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-[var(--text-muted)] after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--bg-input)] peer-checked:after:bg-[var(--primary)] transition-colors border border-[var(--border)]"></div>
-                      <span className="ml-3 text-xs text-[var(--text-muted)] font-medium uppercase tracking-wider group-hover:text-[var(--text-main)] transition-colors">{expense.isWant ? 'WANT' : 'NEED'}</span>
-                    </label>
-                 </div>
+                {/* Frequency */}
+                <div className="flex-1 md:flex-none md:w-40 relative">
+                  <label className="block text-[10px] font-semibold text-[var(--text-muted)] mb-1.5 ml-1 uppercase tracking-wider">Frequency</label>
+                  <CustomSelect 
+                    value={expense.frequency}
+                    options={['Weekly', 'Monthly', 'Yearly', 'One-time']}
+                    onChange={(val) => onUpdate(expense.id, 'frequency', val as Frequency)}
+                  />
+                </div>
 
-                 <button
-                    onClick={() => onRemove(expense.id)}
-                    className="p-3 text-[var(--text-muted)] hover:text-red-400 transition-colors rounded-xl hover:bg-red-900/10 min-w-[44px] min-h-[44px] flex items-center justify-center active:scale-95"
-                    title="Remove decision"
-                  >
-                    <Trash2 className="w-5 h-5" />
-                  </button>
+                {/* Want Toggle - inline with frequency on desktop */}
+                <div className="flex flex-col justify-end md:pb-1.5">
+                  <label className="relative inline-flex items-center cursor-pointer group">
+                    <input 
+                      type="checkbox" 
+                      checked={expense.isWant}
+                      onChange={(e) => onUpdate(expense.id, 'isWant', e.target.checked)}
+                      className="sr-only peer" 
+                    />
+                    <div className="w-11 h-6 bg-[var(--bg-input)] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-[var(--text-muted)] after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--bg-input)] peer-checked:after:bg-[var(--primary)] transition-colors border border-[var(--border)]"></div>
+                    <span className="ml-2 text-xs text-[var(--text-muted)] font-medium uppercase tracking-wider group-hover:text-[var(--text-main)] transition-colors">{expense.isWant ? 'WANT' : 'NEED'}</span>
+                  </label>
+                </div>
+
+                {/* Delete button - inline on desktop */}
+                <button
+                  onClick={() => onRemove(expense.id)}
+                  className="p-2 md:mb-1 text-[var(--text-muted)] hover:text-red-400 transition-colors rounded-xl hover:bg-red-900/10 flex items-center justify-center active:scale-95 self-end"
+                  title="Remove decision"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
               </div>
             </div>
           ))}
 
           {/* GHOST ROWS: Visual placeholders to fill space, hidden on mobile */}
           {ghostRows.map((_, idx) => (
-            <div key={`ghost-${idx}`} className="hidden md:flex flex-col md:flex-row items-start md:items-end gap-3 p-3 rounded-2xl border border-dashed border-[var(--border)] opacity-40 select-none pointer-events-none">
-               <div className="flex-1 w-full md:w-auto">
+            <div key={`ghost-${idx}`} className="hidden md:flex flex-row items-end gap-3 p-3 rounded-2xl border border-dashed border-[var(--border)] opacity-40 select-none pointer-events-none">
+               <div className="flex-1">
                 <label className="block text-[10px] font-semibold text-[var(--text-muted)] mb-1 ml-1 uppercase tracking-wider">Expense Name</label>
                 <div className="w-full bg-[var(--bg-input)] text-[var(--text-muted)] px-4 py-3 rounded-xl border border-[var(--border)] text-sm font-medium italic">
                   Empty Slot
                 </div>
               </div>
 
-              <div className="w-full md:w-32">
+              <div className="w-32">
                  <label className="block text-[10px] font-semibold text-[var(--text-muted)] mb-1 ml-1 uppercase tracking-wider">Amount</label>
                 <div className="relative">
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] text-sm">$</span>
@@ -222,7 +219,7 @@ export const QueueModule: React.FC<QueueModuleProps> = ({
                 </div>
               </div>
 
-              <div className="w-full md:w-40 relative">
+              <div className="w-40 relative">
                 <label className="block text-[10px] font-semibold text-[var(--text-muted)] mb-1 ml-1 uppercase tracking-wider">Frequency</label>
                 <div className="w-full flex items-center justify-between bg-[var(--bg-input)] text-[var(--text-muted)] px-4 py-3 rounded-xl border border-[var(--border)] text-sm font-medium">
                   <span>Monthly</span>
@@ -230,15 +227,14 @@ export const QueueModule: React.FC<QueueModuleProps> = ({
                 </div>
               </div>
 
-              <div className="flex items-center justify-between w-full md:w-auto md:pb-3 gap-3">
-                 <div className="flex flex-col justify-end h-full pt-1">
-                     <div className="w-10 h-6 bg-[var(--bg-input)] rounded-full relative border border-[var(--border)]">
-                        <div className="absolute top-[4px] left-[4px] bg-[var(--text-muted)] rounded-full h-4 w-4 opacity-50"></div>
-                     </div>
+              <div className="flex items-end pb-1.5">
+                 <div className="w-11 h-6 bg-[var(--bg-input)] rounded-full relative border border-[var(--border)]">
+                    <div className="absolute top-[4px] left-[4px] bg-[var(--text-muted)] rounded-full h-5 w-5 opacity-50"></div>
                  </div>
-                 <div className="p-2.5 text-[var(--text-muted)] rounded-lg">
-                    <Trash2 className="w-4 h-4" />
-                  </div>
+              </div>
+              
+              <div className="p-2 mb-1 text-[var(--text-muted)] rounded-lg">
+                <Trash2 className="w-4 h-4" />
               </div>
             </div>
           ))}
