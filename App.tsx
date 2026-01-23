@@ -15,6 +15,7 @@ import { ParticleBackground } from './components/ParticleBackground';
 import { MobileMaintenance } from './components/MobileMaintenance';
 import { Expense, Assumptions, CalculationResult, StockOption, Theme } from './types';
 import { calculateResults } from './utils/financials';
+import { getStoredTheme, saveTheme } from './utils/theme';
 
 // Extend Window interface for global firebase functions
 declare global {
@@ -27,7 +28,7 @@ declare global {
 type NavTab = 'home' | 'calculate' | 'tools' | 'roadmap';
 
 function App() {
-  const [theme, setTheme] = useState<Theme>('purple');
+  const [theme, setTheme] = useState<Theme>(() => getStoredTheme());
   const [expenses, setExpenses] = useState<Expense[]>([
     { id: '1', name: 'Subscription', amount: 15, frequency: 'Monthly', isWant: true },
   ]);
@@ -71,6 +72,18 @@ function App() {
     if (typeof window !== 'undefined') {
         window.setGlobalDecisionCount = setDecisionCount;
     }
+  }, []);
+
+  // Save theme to localStorage whenever it changes
+  useEffect(() => {
+    saveTheme(theme);
+    // Also update the document class for CSS variables
+    document.documentElement.className = `theme-${theme}`;
+  }, [theme]);
+
+  // Remove visibility hidden set by index.html flash prevention
+  useEffect(() => {
+    document.documentElement.style.visibility = 'visible';
   }, []);
 
   // Monitor Window Resize for Mobile Detection (checks smaller dimension for orientation bypass prevention)
