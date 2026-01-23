@@ -29,6 +29,11 @@ export const AdminStats: React.FC = () => {
   const [topCities, setTopCities] = useState<CityCount[]>([]);
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
 
+  // Remove visibility hidden set by index.html flash prevention
+  useEffect(() => {
+    document.documentElement.style.visibility = 'visible';
+  }, []);
+
   // Auth state listener with Firebase availability polling
   useEffect(() => {
     let unsubscribe: (() => void) | null = null;
