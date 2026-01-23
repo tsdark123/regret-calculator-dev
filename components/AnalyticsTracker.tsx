@@ -38,8 +38,8 @@ export const AnalyticsTracker: React.FC = () => {
       }
     });
 
-    // 3. Fetch and cache city for activity logging + increment city counter
-    fetch('http://ip-api.com/json/?fields=city')
+    // 3. Fetch and cache city for activity logging + increment city counter (using HTTPS)
+    fetch('https://ipapi.co/json/')
       .then(res => res.json())
       .then(data => {
         if (data.city) {
