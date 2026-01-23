@@ -68,7 +68,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
               </label>
               
               {/* Display Pill */}
-              <div className="flex items-baseline gap-1 bg-[var(--bg-input)] rounded-lg border border-[var(--border)] px-3 py-1.5 min-w-[4.5rem] justify-center">
+              <div className="flex items-baseline gap-1 bg-[var(--bg-input)] rounded-xl border border-[var(--border)] px-3 py-1.5 min-w-[4.5rem] justify-center">
                  <span className="text-[var(--text-main)] font-semibold text-sm">{assumptions.annualReturn}</span>
                  <span className="text-[var(--text-muted)] text-sm font-medium">%</span>
               </div>
@@ -100,7 +100,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
               </label>
               
               {/* Display Pill */}
-              <div className="flex items-baseline gap-1.5 bg-[var(--bg-input)] rounded-lg border border-[var(--border)] px-3 py-1.5 min-w-[5.5rem] justify-center">
+              <div className="flex items-baseline gap-1.5 bg-[var(--bg-input)] rounded-xl border border-[var(--border)] px-3 py-1.5 min-w-[5.5rem] justify-center">
                   <span className="text-[var(--text-main)] font-semibold text-sm">{assumptions.timeHorizonYears}</span>
                   <span className="text-[var(--text-muted)] text-sm font-medium">years</span>
               </div>
@@ -150,8 +150,8 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
             </div>
             
             {assumptions.inflationAdjusted && (
-                <div className="flex justify-end pt-2 animate-fade-in-down">
-                    <div className="flex items-baseline gap-1 bg-[var(--bg-input)] rounded-lg border border-[var(--border)] px-3 py-1 w-20 justify-end">
+                <div className="flex justify-end pt-4 animate-fade-in-down">
+                    <div className="flex items-baseline gap-1 bg-[var(--bg-input)] rounded-xl border border-[var(--border)] px-3 py-1.5 w-20 justify-end">
                     <span className="text-[var(--text-main)] font-semibold text-sm">{assumptions.inflationRate}</span>
                     <span className="text-[var(--text-muted)] text-sm font-medium">%</span>
                     </div>
