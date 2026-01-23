@@ -29,29 +29,59 @@ export const AdminStats: React.FC = () => {
   const [topCities, setTopCities] = useState<CityCount[]>([]);
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
 
-  // Auth state listener with auto-redirect
+  // Auth state listener with Firebase availability polling
   useEffect(() => {
-    if (!window.firebaseOnAuthStateChanged || !window.firebaseAuth) {
-      setAuthLoading(false);
-      return;
+    let unsubscribe: (() => void) | null = null;
+    let pollInterval: ReturnType<typeof setInterval> | null = null;
+    let wasLoggedIn = false;
+    
+    const setupAuthListener = () => {
+      // Check if Firebase is available
+      if (!window.firebaseOnAuthStateChanged || !window.firebaseAuth) {
+        return false; // Not available yet
+      }
+      
+      // Firebase is ready - set up the listener
+      unsubscribe = window.firebaseOnAuthStateChanged(
+        window.firebaseAuth,
+        (firebaseUser: any) => {
+          setUser(firebaseUser);
+          setAuthLoading(false);
+          
+          // If user logs out or session expires, redirect to home
+          if (!firebaseUser && wasLoggedIn) {
+            window.location.href = '/';
+          }
+          wasLoggedIn = firebaseUser !== null;
+        }
+      );
+      return true; // Successfully set up
+    };
+    
+    // Try to set up immediately
+    if (!setupAuthListener()) {
+      // Firebase not ready - poll every 100ms until it's available
+      pollInterval = setInterval(() => {
+        if (setupAuthListener()) {
+          clearInterval(pollInterval!);
+          pollInterval = null;
+        }
+      }, 100);
+      
+      // Safety timeout after 5 seconds
+      setTimeout(() => {
+        if (pollInterval) {
+          clearInterval(pollInterval);
+          setAuthLoading(false); // Give up and show login
+        }
+      }, 5000);
     }
 
-    const unsubscribe = window.firebaseOnAuthStateChanged(
-      window.firebaseAuth,
-      (firebaseUser: any) => {
-        const wasLoggedIn = user !== null;
-        setUser(firebaseUser);
-        setAuthLoading(false);
-        
-        // If user logs out or session expires, redirect to home
-        if (!firebaseUser && wasLoggedIn) {
-          window.location.href = '/';
-        }
-      }
-    );
-
-    return () => unsubscribe();
-  }, [user]);
+    return () => {
+      if (unsubscribe) unsubscribe();
+      if (pollInterval) clearInterval(pollInterval);
+    };
+  }, []); // Remove user dependency - only run once on mount
 
   // Real-time data listeners (only when authenticated)
   useEffect(() => {
@@ -144,6 +174,10 @@ export const AdminStats: React.FC = () => {
     setLoginLoading(true);
 
     try {
+      // Safety check for Firebase availability
+      if (!window.firebaseSignIn || !window.firebaseAuth) {
+        throw new Error('Authentication service not ready. Please refresh the page.');
+      }
       await window.firebaseSignIn(window.firebaseAuth, email, password);
     } catch (error: any) {
       setLoginError(error.message || 'Login failed');
@@ -154,10 +188,15 @@ export const AdminStats: React.FC = () => {
 
   const handleLogout = async () => {
     try {
+      if (!window.firebaseSignOut || !window.firebaseAuth) {
+        window.location.href = '/';
+        return;
+      }
       await window.firebaseSignOut(window.firebaseAuth);
       window.location.href = '/';
     } catch (error) {
       console.error('Logout error:', error);
+      window.location.href = '/'; // Force redirect on error
     }
   };
 
