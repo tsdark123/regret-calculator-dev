@@ -176,7 +176,7 @@ export const QueueModule: React.FC<QueueModuleProps> = ({
                 </div>
 
                 {/* Want Toggle - inline with frequency on desktop */}
-                <div className="flex flex-col justify-end md:pb-1.5">
+                <div className="flex items-center">
                   <label className="relative inline-flex items-center cursor-pointer group">
                     <input 
                       type="checkbox" 
@@ -192,7 +192,7 @@ export const QueueModule: React.FC<QueueModuleProps> = ({
                 {/* Delete button - inline on desktop */}
                 <button
                   onClick={() => onRemove(expense.id)}
-                  className="p-2 md:mb-1 text-[var(--text-muted)] hover:text-red-400 transition-colors rounded-xl hover:bg-red-900/10 flex items-center justify-center active:scale-95 self-end"
+                  className="p-2 text-[var(--text-muted)] hover:text-red-400 transition-colors rounded-xl hover:bg-red-900/10 flex items-center justify-center active:scale-95"
                   title="Remove decision"
                 >
                   <Trash2 className="w-4 h-4" />
