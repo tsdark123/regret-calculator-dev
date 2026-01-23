@@ -193,7 +193,7 @@ export const QueueModule: React.FC<QueueModuleProps> = ({
                 <div className="flex items-center h-[46px]">
                   <button
                     onClick={() => onRemove(expense.id)}
-                    className="p-2 text-[var(--text-muted)] hover:text-red-400 transition-colors rounded-lg hover:bg-red-900/10 flex items-center justify-center active:scale-95"
+                    className="p-2 text-[var(--text-muted)] hover:text-red-400 transition-colors rounded-xl hover:bg-red-900/10 flex items-center justify-center active:scale-95"
                     title="Remove decision"
                   >
                     <Trash2 className="w-4 h-4" />
