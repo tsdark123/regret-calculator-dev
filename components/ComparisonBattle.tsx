@@ -350,9 +350,9 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
       </div>
 
       {/* Line Chart - Competing Lines */}
-      <div className="flex-1 min-h-[180px] outline-none focus:outline-none" tabIndex={-1}>
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+      <div className="flex-1 min-h-[180px] outline-none focus:outline-none [&_.recharts-wrapper]:!outline-none [&_.recharts-surface]:!outline-none [&_*:focus]:!outline-none" tabIndex={-1}>
+        <ResponsiveContainer width="100%" height="100%" style={{ outline: 'none' }}>
+          <LineChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }} tabIndex={-1} style={{ outline: 'none' }}>
             <XAxis 
               dataKey="year" 
               axisLine={false}
