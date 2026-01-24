@@ -273,8 +273,8 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
                      text-[var(--text-main)] hover:border-[var(--primary)]/30
                      focus:outline-none transition-all duration-200
                      ${theme === 'ocean' 
-                       ? 'bg-white/60' 
-                       : 'bg-black/40'
+                       ? 'bg-white/90' 
+                       : 'bg-black/25'
                      }`}
           >
             {selectedChallenger.isEmoji ? (
