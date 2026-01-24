@@ -273,7 +273,7 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
                      text-[var(--text-main)] hover:border-[var(--primary)]/30
                      focus:outline-none transition-all duration-200
                      ${theme === 'ocean' 
-                       ? 'bg-white/80 border border-blue-100/80 shadow-sm backdrop-blur-sm' 
+                       ? 'bg-white/95 border border-white/50 shadow-sm' 
                        : 'bg-black/25 border border-[var(--border)]'
                      }`}
           >
