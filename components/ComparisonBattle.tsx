@@ -1,8 +1,40 @@
-import React, { useState } from 'react';
-import { Swords, BarChart3 } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { Swords, BarChart3, ChevronDown, Check } from 'lucide-react';
 import { CalculationResult, Assumptions, Theme } from '../types';
 import { formatCurrency } from '../utils/financials';
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip, Legend } from 'recharts';
+
+// 2026 subscription data with logos
+const CHALLENGER_OPTIONS = [
+  {
+    id: 'netflix',
+    name: 'Netflix',
+    monthlyCost: 17.99,
+    logo: 'https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/netflix.svg',
+    color: '#E50914',
+  },
+  {
+    id: 'spotify',
+    name: 'Spotify Premium',
+    monthlyCost: 12.99,
+    logo: 'https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/spotify.svg',
+    color: '#1DB954',
+  },
+  {
+    id: 'disney',
+    name: 'Disney+',
+    monthlyCost: 18.99,
+    logo: 'https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/disney-plus.svg',
+    color: '#113CCF',
+  },
+  {
+    id: 'youtube',
+    name: 'YouTube Premium',
+    monthlyCost: 15.99,
+    logo: 'https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/youtube.svg',
+    color: '#FF0000',
+  },
+];
 
 interface ComparisonBattleProps {
   results: CalculationResult;
@@ -11,8 +43,23 @@ interface ComparisonBattleProps {
 }
 
 export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, assumptions, theme }) => {
-  const [vsHabitName, setVsHabitName] = useState('Daily DoorDash');
-  const [vsMonthlyAmount, setVsMonthlyAmount] = useState(200);
+  const [selectedChallenger, setSelectedChallenger] = useState(CHALLENGER_OPTIONS[0]);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const vsHabitName = selectedChallenger.name;
+  const vsMonthlyAmount = selectedChallenger.monthlyCost;
 
   // Calculate future value using the same compounding formula
   const calculateFutureValue = (monthlyContribution: number, annualReturn: number, years: number) => {
@@ -52,6 +99,11 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
       challenger: vsResult,
     });
   }
+
+  const handleSelectChallenger = (option: typeof CHALLENGER_OPTIONS[0]) => {
+    setSelectedChallenger(option);
+    setIsDropdownOpen(false);
+  };
 
   return (
     <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl p-6 h-full flex flex-col">
@@ -102,45 +154,89 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-[var(--text-muted)]" />
+            <div 
+              className="w-3 h-3 rounded-full" 
+              style={{ backgroundColor: selectedChallenger.color }}
+            />
             <span className="text-sm text-[var(--text-muted)]">
-              {vsHabitName || 'Challenger'}
+              {vsHabitName}
             </span>
           </div>
         </div>
       </div>
 
-      {/* Input Fields - Compact */}
-      <div className="grid grid-cols-2 gap-3 mb-4">
-        <div>
-          <label className="block text-xs text-[var(--text-muted)] mb-1.5 font-medium">
-            Challenger Name
-          </label>
-          <input
-            type="text"
-            value={vsHabitName}
-            onChange={(e) => setVsHabitName(e.target.value)}
-            placeholder="e.g. Daily Coffee"
-            className="w-full bg-[var(--bg-input)] border border-[var(--border)] rounded-lg px-3 py-2
-                     text-[var(--text-main)] placeholder-[var(--text-muted)]
-                     focus:outline-none focus:border-[var(--primary)] transition-colors text-sm"
-          />
-        </div>
-        <div>
-          <label className="block text-xs text-[var(--text-muted)] mb-1.5 font-medium">
-            Monthly Cost
-          </label>
-          <div className="relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] text-sm">$</span>
-            <input
-              type="number"
-              value={vsMonthlyAmount}
-              onChange={(e) => setVsMonthlyAmount(Math.max(0, Number(e.target.value)))}
-              className="w-full bg-[var(--bg-input)] border border-[var(--border)] rounded-lg px-3 py-2 pl-7
-                       text-[var(--text-main)] placeholder-[var(--text-muted)]
-                       focus:outline-none focus:border-[var(--primary)] transition-colors text-sm"
-              min="0"
+      {/* Challenger Dropdown */}
+      <div className="mb-4" ref={dropdownRef}>
+        <label className="block text-xs text-[var(--text-muted)] mb-1.5 font-medium">
+          Compare Against
+        </label>
+        <div className="relative">
+          <button
+            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            className="w-full flex items-center justify-between gap-3 px-4 py-3 
+                     bg-[var(--bg-input)] border border-[var(--border)] rounded-xl
+                     text-[var(--text-main)] hover:border-[var(--primary)]/50
+                     focus:outline-none focus:border-[var(--primary)] 
+                     transition-all duration-200"
+          >
+            <div className="flex items-center gap-3">
+              <img 
+                src={selectedChallenger.logo} 
+                alt={selectedChallenger.name}
+                className="w-6 h-6 object-contain"
+              />
+              <span className="font-medium text-sm">{selectedChallenger.name}</span>
+              <span className="text-[var(--text-muted)] text-sm">
+                ${selectedChallenger.monthlyCost}/mo
+              </span>
+            </div>
+            <ChevronDown 
+              className={`w-4 h-4 text-[var(--text-muted)] transition-transform duration-200 ${
+                isDropdownOpen ? 'rotate-180' : ''
+              }`}
             />
+          </button>
+
+          {/* Dropdown Menu */}
+          <div 
+            className={`absolute z-50 top-full left-0 right-0 mt-2 
+                       bg-[var(--bg-card)] border border-[var(--border)] rounded-xl 
+                       shadow-xl overflow-hidden
+                       transition-all duration-200 origin-top
+                       ${isDropdownOpen 
+                         ? 'opacity-100 scale-y-100 translate-y-0' 
+                         : 'opacity-0 scale-y-95 -translate-y-2 pointer-events-none'
+                       }`}
+          >
+            {CHALLENGER_OPTIONS.map((option, index) => (
+              <button
+                key={option.id}
+                onClick={() => handleSelectChallenger(option)}
+                className={`w-full flex items-center justify-between gap-3 px-4 py-3
+                          hover:bg-[var(--bg-hover)] transition-colors duration-150
+                          ${index !== CHALLENGER_OPTIONS.length - 1 ? 'border-b border-[var(--border)]/50' : ''}
+                          ${selectedChallenger.id === option.id ? 'bg-[var(--primary)]/5' : ''}`}
+              >
+                <div className="flex items-center gap-3">
+                  <img 
+                    src={option.logo} 
+                    alt={option.name}
+                    className="w-6 h-6 object-contain"
+                  />
+                  <span className="font-medium text-sm text-[var(--text-main)]">
+                    {option.name}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-[var(--text-muted)] text-sm">
+                    ${option.monthlyCost}/mo
+                  </span>
+                  {selectedChallenger.id === option.id && (
+                    <Check className="w-4 h-4 text-[var(--primary)]" />
+                  )}
+                </div>
+              </button>
+            ))}
           </div>
         </div>
       </div>
