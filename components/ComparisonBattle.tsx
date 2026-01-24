@@ -115,7 +115,17 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
 
   const vsResult = calculateFutureValue(vsMonthlyAmount, assumptions.annualReturn, assumptions.timeHorizonYears);
   const originalResult = results.potentialValueUnlocked;
-  const winner = originalResult > vsResult ? 'original' : 'vs';
+  
+  // Determine the "deadlier" (more expensive) habit
+  const originalIsDeadlier = originalResult > vsResult;
+  const deadlierAmount = originalIsDeadlier ? originalResult : vsResult;
+  const cheaperAmount = originalIsDeadlier ? vsResult : originalResult;
+  const deadlierName = originalIsDeadlier ? (results.expenseSummary || 'Your Regrets') : vsHabitName;
+  const cheaperName = originalIsDeadlier ? vsHabitName : (results.expenseSummary || 'Your Regrets');
+  const difference = deadlierAmount - cheaperAmount;
+  
+  // Calculate regret multiplier (how many times more expensive)
+  const regretMultiplier = cheaperAmount > 0 ? (deadlierAmount / cheaperAmount).toFixed(1) : '∞';
   
   // Calculate percentage for progress bar (original vs challenger)
   const total = originalResult + vsResult;
@@ -173,19 +183,17 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-2xl font-bold text-[var(--text-main)]">{originalPercent}%</span>
-          <BarChart3 className="w-5 h-5 text-[var(--text-muted)]" />
+          <span className="text-lg font-bold text-[var(--primary)]">{regretMultiplier}x</span>
+          <span className="text-xs text-[var(--text-muted)]">
+            {parseFloat(regretMultiplier as string) >= 1 ? 'more expensive' : 'as expensive'}
+          </span>
         </div>
       </div>
 
       {/* Status Badge */}
       <div className="flex items-center gap-3 mb-4">
-        <span className={`px-3 py-1 rounded-full text-xs font-medium border ${
-          winner === 'original' 
-            ? 'text-[var(--primary)] border-[var(--primary)]/30 bg-[var(--primary)]/5' 
-            : 'text-[var(--text-muted)] border-[var(--border)] bg-[var(--bg-hover)]'
-        }`}>
-          {winner === 'original' ? 'Your regrets lead' : 'Challenger leads'}
+        <span className="px-3 py-1 rounded-full text-xs font-medium border text-[var(--primary)] border-[var(--primary)]/30 bg-[var(--primary)]/5">
+          {deadlierName} is the deadlier habit
         </span>
       </div>
 
@@ -349,27 +357,26 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
       </div>
 
       {/* Footer - Verdict */}
-      <div className="mt-4 pt-4 border-t border-[var(--border)] flex items-center justify-between">
-        <p className="text-sm text-[var(--text-muted)]">
-          {winner === 'original' ? (
-            <>
-              Your regrets cost{' '}
-              <span className="text-[var(--primary)] font-semibold">
-                {formatCurrency(originalResult - vsResult)} more
-              </span>
-            </>
-          ) : (
-            <>
-              {vsHabitName} costs{' '}
-              <span className="text-[var(--primary)] font-semibold">
-                {formatCurrency(vsResult - originalResult)} more
-              </span>
-            </>
-          )}
+      <div className="mt-4 pt-4 border-t border-[var(--border)]">
+        <p className="text-sm text-[var(--text-muted)] leading-relaxed">
+          Over{' '}
+          <span className="text-[var(--text-main)] font-medium">
+            {assumptions.timeHorizonYears} years
+          </span>
+          ,{' '}
+          <span className="text-[var(--primary)] font-semibold">
+            {deadlierName}
+          </span>
+          {' '}would cost you{' '}
+          <span className="text-[var(--primary)] font-semibold">
+            {formatCurrency(difference)}
+          </span>
+          {' '}more in lost potential than{' '}
+          <span className="text-[var(--text-main)] font-medium">
+            {cheaperName}
+          </span>
+          .
         </p>
-        <span className="text-xs text-[var(--text-muted)]">
-          {assumptions.timeHorizonYears} year projection
-        </span>
       </div>
     </div>
   );
