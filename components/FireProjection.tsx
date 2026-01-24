@@ -44,8 +44,13 @@ export const FireProjection: React.FC<FireProjectionProps> = ({ results, theme }
       {isWorkInProgress && (
         <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-[var(--bg-card)]/80 backdrop-blur-sm rounded-2xl">
           <motion.div
-            animate={{ y: [0, -8, 0] }}
-            transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+            animate={{ y: [-6, 6, -6] }}
+            transition={{ 
+              duration: 3, 
+              repeat: Infinity, 
+              ease: "easeInOut",
+              times: [0, 0.5, 1]
+            }}
             className="flex flex-col items-center"
           >
             <div className="p-4 rounded-full bg-[var(--bg-hover)] border border-[var(--border)] mb-4">
