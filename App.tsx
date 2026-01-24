@@ -230,7 +230,7 @@ function MainApp() {
       // Wait for state update and DOM render, then scroll
       setTimeout(() => {
         if (proDashboardRef.current) {
-          const yOffset = -100; // Offset from top
+          const yOffset = -180; // Increased offset to scroll higher
           const y = proDashboardRef.current.getBoundingClientRect().top + window.pageYOffset + yOffset;
           window.scrollTo({ top: y, behavior: 'smooth' });
         }
@@ -355,7 +355,7 @@ function MainApp() {
                                   />
                                   
                                   {/* Expand Button for Pro Dashboard */}
-                                  <div className="flex justify-center my-4">
+                                  <div className="flex justify-center mt-2 mb-8">
                                     <motion.button
                                       onClick={handleToggleProDashboard}
                                       whileHover={{ scale: 1.02 }}
