@@ -281,7 +281,7 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
               <img 
                 src={selectedChallenger.icon} 
                 alt={selectedChallenger.name}
-                className={`w-4 h-4 object-contain ${selectedChallenger.needsInvert && theme !== 'blue' ? 'invert' : ''}`}
+                className="w-4 h-4 object-contain"
               />
             )}
             <span className="font-medium text-sm">{selectedChallenger.name}</span>
@@ -327,7 +327,7 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
                       <img 
                         src={option.icon} 
                         alt={option.name}
-                        className={`w-5 h-5 object-contain ${option.needsInvert && theme !== 'blue' ? 'invert' : ''}`}
+                        className="w-5 h-5 object-contain"
                       />
                     )}
                     <span className="font-medium text-sm text-[var(--text-main)]">
