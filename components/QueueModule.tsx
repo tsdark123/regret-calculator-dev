@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Trash2, Plus, Calculator, ChevronDown, Check, ChevronUp } from 'lucide-react';
 import { Expense, Frequency } from '../types';
+import { useDebouncedNumber } from '../hooks/useDebouncedValue';
 
 interface QueueModuleProps {
   expenses: Expense[];
@@ -10,16 +11,34 @@ interface QueueModuleProps {
   onAnalyze: () => void;
 }
 
-// Internal Custom Amount Input Component
+// Internal Custom Amount Input Component with Debouncing
 const AmountInput = ({ value, onChange }: { value: number; onChange: (val: number) => void }) => {
+  const [debouncedValue, setImmediateValue, currentValue] = useDebouncedNumber(value, 300, 0);
+
+  // Update debounced value when parent value changes
+  useEffect(() => {
+    if (value !== debouncedValue) {
+      setImmediateValue(value);
+    }
+  }, [value, debouncedValue, setImmediateValue]);
+
+  // Notify parent when debounced value changes
+  useEffect(() => {
+    if (debouncedValue !== value) {
+      onChange(debouncedValue);
+    }
+  }, [debouncedValue, onChange, value]);
+
   const handleIncrement = (e: React.MouseEvent) => {
     e.preventDefault();
-    onChange(Number((value + 1).toFixed(2)));
+    const newValue = Number((currentValue + 1).toFixed(2));
+    setImmediateValue(newValue);
   };
 
   const handleDecrement = (e: React.MouseEvent) => {
     e.preventDefault();
-    onChange(Number(Math.max(0, value - 1).toFixed(2)));
+    const newValue = Number(Math.max(0, currentValue - 1).toFixed(2));
+    setImmediateValue(newValue);
   };
 
   return (
@@ -29,10 +48,10 @@ const AmountInput = ({ value, onChange }: { value: number; onChange: (val: numbe
         type="number"
         min="0"
         step="0.01"
-        value={value === 0 ? '' : value}
+        value={currentValue === 0 ? '' : currentValue}
         onChange={(e) => {
             const val = parseFloat(e.target.value);
-            onChange(isNaN(val) ? 0 : val);
+            setImmediateValue(isNaN(val) ? 0 : val);
         }}
         placeholder="0"
         className="w-full bg-[var(--bg-input)] text-[var(--text-main)] pl-7 pr-8 py-3 rounded-xl border border-[var(--border)] focus:border-[var(--primary)] focus:outline-none transition-colors placeholder:text-[var(--text-muted)] placeholder:opacity-50 text-sm font-medium appearance-none"

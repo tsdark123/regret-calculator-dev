@@ -2,6 +2,124 @@ import React from 'react';
 import { Settings, Info, ChevronRight, BarChart3 } from 'lucide-react';
 import { Assumptions } from '../types';
 
+// Simple Debounced Slider Component with Real-time Display
+const DebouncedSlider = ({ 
+  value, 
+  onChange, 
+  onDisplayChange, // New callback for real-time display updates
+  min, 
+  max, 
+  step = 0.5,
+  delay = 400 
+}: {
+  value: number;
+  onChange: (val: number) => void;
+  onDisplayChange?: (val: number) => void; // Real-time display updates
+  min: number;
+  max: number;
+  step?: number;
+  delay?: number;
+}) => {
+  const [localValue, setLocalValue] = React.useState(value);
+  const [isDragging, setIsDragging] = React.useState(false);
+  const debounceTimer = React.useRef<NodeJS.Timeout>();
+
+  // Sync local state with parent value ONLY when not dragging
+  React.useEffect(() => {
+    if (!isDragging && localValue !== value) {
+      setLocalValue(value);
+    }
+  }, [value, isDragging, localValue]);
+
+  const getBackgroundStyle = (val: number) => {
+    const percentage = ((val - min) * 100) / (max - min);
+    return {
+      background: `linear-gradient(to right, var(--primary) ${percentage}%, var(--bg-hover) ${percentage}%)`
+    };
+  };
+
+  const handlePointerDown = () => {
+    setIsDragging(true);
+    // Clear any pending timer
+    if (debounceTimer.current) {
+      clearTimeout(debounceTimer.current);
+    }
+  };
+
+  const handlePointerUp = () => {
+    setIsDragging(false);
+    // Trigger onChange immediately when drag ends
+    onChange(localValue);
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = parseFloat(e.target.value);
+    setLocalValue(newValue); // Instant visual update
+    
+    // Real-time display update
+    if (onDisplayChange) {
+      onDisplayChange(newValue);
+    }
+    
+    // Clear existing timer
+    if (debounceTimer.current) {
+      clearTimeout(debounceTimer.current);
+    }
+
+    // Set new timer for debounced update (only when not dragging)
+    if (!isDragging) {
+      debounceTimer.current = setTimeout(() => {
+        onChange(newValue);
+      }, delay);
+    }
+  };
+
+  // Global pointer up cleanup
+  React.useEffect(() => {
+    const handleGlobalPointerUp = () => {
+      if (isDragging) {
+        setIsDragging(false);
+        onChange(localValue);
+      }
+    };
+
+    if (isDragging) {
+      document.addEventListener('mouseup', handleGlobalPointerUp);
+      document.addEventListener('touchend', handleGlobalPointerUp);
+      return () => {
+        document.removeEventListener('mouseup', handleGlobalPointerUp);
+        document.removeEventListener('touchend', handleGlobalPointerUp);
+      };
+    }
+  }, [isDragging, localValue, onChange]);
+
+  // Cleanup timer on unmount
+  React.useEffect(() => {
+    return () => {
+      if (debounceTimer.current) {
+        clearTimeout(debounceTimer.current);
+      }
+    };
+  }, []);
+
+  return (
+    <input
+      type="range"
+      min={min}
+      max={max} 
+      step={step}
+      value={localValue}
+      onChange={handleChange}
+      onMouseDown={handlePointerDown}
+      onMouseUp={handlePointerUp}
+      onTouchStart={handlePointerDown}
+      onTouchEnd={handlePointerUp}
+      style={getBackgroundStyle(localValue)}
+      className="w-full h-1.5 rounded-lg appearance-none cursor-pointer"
+    />
+  );
+};
+
 interface SettingsPanelProps {
   assumptions: Assumptions;
   onChange: (field: keyof Assumptions, value: any) => void;
@@ -13,17 +131,15 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
   onChange,
   onOpenStockSelector,
 }) => {
-  // Helper to calculate gradient percentage for the slider track
-  const getBackgroundStyle = (value: number, min: number, max: number) => {
-    const percentage = ((value - min) * 100) / (max - min);
-    // Use CSS variable in gradient? Browsers support it.
-    // For simplicity, we assume primary color is accessible via var(--primary) but linear-gradient syntax needs color values.
-    // We will use a fallback or try to read the computed style if needed, but here let's stick to inline style with the primary color variable if possible or just use a solid color.
-    // Actually, linear-gradient with CSS vars works fine.
-    return {
-      background: `linear-gradient(to right, var(--primary) ${percentage}%, var(--bg-hover) ${percentage}%)`
-    };
-  };
+  // Local state for real-time display updates
+  const [displayAnnualReturn, setDisplayAnnualReturn] = React.useState(assumptions.annualReturn);
+  const [displayTimeHorizon, setDisplayTimeHorizon] = React.useState(assumptions.timeHorizonYears);
+
+  // Sync display values when assumptions change (but not during user interaction)
+  React.useEffect(() => {
+    setDisplayAnnualReturn(assumptions.annualReturn);
+    setDisplayTimeHorizon(assumptions.timeHorizonYears);
+  }, [assumptions.annualReturn, assumptions.timeHorizonYears]);
 
   return (
     <div className="w-full h-full">
@@ -74,25 +190,24 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
               
               {/* Display Pill */}
               <div className="flex items-baseline gap-1 bg-[var(--bg-input)] rounded-xl border border-[var(--border)] px-3 py-1.5 min-w-[4.5rem] justify-center">
-                 <span className="text-[var(--text-main)] font-semibold text-sm">{assumptions.annualReturn}</span>
+                 <span className="text-[var(--text-main)] font-semibold text-sm">{displayAnnualReturn}</span>
                  <span className="text-[var(--text-muted)] text-sm font-medium">%</span>
               </div>
             </div>
             
-            <input
-              type="range"
-              min="0"
-              max="100" 
-              step="0.5"
+            <DebouncedSlider
               value={assumptions.annualReturn}
-              onChange={(e) => {
-                 if (assumptions.selectedStock && Math.abs(parseFloat(e.target.value) - assumptions.selectedStock.avgReturn) > 0.5) {
+              onChange={(val) => {
+                 if (assumptions.selectedStock && Math.abs(val - assumptions.selectedStock.avgReturn) > 0.5) {
                    onChange('selectedStock', undefined);
                  }
-                 onChange('annualReturn', parseFloat(e.target.value))
+                 onChange('annualReturn', val)
               }}
-              style={getBackgroundStyle(assumptions.annualReturn, 0, 100)}
-              className="w-full h-1.5 rounded-lg appearance-none cursor-pointer"
+              onDisplayChange={setDisplayAnnualReturn}
+              min={0}
+              max={100}
+              step={0.5}
+              delay={400}
             />
           </div>
 
@@ -111,19 +226,19 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
               
               {/* Display Pill */}
               <div className="flex items-baseline gap-1.5 bg-[var(--bg-input)] rounded-xl border border-[var(--border)] px-3 py-1.5 min-w-[5.5rem] justify-center">
-                  <span className="text-[var(--text-main)] font-semibold text-sm">{assumptions.timeHorizonYears}</span>
+                  <span className="text-[var(--text-main)] font-semibold text-sm">{displayTimeHorizon}</span>
                   <span className="text-[var(--text-muted)] text-sm font-medium">years</span>
               </div>
             </div>
 
-            <input
-              type="range"
-              min="1"
-              max="50"
+            <DebouncedSlider
               value={assumptions.timeHorizonYears}
-              onChange={(e) => onChange('timeHorizonYears', parseInt(e.target.value))}
-              style={getBackgroundStyle(assumptions.timeHorizonYears, 1, 50)}
-              className="w-full h-1.5 rounded-lg appearance-none cursor-pointer"
+              onChange={(val) => onChange('timeHorizonYears', val)}
+              onDisplayChange={setDisplayTimeHorizon}
+              min={1}
+              max={50}
+              step={1}
+              delay={300}
             />
             
             <p className="text-[10px] text-[var(--text-muted)] mt-2 italic opacity-60 font-medium">

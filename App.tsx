@@ -20,6 +20,7 @@ import { ProDashboard } from './components/ProDashboard';
 import { Expense, Assumptions, CalculationResult, StockOption, Theme } from './types';
 import { calculateResults } from './utils/financials';
 import { getStoredTheme, saveTheme } from './utils/theme';
+import { useAnalytics } from './hooks/useAnalytics';
 
 // Extend Window interface for global firebase functions
 declare global {
@@ -50,6 +51,8 @@ type NavTab = 'home' | 'calculate' | 'tools' | 'roadmap';
 
 // Main calculator app component
 function MainApp() {
+  const { decisionCount, incrementDecisionCount, logActivityEvent } = useAnalytics();
+  
   const [theme, setTheme] = useState<Theme>(() => getStoredTheme());
   const [expenses, setExpenses] = useState<Expense[]>([
     { id: '1', name: 'Subscription', amount: 15, frequency: 'Monthly', isWant: true },
@@ -76,9 +79,6 @@ function MainApp() {
   // Loading State
   const [isLoading, setIsLoading] = useState(false);
 
-  // Global Decisions Count (Live Simulation + Real Input)
-  const [decisionCount, setDecisionCount] = useState(543);
-
   // Mobile Detection State - catches phones in BOTH portrait AND landscape orientations
   // Uses smaller dimension to prevent bypass by rotating phone
   const [isMobileView, setIsMobileView] = useState(() => {
@@ -90,13 +90,6 @@ function MainApp() {
   });
 
   const inputSectionRef = useRef<HTMLDivElement>(null);
-
-  // Register the local state setter function globally so index.html can use it
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-        window.setGlobalDecisionCount = setDecisionCount;
-    }
-  }, []);
 
   // Save theme to localStorage whenever it changes
   useEffect(() => {
@@ -189,12 +182,7 @@ function MainApp() {
 
   const handleAnalyze = () => {
     // 1. Increment the Global Counter via Firebase if available
-    if (typeof window.incrementCounter === 'function') {
-      window.incrementCounter();
-    } else {
-      // Fallback if firebase isn't loaded
-      setDecisionCount(prev => prev + 1);
-    }
+    incrementDecisionCount();
     
     setIsLoading(true);
     setTimeout(() => {
@@ -205,14 +193,12 @@ function MainApp() {
         setViewMode('results');
         
         // 2. Log activity event with city, regret amount, and first expense name
-        if (typeof window.logActivityEvent === 'function') {
-          const firstExpenseName = expenses[0]?.name || 'Expense';
-          window.logActivityEvent({
-            city: window.userCity || 'Unknown',
-            regretAmount: calculated.potentialValueUnlocked,
-            expenseName: firstExpenseName
-          });
-        }
+        const firstExpenseName = expenses[0]?.name || 'Expense';
+        logActivityEvent({
+          city: window.userCity || 'Unknown',
+          regretAmount: calculated.potentialValueUnlocked,
+          expenseName: firstExpenseName
+        });
         
         if (inputSectionRef.current) {
             inputSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -376,30 +362,34 @@ function MainApp() {
 
                                   {/* Pro Dashboard - Animated with Framer Motion */}
                                   <div ref={proDashboardRef}>
-                                    <AnimatePresence>
+                                    <AnimatePresence mode="wait">
                                       {isProDashboardExpanded && (
                                         <motion.div
-                                          initial={{ opacity: 0, height: 0, y: -20 }}
+                                          initial={{ opacity: 0, scaleY: 0.95, y: -20 }}
                                           animate={{ 
                                             opacity: 1, 
-                                            height: "auto", 
+                                            scaleY: 1, 
                                             y: 0,
                                             transition: {
-                                              height: { duration: 0.4, ease: [0.04, 0.62, 0.23, 0.98] },
-                                              opacity: { duration: 0.3, delay: 0.1 },
-                                              y: { duration: 0.4, ease: "easeOut" }
+                                              duration: 0.35,
+                                              ease: [0.25, 0.46, 0.45, 0.94],
+                                              opacity: { duration: 0.3 },
+                                              scaleY: { duration: 0.35 },
+                                              y: { duration: 0.35 }
                                             }
                                           }}
                                           exit={{ 
                                             opacity: 0, 
-                                            height: 0,
-                                            y: -10,
+                                            scaleY: 0.95,
+                                            y: -15,
                                             transition: {
-                                              height: { duration: 0.3, ease: "easeInOut" },
+                                              duration: 0.25,
+                                              ease: [0.55, 0.085, 0.68, 0.53],
                                               opacity: { duration: 0.2 }
                                             }
                                           }}
-                                          className="overflow-hidden"
+                                          style={{ originY: 0 }}
+                                          className="will-change-transform"
                                         >
                                           <ProDashboard 
                                             results={results} 

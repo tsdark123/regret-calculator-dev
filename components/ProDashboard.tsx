@@ -19,12 +19,12 @@ export const ProDashboard: React.FC<ProDashboardProps> = ({ results, assumptions
         </p>
       </div>
       
-      {/* Desktop Layout - 60/40 Split */}
-      <div className="hidden md:grid grid-cols-1 lg:grid-cols-5 gap-6">
-        <div className="lg:col-span-3">
+      {/* Desktop Layout - Equal 50/50 Split Centered */}
+      <div className="hidden md:flex justify-center gap-6 max-w-7xl mx-auto">
+        <div className="w-full max-w-[500px]">
           <FireProjection results={results} theme={theme} />
         </div>
-        <div className="lg:col-span-2">
+        <div className="w-full max-w-[500px]">
           <ComparisonBattle results={results} assumptions={assumptions} theme={theme} />
         </div>
       </div>
