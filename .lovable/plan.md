@@ -1,89 +1,314 @@
 
 
-## Fix: Hardcoded Dark Theme & HTTPS IP API
+## Pro Dashboard: Advanced Analysis & Projections
 
 ### Overview
 
-Two targeted fixes for the Admin Portal:
-1. Replace all CSS variable references with hardcoded dark colors to prevent theme inheritance
-2. Switch from insecure HTTP `ip-api.com` to HTTPS `ipapi.co` for city geolocation
+This plan implements an expandable "Pro Dashboard" section that appears below the existing Results view when triggered. It follows the split-panel layout from the reference images but uses the site's dynamic theme variables exclusively.
 
 ---
 
-### Issue 1: Theme Inheritance Problem
+### Architecture
 
-**Current State**: The `AdminStats.tsx` component uses CSS variables like `var(--bg-main)`, `var(--text-muted)`, `var(--primary)`, etc. These inherit from the user's saved theme preference (Matrix, Ocean, etc.), causing inconsistent styling on the admin page.
-
-**Solution**: Replace all CSS variable references with hardcoded Tailwind/hex colors for a consistent "sleek dark" look.
-
-**File: `components/AdminStats.tsx`**
-
-| Current CSS Variable | Replacement |
-|---------------------|-------------|
-| `bg-[var(--bg-main)]` | `bg-[#0a0a0a]` |
-| `bg-[var(--bg-card)]` | `bg-[#111111]` |
-| `bg-[var(--bg-input)]` | `bg-[#1a1a1a]` |
-| `border-[var(--border)]` | `border-gray-800` |
-| `text-[var(--text-main)]` | `text-gray-100` |
-| `text-[var(--text-muted)]` | `text-gray-400` |
-| `text-[var(--primary)]` / `bg-[var(--primary)]` | `text-purple-500` / `bg-purple-600` |
-| `bg-[var(--primary-20)]` | `bg-purple-500/20` |
-| `bg-[var(--primary-50)]` | `bg-purple-500/50` |
-| `hover:bg-[var(--primary-hover)]` | `hover:bg-purple-700` |
-| `focus:border-[var(--primary)]` | `focus:border-purple-500` |
-| `hover:border-[var(--primary-50)]` | `hover:border-purple-500/50` |
-
-**Sections to update:**
-- Loading state (line 231-234)
-- Login form container and inputs (lines 240-296)
-- Dashboard container (line 301)
-- Header and logout button (lines 304-318)
-- Stats cards (lines 321-358)
-- Top Cities section (lines 387-417)
-- Footer (line 420-422)
-
----
-
-### Issue 2: HTTPS IP API Problem
-
-**Current State**: The `AnalyticsTracker.tsx` uses `http://ip-api.com/json/?fields=city` which is blocked by browsers on HTTPS sites due to mixed content restrictions.
-
-**Solution**: Switch to `https://ipapi.co/json/` which supports HTTPS and returns a `city` field in the same way.
-
-**File: `components/AnalyticsTracker.tsx`**
-
-```typescript
-// Line 42 - Change from:
-fetch('http://ip-api.com/json/?fields=city')
-
-// To:
-fetch('https://ipapi.co/json/')
+```text
+┌─────────────────────────────────────────────────────────────────────────────┐
+│  EXISTING RESULTS DASHBOARD (ResultsDashboard.tsx)                          │
+│  - KPI Cards, Chart, Narrative, Time Cost, Opportunity Cost, Methodology    │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│  EXPAND BUTTON (centered, subtle styling)                                   │
+│  "↓ Expand Advanced Analysis & Projections"                                 │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    │ (on click, animate open)
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│  PRO DASHBOARD CONTAINER (hidden on mobile)                                 │
+├────────────────────────────────┬────────────────────────────────────────────┤
+│  LEFT PANEL (60%)              │  RIGHT PANEL (40%)                         │
+│  FireProjection.tsx            │  ComparisonBattle.tsx                      │
+│  ┌──────────────────────────┐  │  ┌──────────────────────────────────────┐  │
+│  │ "Years of Freedom" Calc  │  │  │ Head-to-Head Battle                  │  │
+│  │ Target Annual Spend Input│  │  │ "Vs. Habit Name" Input               │  │
+│  │ Donut Chart (Recharts)   │  │  │ "Monthly Cost ($)" Input             │  │
+│  │ "X.X Years Sacrificed"   │  │  │                                      │  │
+│  └──────────────────────────┘  │  │ ┌──────────┐ VS ┌──────────────────┐ │  │
+│                                │  │ │ Original │    │ New Habit        │ │  │
+│                                │  │ │ $XXX,XXX │    │ $XXX,XXX         │ │  │
+│                                │  │ └──────────┘    └──────────────────┘ │  │
+│                                │  │ Winner highlight with primary glow   │  │
+│                                │  └──────────────────────────────────────┘  │
+└────────────────────────────────┴────────────────────────────────────────────┘
 ```
 
-The response format is compatible - `ipapi.co` returns `{ city: "New York", ... }` so no other changes are needed.
-
 ---
+
+### Files to Create
+
+| File | Purpose |
+|------|---------|
+| `components/ProDashboard.tsx` | Container with two-column grid layout |
+| `components/FireProjection.tsx` | Left panel: retirement years calculation + donut chart |
+| `components/ComparisonBattle.tsx` | Right panel: habit vs habit comparison |
 
 ### Files to Modify
 
 | File | Changes |
 |------|---------|
-| `components/AdminStats.tsx` | Replace ~30+ CSS variable references with hardcoded colors |
-| `components/AnalyticsTracker.tsx` | Update fetch URL on line 42 |
+| `App.tsx` | Add `isProDashboardExpanded` state, render expand button + ProDashboard in results view |
 
 ---
 
-### Color Palette (Hardcoded)
+### Implementation Details
 
-```text
-Background (main):   #0a0a0a  (near black)
-Background (cards):  #111111  (dark gray)
-Background (inputs): #1a1a1a  (slightly lighter)
-Borders:             gray-800 (Tailwind)
-Text (primary):      gray-100 (Tailwind)
-Text (muted):        gray-400 (Tailwind)
-Accent:              purple-500/600/700 (Tailwind)
+#### 1. App.tsx Modifications
+
+**New State:**
+```typescript
+const [isProDashboardExpanded, setIsProDashboardExpanded] = useState(false);
 ```
 
-This ensures the Admin Portal always displays in a sleek, consistent dark theme regardless of the user's main site preferences.
+**New Import:**
+```typescript
+import { ProDashboard } from './components/ProDashboard';
+```
+
+**Placement**: The expand button and ProDashboard render inside the `viewMode === 'results'` block, after the `ResultsDashboard` component and before the `Footer`. The button will be centered with subtle styling:
+
+```tsx
+{/* Expand Button */}
+<div className="flex justify-center my-8">
+  <button
+    onClick={() => setIsProDashboardExpanded(!isProDashboardExpanded)}
+    className="flex items-center gap-2 px-6 py-3 border border-[var(--border)] 
+               rounded-xl text-[var(--text-muted)] hover:text-[var(--text-main)] 
+               hover:border-[var(--text-muted)] transition-all text-sm font-medium"
+  >
+    {isProDashboardExpanded ? '↑ Collapse' : '↓ Expand Advanced Analysis & Projections'}
+  </button>
+</div>
+
+{/* Pro Dashboard - Animated */}
+{isProDashboardExpanded && (
+  <div className="animate-fade-in">
+    <ProDashboard 
+      results={results} 
+      assumptions={assumptions} 
+      theme={theme}
+    />
+  </div>
+)}
+```
+
+---
+
+#### 2. ProDashboard.tsx (Container)
+
+**Purpose**: Wrapper component that handles the split-panel layout and mobile restriction.
+
+**Props:**
+```typescript
+interface ProDashboardProps {
+  results: CalculationResult;
+  assumptions: Assumptions;
+  theme: Theme;
+}
+```
+
+**Layout:**
+- Uses CSS Grid: `grid-cols-1 lg:grid-cols-5` (60/40 split on desktop)
+- Hidden on mobile with "Desktop Only" message: `hidden md:block`
+- Inner panels use theme variables: `bg-[var(--bg-card)]`, `border-[var(--border)]`
+
+**Structure:**
+```tsx
+<div className="w-full pb-12">
+  {/* Mobile Restriction Message */}
+  <div className="md:hidden text-center py-8">
+    <p className="text-[var(--text-muted)] text-sm">
+      Pro Dashboard is available on desktop only.
+    </p>
+  </div>
+  
+  {/* Desktop Layout */}
+  <div className="hidden md:grid grid-cols-1 lg:grid-cols-5 gap-6">
+    <div className="lg:col-span-3">
+      <FireProjection results={results} theme={theme} />
+    </div>
+    <div className="lg:col-span-2">
+      <ComparisonBattle results={results} assumptions={assumptions} theme={theme} />
+    </div>
+  </div>
+</div>
+```
+
+---
+
+#### 3. FireProjection.tsx (Left Panel)
+
+**Purpose**: Calculate and visualize "Years of Freedom" wasted - how many years of retirement could have been funded.
+
+**Props:**
+```typescript
+interface FireProjectionProps {
+  results: CalculationResult;
+  theme: Theme;
+}
+```
+
+**State:**
+```typescript
+const [targetAnnualSpend, setTargetAnnualSpend] = useState(60000);
+```
+
+**Logic:**
+```typescript
+const yearsWasted = results.potentialValueUnlocked / targetAnnualSpend;
+const yearsWastedDisplay = yearsWasted.toFixed(1);
+
+// For donut chart: show ratio of wasted vs remaining 25-year retirement
+const maxRetirementYears = 25;
+const wastedPercent = Math.min((yearsWasted / maxRetirementYears) * 100, 100);
+const remainingPercent = 100 - wastedPercent;
+```
+
+**Visual Elements:**
+1. **Header**: Icon + "FIRE / Retirement Projection" title
+2. **Input Field**: "Target Annual Retirement Spend ($)" with default $60,000
+3. **Donut Chart**: Using Recharts `<PieChart>` with two segments:
+   - "Wasted Years" segment in `var(--primary)` color
+   - "Remaining" segment in muted gray
+4. **Big Number**: "You sacrificed X.X Years of Retirement" in large `text-[var(--primary)]`
+5. **Context Text**: Explanation of the FIRE methodology
+
+**Donut Chart Implementation:**
+```tsx
+<PieChart>
+  <Pie
+    data={[
+      { name: 'Wasted', value: wastedPercent },
+      { name: 'Remaining', value: remainingPercent }
+    ]}
+    innerRadius={60}
+    outerRadius={80}
+    dataKey="value"
+  >
+    <Cell fill="var(--primary)" />
+    <Cell fill="var(--border)" />
+  </Pie>
+</PieChart>
+```
+
+---
+
+#### 4. ComparisonBattle.tsx (Right Panel)
+
+**Purpose**: Compare current regret against a hypothetical alternative habit in a "Vs." battle format.
+
+**Props:**
+```typescript
+interface ComparisonBattleProps {
+  results: CalculationResult;
+  assumptions: Assumptions;
+  theme: Theme;
+}
+```
+
+**State:**
+```typescript
+const [vsHabitName, setVsHabitName] = useState('Daily DoorDash');
+const [vsMonthlyAmount, setVsMonthlyAmount] = useState(200);
+```
+
+**Logic:**
+Calculate the alternative habit's 30-year potential using the same compounding formula:
+```typescript
+const calculateFutureValue = (monthlyContribution: number, annualReturn: number, years: number) => {
+  const monthlyRate = Math.pow(1 + annualReturn / 100, 1 / 12) - 1;
+  const months = years * 12;
+  if (monthlyRate === 0) return monthlyContribution * months;
+  return monthlyContribution * ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate);
+};
+
+const vsResult = calculateFutureValue(vsMonthlyAmount, assumptions.annualReturn, assumptions.timeHorizonYears);
+const originalResult = results.potentialValueUnlocked;
+const winner = originalResult > vsResult ? 'original' : 'vs';
+```
+
+**Visual Elements:**
+1. **Header**: Icon + "Head-to-Head Battle" title
+2. **Input Fields Row**:
+   - "Vs. Habit Name" (text input)
+   - "Monthly Cost ($)" (number input)
+3. **Battle Cards**:
+   ```text
+   ┌─────────────────┐    VS    ┌─────────────────┐
+   │    Original     │          │  [Habit Name]   │
+   │  $XXX,XXX,XXX   │          │  $XXX,XXX,XXX   │
+   │   30yr value    │          │   30yr value    │
+   └─────────────────┘          └─────────────────┘
+   ```
+4. **Winner Highlight**: The higher-value card gets a subtle glow using `shadow-[0_0_20px_var(--primary-50)]` and `border-[var(--primary)]`
+5. **Verdict Text**: "Your [original/alternative] habits cost you more in the long run"
+
+---
+
+### Styling Guidelines
+
+All components will use **only** the theme CSS variables:
+
+| Variable | Usage |
+|----------|-------|
+| `var(--bg-card)` | Panel backgrounds |
+| `var(--bg-input)` | Input field backgrounds |
+| `var(--bg-hover)` | Hover states, secondary backgrounds |
+| `var(--border)` | All borders |
+| `var(--text-main)` | Primary text |
+| `var(--text-muted)` | Secondary text, labels |
+| `var(--primary)` | Accent color, winner highlights, chart segments |
+| `var(--primary-20)` | Subtle accent backgrounds (20% opacity) |
+| `var(--primary-50)` | Medium accent for glows |
+
+---
+
+### Mobile Handling
+
+- The entire `ProDashboard` component shows a centered message on screens below `md` breakpoint: "Pro Dashboard is available on desktop only."
+- The expand button remains visible on all screen sizes but leads to this message on mobile
+- This aligns with the existing mobile restriction pattern in the codebase
+
+---
+
+### Animation
+
+- The ProDashboard uses the existing `animate-fade-in` class defined in the tailwind keyframes
+- The expand button smoothly transitions icon direction with the toggle state
+- Chart elements animate on mount via Recharts' built-in animation
+
+---
+
+### Component Relationships
+
+```text
+App.tsx
+├── ResultsDashboard (existing)
+├── Expand Button (new, inline)
+└── ProDashboard (new component)
+    ├── FireProjection
+    │   └── PieChart (Recharts)
+    └── ComparisonBattle
+        └── Future value calculation (inline)
+```
+
+---
+
+### Summary
+
+This implementation creates a powerful analysis extension that:
+1. Calculates "Years of Retirement Sacrificed" with a visual donut chart
+2. Enables head-to-head habit comparisons with real-time calculations
+3. Maintains full theme compatibility across all three themes (Purple, Matrix, Ocean)
+4. Gracefully degrades on mobile with a clear "Desktop Only" message
+5. Uses smooth fade-in animation when expanded
 
