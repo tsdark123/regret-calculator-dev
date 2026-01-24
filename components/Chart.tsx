@@ -67,11 +67,13 @@ export const ResultsChart: React.FC<ChartProps> = ({ data, theme }) => {
   const yAxisWidth = Math.max(50, maxFormattedLabel.length * 9 + 8);
 
   return (
-    <div className="w-full h-[280px] md:h-[320px] outline-none focus:outline-none" tabIndex={-1}>
-      <ResponsiveContainer width="100%" height="100%">
+    <div className="w-full h-[280px] md:h-[320px] outline-none focus:outline-none [&_.recharts-wrapper]:!outline-none [&_.recharts-surface]:!outline-none [&_*:focus]:!outline-none" tabIndex={-1}>
+      <ResponsiveContainer width="100%" height="100%" style={{ outline: 'none' }}>
         <AreaChart
           data={data}
           margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
+          tabIndex={-1}
+          style={{ outline: 'none' }}
         >
           <defs>
             <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
