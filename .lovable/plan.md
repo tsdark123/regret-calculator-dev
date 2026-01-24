@@ -1,314 +1,234 @@
 
 
-## Pro Dashboard: Advanced Analysis & Projections
+## ProDashboard Premium Upgrade: "Davbank-Style" with Physics-Based Animation
 
 ### Overview
 
-This plan implements an expandable "Pro Dashboard" section that appears below the existing Results view when triggered. It follows the split-panel layout from the reference images but uses the site's dynamic theme variables exclusively.
+This upgrade transforms the flat, wireframe ProDashboard into a premium, polished experience with:
+1. **Physics-based spring animation** via `framer-motion` for smooth expand/collapse
+2. **Technical grid pattern** background with depth
+3. **Glassmorphism cards** with blur and transparency
+4. **Premium typography** with heavy weights and tight tracking
+5. **Neon glow effects** on winner cards
 
 ---
 
-### Architecture
+### Dependencies to Install
 
-```text
-┌─────────────────────────────────────────────────────────────────────────────┐
-│  EXISTING RESULTS DASHBOARD (ResultsDashboard.tsx)                          │
-│  - KPI Cards, Chart, Narrative, Time Cost, Opportunity Cost, Methodology    │
-└─────────────────────────────────────────────────────────────────────────────┘
-                                    │
-                                    ▼
-┌─────────────────────────────────────────────────────────────────────────────┐
-│  EXPAND BUTTON (centered, subtle styling)                                   │
-│  "↓ Expand Advanced Analysis & Projections"                                 │
-└─────────────────────────────────────────────────────────────────────────────┘
-                                    │ (on click, animate open)
-                                    ▼
-┌─────────────────────────────────────────────────────────────────────────────┐
-│  PRO DASHBOARD CONTAINER (hidden on mobile)                                 │
-├────────────────────────────────┬────────────────────────────────────────────┤
-│  LEFT PANEL (60%)              │  RIGHT PANEL (40%)                         │
-│  FireProjection.tsx            │  ComparisonBattle.tsx                      │
-│  ┌──────────────────────────┐  │  ┌──────────────────────────────────────┐  │
-│  │ "Years of Freedom" Calc  │  │  │ Head-to-Head Battle                  │  │
-│  │ Target Annual Spend Input│  │  │ "Vs. Habit Name" Input               │  │
-│  │ Donut Chart (Recharts)   │  │  │ "Monthly Cost ($)" Input             │  │
-│  │ "X.X Years Sacrificed"   │  │  │                                      │  │
-│  └──────────────────────────┘  │  │ ┌──────────┐ VS ┌──────────────────┐ │  │
-│                                │  │ │ Original │    │ New Habit        │ │  │
-│                                │  │ │ $XXX,XXX │    │ $XXX,XXX         │ │  │
-│                                │  │ └──────────┘    └──────────────────┘ │  │
-│                                │  │ Winner highlight with primary glow   │  │
-│                                │  └──────────────────────────────────────┘  │
-└────────────────────────────────┴────────────────────────────────────────────┘
-```
+| Package | Purpose |
+|---------|---------|
+| `framer-motion` | Physics-based spring animations for expand/collapse |
 
 ---
-
-### Files to Create
-
-| File | Purpose |
-|------|---------|
-| `components/ProDashboard.tsx` | Container with two-column grid layout |
-| `components/FireProjection.tsx` | Left panel: retirement years calculation + donut chart |
-| `components/ComparisonBattle.tsx` | Right panel: habit vs habit comparison |
 
 ### Files to Modify
 
 | File | Changes |
 |------|---------|
-| `App.tsx` | Add `isProDashboardExpanded` state, render expand button + ProDashboard in results view |
+| `App.tsx` | Wrap ProDashboard in `AnimatePresence`, use `motion.div` with spring physics |
+| `ProDashboard.tsx` | Add technical grid background pattern, glassmorphism container styling |
+| `FireProjection.tsx` | Glassmorphism card, recessed pill inputs, thin ring chart (75% inner radius), heavy typography |
+| `ComparisonBattle.tsx` | Glassmorphism card, recessed pill inputs, neon drop-shadow glow on winner |
 
 ---
 
 ### Implementation Details
 
-#### 1. App.tsx Modifications
-
-**New State:**
-```typescript
-const [isProDashboardExpanded, setIsProDashboardExpanded] = useState(false);
-```
+#### 1. App.tsx - Framer Motion Integration
 
 **New Import:**
 ```typescript
-import { ProDashboard } from './components/ProDashboard';
+import { AnimatePresence, motion } from 'framer-motion';
 ```
 
-**Placement**: The expand button and ProDashboard render inside the `viewMode === 'results'` block, after the `ResultsDashboard` component and before the `Footer`. The button will be centered with subtle styling:
+**Refactored Animation Block (lines 352-361):**
+Replace the current CSS `animate-fade-in` approach with proper physics:
 
 ```tsx
-{/* Expand Button */}
-<div className="flex justify-center my-8">
-  <button
-    onClick={() => setIsProDashboardExpanded(!isProDashboardExpanded)}
-    className="flex items-center gap-2 px-6 py-3 border border-[var(--border)] 
-               rounded-xl text-[var(--text-muted)] hover:text-[var(--text-main)] 
-               hover:border-[var(--text-muted)] transition-all text-sm font-medium"
-  >
-    {isProDashboardExpanded ? '↑ Collapse' : '↓ Expand Advanced Analysis & Projections'}
-  </button>
-</div>
-
-{/* Pro Dashboard - Animated */}
-{isProDashboardExpanded && (
-  <div className="animate-fade-in">
-    <ProDashboard 
-      results={results} 
-      assumptions={assumptions} 
-      theme={theme}
-    />
-  </div>
-)}
+{/* Pro Dashboard - Physics-Based Animation */}
+<AnimatePresence>
+  {isProDashboardExpanded && (
+    <motion.div
+      initial={{ opacity: 0, height: 0 }}
+      animate={{ opacity: 1, height: "auto" }}
+      exit={{ opacity: 0, height: 0 }}
+      transition={{ 
+        type: "spring", 
+        stiffness: 300, 
+        damping: 30,
+        opacity: { duration: 0.2 }
+      }}
+      style={{ overflow: "hidden" }}
+    >
+      <ProDashboard 
+        results={results} 
+        assumptions={assumptions} 
+        theme={theme}
+      />
+    </motion.div>
+  )}
+</AnimatePresence>
 ```
+
+**Goal**: The dashboard slides open with "physical weight", pushing the footer down smoothly instead of a jerky CSS animation.
 
 ---
 
-#### 2. ProDashboard.tsx (Container)
+#### 2. ProDashboard.tsx - Technical Grid Background
 
-**Purpose**: Wrapper component that handles the split-panel layout and mobile restriction.
+**Container Changes:**
+Replace the current flat `div` with a textured container featuring the technical grid pattern:
 
-**Props:**
-```typescript
-interface ProDashboardProps {
-  results: CalculationResult;
-  assumptions: Assumptions;
-  theme: Theme;
-}
-```
-
-**Layout:**
-- Uses CSS Grid: `grid-cols-1 lg:grid-cols-5` (60/40 split on desktop)
-- Hidden on mobile with "Desktop Only" message: `hidden md:block`
-- Inner panels use theme variables: `bg-[var(--bg-card)]`, `border-[var(--border)]`
-
-**Structure:**
 ```tsx
 <div className="w-full pb-12">
-  {/* Mobile Restriction Message */}
-  <div className="md:hidden text-center py-8">
-    <p className="text-[var(--text-muted)] text-sm">
-      Pro Dashboard is available on desktop only.
-    </p>
-  </div>
+  {/* Mobile Restriction Message - unchanged */}
   
-  {/* Desktop Layout */}
-  <div className="hidden md:grid grid-cols-1 lg:grid-cols-5 gap-6">
-    <div className="lg:col-span-3">
-      <FireProjection results={results} theme={theme} />
-    </div>
-    <div className="lg:col-span-2">
-      <ComparisonBattle results={results} assumptions={assumptions} theme={theme} />
-    </div>
+  {/* Desktop Layout - With Technical Grid Background */}
+  <div 
+    className="hidden md:grid grid-cols-1 lg:grid-cols-5 gap-6 p-6 rounded-3xl 
+               bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)]
+               bg-[size:24px_24px]
+               border border-white/5"
+  >
+    {/* Panels remain the same structure but with updated child components */}
   </div>
 </div>
 ```
 
+**Visual Effect**: Creates a subtle 24px technical grid pattern in the background, adding depth without distraction.
+
 ---
 
-#### 3. FireProjection.tsx (Left Panel)
+#### 3. FireProjection.tsx - Glassmorphism + Premium Typography
 
-**Purpose**: Calculate and visualize "Years of Freedom" wasted - how many years of retirement could have been funded.
-
-**Props:**
-```typescript
-interface FireProjectionProps {
-  results: CalculationResult;
-  theme: Theme;
-}
-```
-
-**State:**
-```typescript
-const [targetAnnualSpend, setTargetAnnualSpend] = useState(60000);
-```
-
-**Logic:**
-```typescript
-const yearsWasted = results.potentialValueUnlocked / targetAnnualSpend;
-const yearsWastedDisplay = yearsWasted.toFixed(1);
-
-// For donut chart: show ratio of wasted vs remaining 25-year retirement
-const maxRetirementYears = 25;
-const wastedPercent = Math.min((yearsWasted / maxRetirementYears) * 100, 100);
-const remainingPercent = 100 - wastedPercent;
-```
-
-**Visual Elements:**
-1. **Header**: Icon + "FIRE / Retirement Projection" title
-2. **Input Field**: "Target Annual Retirement Spend ($)" with default $60,000
-3. **Donut Chart**: Using Recharts `<PieChart>` with two segments:
-   - "Wasted Years" segment in `var(--primary)` color
-   - "Remaining" segment in muted gray
-4. **Big Number**: "You sacrificed X.X Years of Retirement" in large `text-[var(--primary)]`
-5. **Context Text**: Explanation of the FIRE methodology
-
-**Donut Chart Implementation:**
+**Card Container (line 39):**
 ```tsx
-<PieChart>
-  <Pie
-    data={[
-      { name: 'Wasted', value: wastedPercent },
-      { name: 'Remaining', value: remainingPercent }
-    ]}
-    innerRadius={60}
-    outerRadius={80}
-    dataKey="value"
-  >
-    <Cell fill="var(--primary)" />
-    <Cell fill="var(--border)" />
-  </Pie>
-</PieChart>
+// BEFORE:
+<div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl p-6 h-full">
+
+// AFTER (Glassmorphism):
+<div className="bg-[var(--bg-card)]/60 backdrop-blur-xl border border-white/10 
+               rounded-2xl p-6 h-full shadow-2xl">
+```
+
+**Input Field (lines 62-70) - Recessed Pill Style:**
+```tsx
+// BEFORE:
+<input className="w-full bg-[var(--bg-input)] border border-[var(--border)] rounded-xl px-4 py-3 pl-8 ...">
+
+// AFTER (Recessed Pill):
+<input className="w-full bg-black/20 border-0 rounded-full px-6 py-3 pl-10 
+                 shadow-[inset_0_2px_4px_rgba(0,0,0,0.3)]
+                 text-[var(--text-main)] placeholder-[var(--text-muted)]
+                 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/50 transition-all">
+```
+
+**Donut Chart (lines 80-91) - Thin Modern Ring:**
+```tsx
+// BEFORE:
+innerRadius={50}
+outerRadius={70}
+
+// AFTER (75% ratio = thin ring):
+innerRadius={56}  // 75% of 75 outer
+outerRadius={75}
+```
+
+The inner radius is now 75% of the outer radius, creating an elegant thin ring instead of a chunky pie.
+
+**Main Metric Typography (lines 104-105):**
+```tsx
+// BEFORE:
+<p className="text-3xl font-bold text-[var(--primary)]">
+
+// AFTER (Heavy, Tight):
+<p className="text-6xl font-black tracking-tighter text-[var(--primary)]">
+```
+
+**Chart Center Text (line 96):**
+```tsx
+// BEFORE:
+<span className="text-2xl font-bold text-[var(--primary)]">
+
+// AFTER:
+<span className="text-3xl font-black tracking-tighter text-[var(--primary)]">
 ```
 
 ---
 
-#### 4. ComparisonBattle.tsx (Right Panel)
+#### 4. ComparisonBattle.tsx - Glassmorphism + Neon Glow
 
-**Purpose**: Compare current regret against a hypothetical alternative habit in a "Vs." battle format.
+**Card Container (line 29):**
+```tsx
+// BEFORE:
+<div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl p-6 h-full flex flex-col">
 
-**Props:**
-```typescript
-interface ComparisonBattleProps {
-  results: CalculationResult;
-  assumptions: Assumptions;
-  theme: Theme;
-}
+// AFTER (Glassmorphism):
+<div className="bg-[var(--bg-card)]/60 backdrop-blur-xl border border-white/10 
+               rounded-2xl p-6 h-full flex flex-col shadow-2xl">
 ```
 
-**State:**
-```typescript
-const [vsHabitName, setVsHabitName] = useState('Daily DoorDash');
-const [vsMonthlyAmount, setVsMonthlyAmount] = useState(200);
+**Input Fields (lines 56-58, 71-73) - Recessed Pill Style:**
+```tsx
+// BEFORE:
+<input className="w-full bg-[var(--bg-input)] border border-[var(--border)] rounded-xl px-4 py-3 ...">
+
+// AFTER:
+<input className="w-full bg-black/20 border-0 rounded-full px-4 py-3
+                 shadow-[inset_0_2px_4px_rgba(0,0,0,0.3)]
+                 text-[var(--text-main)] placeholder-[var(--text-muted)]
+                 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/50 transition-all text-sm">
 ```
 
-**Logic:**
-Calculate the alternative habit's 30-year potential using the same compounding formula:
-```typescript
-const calculateFutureValue = (monthlyContribution: number, annualReturn: number, years: number) => {
-  const monthlyRate = Math.pow(1 + annualReturn / 100, 1 / 12) - 1;
-  const months = years * 12;
-  if (monthlyRate === 0) return monthlyContribution * months;
-  return monthlyContribution * ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate);
-};
+**Winner Card Glow (lines 85-89, 120-124) - Neon Drop Shadow:**
+```tsx
+// BEFORE (winner styling):
+className={`... ${
+  winner === 'original' 
+    ? 'border-[var(--primary)] shadow-[0_0_20px_var(--primary-20)] bg-[var(--primary-20)]' 
+    : 'border-[var(--border)] bg-[var(--bg-hover)]'
+}`}
 
-const vsResult = calculateFutureValue(vsMonthlyAmount, assumptions.annualReturn, assumptions.timeHorizonYears);
-const originalResult = results.potentialValueUnlocked;
-const winner = originalResult > vsResult ? 'original' : 'vs';
+// AFTER (Neon Glow):
+className={`... ${
+  winner === 'original' 
+    ? 'border-[var(--primary)] drop-shadow-[0_0_15px_var(--primary)] bg-[var(--primary)]/20' 
+    : 'border-white/10 bg-white/5'
+}`}
 ```
 
-**Visual Elements:**
-1. **Header**: Icon + "Head-to-Head Battle" title
-2. **Input Fields Row**:
-   - "Vs. Habit Name" (text input)
-   - "Monthly Cost ($)" (number input)
-3. **Battle Cards**:
-   ```text
-   ┌─────────────────┐    VS    ┌─────────────────┐
-   │    Original     │          │  [Habit Name]   │
-   │  $XXX,XXX,XXX   │          │  $XXX,XXX,XXX   │
-   │   30yr value    │          │   30yr value    │
-   └─────────────────┘          └─────────────────┘
-   ```
-4. **Winner Highlight**: The higher-value card gets a subtle glow using `shadow-[0_0_20px_var(--primary-50)]` and `border-[var(--primary)]`
-5. **Verdict Text**: "Your [original/alternative] habits cost you more in the long run"
+The `drop-shadow-[0_0_15px_var(--primary)]` creates a neon light effect behind the winning card.
 
----
+**Battle Card Values (lines 100-103, 135-138) - Heavy Typography:**
+```tsx
+// BEFORE:
+<p className="text-xl font-bold ...">
 
-### Styling Guidelines
-
-All components will use **only** the theme CSS variables:
-
-| Variable | Usage |
-|----------|-------|
-| `var(--bg-card)` | Panel backgrounds |
-| `var(--bg-input)` | Input field backgrounds |
-| `var(--bg-hover)` | Hover states, secondary backgrounds |
-| `var(--border)` | All borders |
-| `var(--text-main)` | Primary text |
-| `var(--text-muted)` | Secondary text, labels |
-| `var(--primary)` | Accent color, winner highlights, chart segments |
-| `var(--primary-20)` | Subtle accent backgrounds (20% opacity) |
-| `var(--primary-50)` | Medium accent for glows |
-
----
-
-### Mobile Handling
-
-- The entire `ProDashboard` component shows a centered message on screens below `md` breakpoint: "Pro Dashboard is available on desktop only."
-- The expand button remains visible on all screen sizes but leads to this message on mobile
-- This aligns with the existing mobile restriction pattern in the codebase
-
----
-
-### Animation
-
-- The ProDashboard uses the existing `animate-fade-in` class defined in the tailwind keyframes
-- The expand button smoothly transitions icon direction with the toggle state
-- Chart elements animate on mount via Recharts' built-in animation
-
----
-
-### Component Relationships
-
-```text
-App.tsx
-├── ResultsDashboard (existing)
-├── Expand Button (new, inline)
-└── ProDashboard (new component)
-    ├── FireProjection
-    │   └── PieChart (Recharts)
-    └── ComparisonBattle
-        └── Future value calculation (inline)
+// AFTER:
+<p className="text-2xl font-black tracking-tight ...">
 ```
 
 ---
 
-### Summary
+### Visual Summary
 
-This implementation creates a powerful analysis extension that:
-1. Calculates "Years of Retirement Sacrificed" with a visual donut chart
-2. Enables head-to-head habit comparisons with real-time calculations
-3. Maintains full theme compatibility across all three themes (Purple, Matrix, Ocean)
-4. Gracefully degrades on mobile with a clear "Desktop Only" message
-5. Uses smooth fade-in animation when expanded
+| Element | Before | After |
+|---------|--------|-------|
+| **Animation** | CSS `animate-fade-in` (instant) | Spring physics with stiffness:300, damping:30 |
+| **Container BG** | Flat `bg-card` | Technical grid pattern 24px |
+| **Cards** | Solid background | 60% opacity + `backdrop-blur-xl` + `shadow-2xl` |
+| **Card Border** | Theme border color | `border-white/10` |
+| **Inputs** | Rounded rectangles | Recessed pills with inset shadow |
+| **Donut Chart** | 71% inner ratio (chunky) | 75% inner ratio (thin ring) |
+| **Metric Numbers** | `text-3xl font-bold` | `text-6xl font-black tracking-tighter` |
+| **Winner Highlight** | Box shadow | Neon `drop-shadow` glow |
+
+---
+
+### Technical Notes
+
+- **Spring Physics**: `stiffness: 300, damping: 30` creates a snappy but controlled motion that feels "weighty"
+- **Glassmorphism Compatibility**: `backdrop-blur-xl` works in all modern browsers (Chrome, Firefox, Safari, Edge)
+- **Theme Variables Preserved**: All accent colors still use `var(--primary)`, maintaining theme responsiveness
+- **Dark Mode Optimized**: `border-white/10` and `bg-white/5` work well on dark backgrounds; these can be adjusted if light mode is added later
 
