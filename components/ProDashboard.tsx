@@ -19,18 +19,31 @@ export const ProDashboard: React.FC<ProDashboardProps> = ({ results, assumptions
         </p>
       </div>
       
-      {/* Desktop Layout - With Technical Grid Background */}
-      <div 
-        className="hidden md:grid grid-cols-1 lg:grid-cols-5 gap-6 p-6 rounded-3xl 
-                   bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)]
-                   bg-[size:24px_24px]
-                   border border-white/5"
-      >
-        <div className="lg:col-span-3">
-          <FireProjection results={results} theme={theme} />
-        </div>
-        <div className="lg:col-span-2">
-          <ComparisonBattle results={results} assumptions={assumptions} theme={theme} />
+      {/* Desktop Layout - With Ambient Light */}
+      <div className="hidden md:block relative overflow-hidden rounded-3xl p-6
+                      bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)]
+                      bg-[size:24px_24px]
+                      border border-white/5">
+        
+        {/* Ambient Light Orb 1 - Top Left (Primary Color) */}
+        <div className="absolute -top-[20%] -left-[10%] w-[500px] h-[500px] 
+                        bg-[var(--primary)]/20 blur-[120px] rounded-full pointer-events-none" />
+        
+        {/* Ambient Light Orb 2 - Bottom Right (Blue Accent) */}
+        <div className="absolute -bottom-[20%] -right-[10%] w-[400px] h-[400px] 
+                        bg-blue-500/10 blur-[100px] rounded-full pointer-events-none" />
+        
+        {/* Content Grid */}
+        <div className="relative z-10 grid grid-cols-1 lg:grid-cols-5 gap-6">
+          {/* Gradient Border Wrapper - FireProjection */}
+          <div className="lg:col-span-3 p-[1px] rounded-2xl bg-gradient-to-b from-white/20 to-transparent">
+            <FireProjection results={results} theme={theme} />
+          </div>
+          
+          {/* Gradient Border Wrapper - ComparisonBattle */}
+          <div className="lg:col-span-2 p-[1px] rounded-2xl bg-gradient-to-b from-white/20 to-transparent">
+            <ComparisonBattle results={results} assumptions={assumptions} theme={theme} />
+          </div>
         </div>
       </div>
     </div>

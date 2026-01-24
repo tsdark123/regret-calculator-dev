@@ -36,7 +36,8 @@ export const FireProjection: React.FC<FireProjectionProps> = ({ results, theme }
   };
 
   return (
-    <div className="bg-[var(--bg-card)]/60 backdrop-blur-xl border border-white/10 rounded-2xl p-6 h-full shadow-2xl">
+    <div className="bg-black/40 backdrop-blur-xl rounded-2xl p-6 h-full 
+                   shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),inset_0_0_20px_rgba(255,255,255,0.03)]">
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
         <div className="p-2.5 rounded-xl bg-[var(--primary-20)]">
@@ -92,17 +93,19 @@ export const FireProjection: React.FC<FireProjectionProps> = ({ results, theme }
               </Pie>
             </PieChart>
           </ResponsiveContainer>
-          {/* Center Text - Heavy Typography */}
+          {/* Center Text - Metallic Gradient */}
           <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <span className="text-3xl font-black tracking-tighter text-[var(--primary)]">{yearsWastedDisplay}</span>
+            <span className="text-3xl font-black tracking-tighter bg-gradient-to-br from-white to-white/50 bg-clip-text text-transparent">
+              {yearsWastedDisplay}
+            </span>
             <span className="text-xs text-[var(--text-muted)]">years</span>
           </div>
         </div>
 
-        {/* Stats - Premium Typography */}
+        {/* Stats - Metallic Typography */}
         <div className="flex-1 space-y-4">
           <div>
-            <p className="text-6xl font-black tracking-tighter text-[var(--primary)]">
+            <p className="text-6xl font-black tracking-tighter bg-gradient-to-br from-white to-white/50 bg-clip-text text-transparent">
               {yearsWastedDisplay}
             </p>
             <p className="text-sm text-[var(--text-muted)]">
