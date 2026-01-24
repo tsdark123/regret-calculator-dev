@@ -193,9 +193,11 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
       {/* Status Badge */}
       <div className="flex items-center gap-3 mb-4">
         <span 
-          className="px-3 py-1 rounded-full text-xs font-medium border border-[var(--border)]/50 bg-transparent"
+          className="px-3 py-1 rounded-full text-xs font-medium bg-transparent"
           style={{ 
-            color: originalIsDeadlier ? 'var(--primary)' : selectedChallenger.color 
+            color: originalIsDeadlier ? 'var(--primary)' : selectedChallenger.color,
+            border: `0.5px solid ${originalIsDeadlier ? 'var(--primary)' : selectedChallenger.color}`,
+            opacity: 0.9
           }}
         >
           {deadlierName} is the deadlier habit
