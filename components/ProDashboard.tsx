@@ -19,13 +19,8 @@ export const ProDashboard: React.FC<ProDashboardProps> = ({ results, assumptions
         </p>
       </div>
       
-      {/* Desktop Layout - With Technical Grid Background */}
-      <div 
-        className="hidden md:grid grid-cols-1 lg:grid-cols-5 gap-6 p-6 rounded-3xl 
-                   bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)]
-                   bg-[size:24px_24px]
-                   border border-white/5"
-      >
+      {/* Desktop Layout - 60/40 Split */}
+      <div className="hidden md:grid grid-cols-1 lg:grid-cols-5 gap-6">
         <div className="lg:col-span-3">
           <FireProjection results={results} theme={theme} />
         </div>
