@@ -271,7 +271,7 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
             className={`flex items-center gap-2.5 px-3.5 py-2.5 
                      rounded-xl focus:outline-none transition-all duration-200
                      ${theme === 'blue' 
-                       ? '!bg-white/30 !border !border-white/80 backdrop-blur-md shadow-sm !text-blue-900 hover:!bg-white/40' 
+                       ? '!bg-sky-100/80 !border !border-sky-200/60 backdrop-blur-md shadow-sm !text-sky-900 hover:!bg-sky-100/90' 
                        : 'bg-black/25 border border-[var(--border)] text-[var(--text-main)] hover:border-[var(--primary)]/30'
                      }`}
           >
@@ -299,7 +299,7 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
           <div 
             className={`absolute z-50 top-full left-0 mt-2 min-w-[260px]
                        ${theme === 'blue'
-                         ? 'bg-white/90 border border-white/80 backdrop-blur-lg'
+                         ? 'bg-sky-50/95 border border-sky-200/60 backdrop-blur-lg'
                          : 'bg-[var(--bg-card)] border border-[var(--border)]'
                        } rounded-2xl shadow-2xl overflow-hidden
                        transition-all duration-200 origin-top
