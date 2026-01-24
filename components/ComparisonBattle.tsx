@@ -4,35 +4,79 @@ import { CalculationResult, Assumptions, Theme } from '../types';
 import { formatCurrency } from '../utils/financials';
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 
-// 2026 subscription data with logos
+// Diverse challenger options with varied frequencies (all normalized to monthly)
 const CHALLENGER_OPTIONS = [
   {
     id: 'netflix',
     name: 'Netflix',
     monthlyCost: 17.99,
-    logo: 'https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/netflix.svg',
+    displayCost: '$17.99/mo',
+    icon: 'https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/netflix.svg',
+    isEmoji: false,
     color: '#E50914',
   },
   {
-    id: 'spotify',
-    name: 'Spotify Premium',
-    monthlyCost: 12.99,
-    logo: 'https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/spotify.svg',
-    color: '#1DB954',
+    id: 'doordash',
+    name: 'Daily DoorDash',
+    monthlyCost: 25 * 30, // $25/day average order
+    displayCost: '$25/day',
+    icon: '🛵',
+    isEmoji: true,
+    color: '#FF3008',
   },
   {
-    id: 'disney',
-    name: 'Disney+',
-    monthlyCost: 18.99,
-    logo: 'https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/disney-plus.svg',
-    color: '#113CCF',
+    id: 'gym',
+    name: 'Gym Membership',
+    monthlyCost: 49.99,
+    displayCost: '$49.99/mo',
+    icon: '🏋️',
+    isEmoji: true,
+    color: '#6366F1',
   },
   {
-    id: 'youtube',
-    name: 'YouTube Premium',
-    monthlyCost: 15.99,
-    logo: 'https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/youtube.svg',
-    color: '#FF0000',
+    id: 'cigarettes',
+    name: 'Cigarettes',
+    monthlyCost: (9.50 / 7) * 30, // ~$9.50 pack/week → ~$40.71/mo
+    displayCost: '$9.50/pack/wk',
+    icon: '🚬',
+    isEmoji: true,
+    color: '#78716C',
+  },
+  {
+    id: 'coffee',
+    name: 'Daily Starbucks',
+    monthlyCost: 6.50 * 22, // ~$6.50/day, 22 workdays
+    displayCost: '$6.50/day',
+    icon: '☕',
+    isEmoji: true,
+    color: '#00704A',
+  },
+  {
+    id: 'uber',
+    name: 'Weekly Uber Rides',
+    monthlyCost: 35 * 4.3, // ~$35/week
+    displayCost: '$35/week',
+    icon: '🚗',
+    isEmoji: true,
+    color: '#000000',
+  },
+  {
+    id: 'lottery',
+    name: 'Lottery Tickets',
+    monthlyCost: 20 * 4.3, // ~$20/week
+    displayCost: '$20/week',
+    icon: '🎰',
+    isEmoji: true,
+    color: '#F59E0B',
+  },
+  {
+    id: 'fastfood',
+    name: 'Fast Food Lunches',
+    monthlyCost: 12 * 22, // ~$12/lunch, 22 workdays
+    displayCost: '$12/lunch',
+    icon: '🍔',
+    isEmoji: true,
+    color: '#EF4444',
   },
 ];
 
@@ -165,33 +209,31 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
         </div>
       </div>
 
-      {/* Challenger Dropdown */}
+      {/* Challenger Dropdown - Compact Button Style */}
       <div className="mb-4" ref={dropdownRef}>
-        <label className="block text-xs text-[var(--text-muted)] mb-1.5 font-medium">
-          Compare Against
-        </label>
-        <div className="relative">
+        <div className="relative inline-block">
           <button
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            className="w-full flex items-center justify-between gap-3 px-4 py-3 
-                     bg-[var(--bg-input)] border border-[var(--border)] rounded-xl
-                     text-[var(--text-main)] hover:border-[var(--primary)]/50
-                     focus:outline-none focus:border-[var(--primary)] 
-                     transition-all duration-200"
+            className="flex items-center gap-2 px-3 py-2 
+                     bg-black/20 border border-white/5 rounded-lg
+                     text-[var(--text-main)] hover:bg-black/30
+                     focus:outline-none transition-all duration-200"
           >
-            <div className="flex items-center gap-3">
+            {selectedChallenger.isEmoji ? (
+              <span className="text-lg">{selectedChallenger.icon}</span>
+            ) : (
               <img 
-                src={selectedChallenger.logo} 
+                src={selectedChallenger.icon} 
                 alt={selectedChallenger.name}
-                className="w-6 h-6 object-contain"
+                className="w-5 h-5 object-contain"
               />
-              <span className="font-medium text-sm">{selectedChallenger.name}</span>
-              <span className="text-[var(--text-muted)] text-sm">
-                ${selectedChallenger.monthlyCost}/mo
-              </span>
-            </div>
+            )}
+            <span className="font-medium text-sm">{selectedChallenger.name}</span>
+            <span className="text-[var(--text-muted)] text-xs">
+              {selectedChallenger.displayCost}
+            </span>
             <ChevronDown 
-              className={`w-4 h-4 text-[var(--text-muted)] transition-transform duration-200 ${
+              className={`w-3.5 h-3.5 text-[var(--text-muted)] transition-transform duration-200 ${
                 isDropdownOpen ? 'rotate-180' : ''
               }`}
             />
@@ -199,9 +241,9 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
 
           {/* Dropdown Menu */}
           <div 
-            className={`absolute z-50 top-full left-0 right-0 mt-2 
-                       bg-[var(--bg-card)] border border-[var(--border)] rounded-xl 
-                       shadow-xl overflow-hidden
+            className={`absolute z-50 top-full left-0 mt-1.5 min-w-[240px]
+                       bg-[#1a1a1a] border border-white/10 rounded-lg 
+                       shadow-2xl overflow-hidden
                        transition-all duration-200 origin-top
                        ${isDropdownOpen 
                          ? 'opacity-100 scale-y-100 translate-y-0' 
@@ -212,27 +254,31 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
               <button
                 key={option.id}
                 onClick={() => handleSelectChallenger(option)}
-                className={`w-full flex items-center justify-between gap-3 px-4 py-3
-                          hover:bg-[var(--bg-hover)] transition-colors duration-150
-                          ${index !== CHALLENGER_OPTIONS.length - 1 ? 'border-b border-[var(--border)]/50' : ''}
-                          ${selectedChallenger.id === option.id ? 'bg-[var(--primary)]/5' : ''}`}
+                className={`w-full flex items-center justify-between gap-3 px-3 py-2.5
+                          hover:bg-white/5 transition-colors duration-150
+                          ${index !== CHALLENGER_OPTIONS.length - 1 ? 'border-b border-white/5' : ''}
+                          ${selectedChallenger.id === option.id ? 'bg-white/5' : ''}`}
               >
-                <div className="flex items-center gap-3">
-                  <img 
-                    src={option.logo} 
-                    alt={option.name}
-                    className="w-6 h-6 object-contain"
-                  />
+                <div className="flex items-center gap-2.5">
+                  {option.isEmoji ? (
+                    <span className="text-lg w-5 text-center">{option.icon}</span>
+                  ) : (
+                    <img 
+                      src={option.icon} 
+                      alt={option.name}
+                      className="w-5 h-5 object-contain"
+                    />
+                  )}
                   <span className="font-medium text-sm text-[var(--text-main)]">
                     {option.name}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-[var(--text-muted)] text-sm">
-                    ${option.monthlyCost}/mo
+                  <span className="text-[var(--text-muted)] text-xs">
+                    {option.displayCost}
                   </span>
                   {selectedChallenger.id === option.id && (
-                    <Check className="w-4 h-4 text-[var(--primary)]" />
+                    <Check className="w-3.5 h-3.5 text-[var(--primary)]" />
                   )}
                 </div>
               </button>
