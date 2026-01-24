@@ -222,6 +222,7 @@ function MainApp() {
         }
       }, 100);
     } else {
+      // Just collapse without scrolling
       setIsProDashboardExpanded(false);
     }
   }, [isProDashboardExpanded]);
