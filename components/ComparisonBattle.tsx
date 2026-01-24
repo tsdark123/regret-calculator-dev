@@ -14,6 +14,7 @@ const CHALLENGER_OPTIONS = [
     icon: 'https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/netflix.svg',
     isEmoji: false,
     color: '#E50914',
+    isPlural: false,
   },
   {
     id: 'doordash',
@@ -23,6 +24,8 @@ const CHALLENGER_OPTIONS = [
     icon: '/logos/doordash-logo.png',
     isEmoji: false,
     color: '#FF3008',
+    isPlural: false,
+    needsInvert: true,
   },
   {
     id: 'gym',
@@ -32,6 +35,7 @@ const CHALLENGER_OPTIONS = [
     icon: '🏋️',
     isEmoji: true,
     color: '#6366F1',
+    isPlural: false,
   },
   {
     id: 'cigarettes',
@@ -41,6 +45,7 @@ const CHALLENGER_OPTIONS = [
     icon: '🚬',
     isEmoji: true,
     color: '#8B7355',
+    isPlural: true,
   },
   {
     id: 'coffee',
@@ -50,6 +55,8 @@ const CHALLENGER_OPTIONS = [
     icon: '/logos/starbucks-logo.png',
     isEmoji: false,
     color: '#00704A',
+    isPlural: false,
+    needsInvert: true,
   },
   {
     id: 'uber',
@@ -59,6 +66,8 @@ const CHALLENGER_OPTIONS = [
     icon: '/logos/uber-logo.png',
     isEmoji: false,
     color: '#6B7280',
+    isPlural: false,
+    needsInvert: true,
   },
   {
     id: 'lottery',
@@ -68,6 +77,7 @@ const CHALLENGER_OPTIONS = [
     icon: '🎰',
     isEmoji: true,
     color: '#F59E0B',
+    isPlural: true,
   },
   {
     id: 'fastfood',
@@ -77,6 +87,7 @@ const CHALLENGER_OPTIONS = [
     icon: '🍔',
     isEmoji: true,
     color: '#EF4444',
+    isPlural: true,
   },
 ];
 
@@ -193,7 +204,7 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
             color: originalIsDeadlier ? 'var(--primary)' : selectedChallenger.color
           }}
         >
-          {deadlierName} is the deadlier habit
+          {deadlierName} {originalIsDeadlier ? 'is' : (selectedChallenger.isPlural ? 'are' : 'is')} the deadlier habit
         </span>
       </div>
 
@@ -269,7 +280,7 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
               <img 
                 src={selectedChallenger.icon} 
                 alt={selectedChallenger.name}
-                className="w-4 h-4 object-contain"
+                className={`w-4 h-4 object-contain ${selectedChallenger.needsInvert && theme === 'ocean' ? 'invert' : ''}`}
               />
             )}
             <span className="font-medium text-sm">{selectedChallenger.name}</span>
@@ -313,7 +324,7 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
                       <img 
                         src={option.icon} 
                         alt={option.name}
-                        className="w-5 h-5 object-contain"
+                        className={`w-5 h-5 object-contain ${option.needsInvert && theme === 'ocean' ? 'invert' : ''}`}
                       />
                     )}
                     <span className="font-medium text-sm text-[var(--text-main)]">
