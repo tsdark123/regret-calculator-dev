@@ -26,7 +26,7 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
   const winner = originalResult > vsResult ? 'original' : 'vs';
 
   return (
-    <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl p-6 h-full flex flex-col">
+    <div className="bg-[var(--bg-card)]/60 backdrop-blur-xl border border-white/10 rounded-2xl p-6 h-full flex flex-col shadow-2xl">
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
         <div className="p-2.5 rounded-xl bg-[var(--primary-20)]">
@@ -48,15 +48,16 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
           <label className="block text-sm text-[var(--text-muted)] mb-2">
             Vs. Habit Name
           </label>
-          <input
-            type="text"
-            value={vsHabitName}
-            onChange={(e) => setVsHabitName(e.target.value)}
-            placeholder="e.g. Daily Coffee"
-            className="w-full bg-[var(--bg-input)] border border-[var(--border)] rounded-xl px-4 py-3
-                     text-[var(--text-main)] placeholder-[var(--text-muted)]
-                     focus:outline-none focus:border-[var(--primary)] transition-colors text-sm"
-          />
+            <input
+              type="text"
+              value={vsHabitName}
+              onChange={(e) => setVsHabitName(e.target.value)}
+              placeholder="e.g. Daily Coffee"
+              className="w-full bg-black/20 border-0 rounded-full px-4 py-3
+                       shadow-[inset_0_2px_4px_rgba(0,0,0,0.3)]
+                       text-[var(--text-main)] placeholder-[var(--text-muted)]
+                       focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/50 transition-all text-sm"
+            />
         </div>
         <div>
           <label className="block text-sm text-[var(--text-muted)] mb-2">
@@ -68,9 +69,10 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
               type="number"
               value={vsMonthlyAmount}
               onChange={(e) => setVsMonthlyAmount(Math.max(0, Number(e.target.value)))}
-              className="w-full bg-[var(--bg-input)] border border-[var(--border)] rounded-xl px-4 py-3 pl-8
+              className="w-full bg-black/20 border-0 rounded-full px-4 py-3 pl-8
+                       shadow-[inset_0_2px_4px_rgba(0,0,0,0.3)]
                        text-[var(--text-main)] placeholder-[var(--text-muted)]
-                       focus:outline-none focus:border-[var(--primary)] transition-colors text-sm"
+                       focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/50 transition-all text-sm"
               min="0"
             />
           </div>
@@ -80,12 +82,12 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
       {/* Battle Cards */}
       <div className="flex-1 flex items-center">
         <div className="w-full grid grid-cols-[1fr_auto_1fr] gap-3 items-center">
-          {/* Original Card */}
+          {/* Original Card - Neon Glow on Winner */}
           <div 
             className={`relative p-4 rounded-xl border-2 transition-all ${
               winner === 'original' 
-                ? 'border-[var(--primary)] shadow-[0_0_20px_var(--primary-20)] bg-[var(--primary-20)]' 
-                : 'border-[var(--border)] bg-[var(--bg-hover)]'
+                ? 'border-[var(--primary)] drop-shadow-[0_0_15px_var(--primary)] bg-[var(--primary)]/20' 
+                : 'border-white/10 bg-white/5'
             }`}
           >
             {winner === 'original' && (
@@ -97,7 +99,7 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
             <p className="text-lg font-bold text-[var(--text-main)] text-center truncate">
               {results.expenseSummary}
             </p>
-            <p className={`text-xl font-bold text-center mt-2 ${
+            <p className={`text-2xl font-black tracking-tight text-center mt-2 ${
               winner === 'original' ? 'text-[var(--primary)]' : 'text-[var(--text-main)]'
             }`}>
               {formatCurrency(originalResult)}
@@ -115,12 +117,12 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
             </div>
           </div>
 
-          {/* Challenger Card */}
+          {/* Challenger Card - Neon Glow on Winner */}
           <div 
             className={`relative p-4 rounded-xl border-2 transition-all ${
               winner === 'vs' 
-                ? 'border-[var(--primary)] shadow-[0_0_20px_var(--primary-20)] bg-[var(--primary-20)]' 
-                : 'border-[var(--border)] bg-[var(--bg-hover)]'
+                ? 'border-[var(--primary)] drop-shadow-[0_0_15px_var(--primary)] bg-[var(--primary)]/20' 
+                : 'border-white/10 bg-white/5'
             }`}
           >
             {winner === 'vs' && (
@@ -132,7 +134,7 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
             <p className="text-lg font-bold text-[var(--text-main)] text-center truncate">
               {vsHabitName || 'New Habit'}
             </p>
-            <p className={`text-xl font-bold text-center mt-2 ${
+            <p className={`text-2xl font-black tracking-tight text-center mt-2 ${
               winner === 'vs' ? 'text-[var(--primary)]' : 'text-[var(--text-main)]'
             }`}>
               {formatCurrency(vsResult)}
@@ -145,7 +147,7 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
       </div>
 
       {/* Verdict */}
-      <div className="mt-6 p-4 bg-[var(--bg-hover)] rounded-xl border border-[var(--border)] text-center">
+      <div className="mt-6 p-4 bg-[var(--bg-hover)] rounded-xl border border-white/10 text-center">
         <div className="flex items-center justify-center gap-2 text-sm">
           <TrendingDown className="w-4 h-4 text-[var(--primary)]" />
           <p className="text-[var(--text-muted)]">

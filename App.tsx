@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Hero } from './components/Hero';
 import { Navbar } from './components/Navbar';
 import { QueueModule } from './components/QueueModule';
@@ -349,16 +350,29 @@ function MainApp() {
                                     </button>
                                   </div>
 
-                                  {/* Pro Dashboard - Animated */}
-                                  {isProDashboardExpanded && (
-                                    <div className="animate-fade-in">
-                                      <ProDashboard 
-                                        results={results} 
-                                        assumptions={assumptions} 
-                                        theme={theme}
-                                      />
-                                    </div>
-                                  )}
+                                  {/* Pro Dashboard - Physics-Based Animation */}
+                                  <AnimatePresence>
+                                    {isProDashboardExpanded && (
+                                      <motion.div
+                                        initial={{ opacity: 0, height: 0 }}
+                                        animate={{ opacity: 1, height: "auto" }}
+                                        exit={{ opacity: 0, height: 0 }}
+                                        transition={{ 
+                                          type: "spring", 
+                                          stiffness: 300, 
+                                          damping: 30,
+                                          opacity: { duration: 0.2 }
+                                        }}
+                                        style={{ overflow: "hidden" }}
+                                      >
+                                        <ProDashboard 
+                                          results={results} 
+                                          assumptions={assumptions} 
+                                          theme={theme}
+                                        />
+                                      </motion.div>
+                                    )}
+                                  </AnimatePresence>
                               </div>
                           )}
                       </div>
