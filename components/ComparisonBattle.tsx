@@ -33,7 +33,7 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
   // Generate chart data points for the competing lines
   const chartData = [];
   const years = assumptions.timeHorizonYears;
-  const originalMonthly = results.totalMonthly || 0;
+  const originalMonthly = results.totalMonthlyContribution || 0;
   
   for (let year = 0; year <= years; year += Math.max(1, Math.floor(years / 6))) {
     const originalValue = calculateFutureValue(originalMonthly, assumptions.annualReturn, year);
