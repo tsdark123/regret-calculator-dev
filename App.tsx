@@ -222,8 +222,9 @@ function MainApp() {
         }
       }, 100);
     } else {
-      // Just collapse without scrolling
+      // Collapse and scroll back to top of results
       setIsProDashboardExpanded(false);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }, [isProDashboardExpanded]);
   const handleReset = () => {
@@ -363,7 +364,7 @@ function MainApp() {
 
                                   {/* Pro Dashboard - Animated with Framer Motion */}
                                   <div ref={proDashboardRef}>
-                                    <AnimatePresence mode="wait">
+                                    <AnimatePresence mode="popLayout">
                                       {isProDashboardExpanded && (
                                         <motion.div
                                           initial={{ opacity: 0, scaleY: 0.95, y: -20 }}
@@ -380,17 +381,17 @@ function MainApp() {
                                             }
                                           }}
                                           exit={{ 
-                                            opacity: 0, 
-                                            scaleY: 0.95,
-                                            y: -15,
+                                            opacity: 0,
+                                            scaleY: 0.98,
                                             transition: {
                                               duration: 0.25,
-                                              ease: [0.55, 0.085, 0.68, 0.53],
-                                              opacity: { duration: 0.2 }
+                                              ease: "easeOut",
+                                              opacity: { duration: 0.25 },
+                                              scaleY: { duration: 0.25 }
                                             }
                                           }}
                                           style={{ originY: 0 }}
-                                          className="will-change-transform"
+                                          className="will-change-transform overflow-hidden"
                                         >
                                           <ProDashboard 
                                             results={results} 
