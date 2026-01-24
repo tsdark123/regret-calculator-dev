@@ -222,9 +222,11 @@ function MainApp() {
         }
       }, 100);
     } else {
-      // Collapse and scroll back to top of results
+      // Collapse and scroll back to top of results page
       setIsProDashboardExpanded(false);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (inputSectionRef.current) {
+        inputSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     }
   }, [isProDashboardExpanded]);
   const handleReset = () => {
