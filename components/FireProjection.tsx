@@ -1,9 +1,20 @@
 import React, { useState } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import { Flame, TrendingUp, Lock } from 'lucide-react';
-import { motion } from 'framer-motion';
 import { CalculationResult, Theme } from '../types';
 import { formatCurrency } from '../utils/financials';
+
+// GPU-accelerated float keyframes
+const floatKeyframes = `
+@keyframes gpuFloat {
+  0%, 100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -12px, 0);
+  }
+}
+`;
 
 interface FireProjectionProps {
   results: CalculationResult;
@@ -43,20 +54,21 @@ export const FireProjection: React.FC<FireProjectionProps> = ({ results, theme }
       {/* WIP Overlay */}
       {isWorkInProgress && (
         <>
+          {/* Inject GPU-accelerated keyframes */}
+          <style>{floatKeyframes}</style>
+          
           {/* Static blurred background - separate layer, never animated */}
           <div className="absolute inset-0 z-20 bg-[var(--bg-card)]/80 backdrop-blur-sm rounded-2xl" />
           
           {/* Floating content container - isolated from blur layer */}
           <div className="absolute inset-0 z-30 flex items-center justify-center pointer-events-none">
-            {/* Single parent wrapper - all children move as one unit */}
-            <motion.div
-              animate={{ y: [0, -10, 0] }}
-              transition={{ 
-                duration: 3,
-                repeat: Infinity,
-                ease: "easeInOut"
+            {/* Single parent wrapper with GPU-accelerated CSS animation */}
+            <div
+              style={{ 
+                willChange: 'transform',
+                transform: 'translate3d(0, 0, 0)',
+                animation: 'gpuFloat 3s cubic-bezier(0.45, 0, 0.55, 1) infinite'
               }}
-              style={{ willChange: 'transform' }}
               className="flex flex-col items-center"
             >
               {/* Lock Icon */}
@@ -69,7 +81,7 @@ export const FireProjection: React.FC<FireProjectionProps> = ({ results, theme }
               <p className="text-[var(--text-muted)] text-sm text-center max-w-[200px]">
                 FIRE Projection is currently in development
               </p>
-            </motion.div>
+            </div>
           </div>
         </>
       )}
