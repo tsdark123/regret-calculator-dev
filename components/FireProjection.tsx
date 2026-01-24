@@ -36,7 +36,7 @@ export const FireProjection: React.FC<FireProjectionProps> = ({ results, theme }
   };
 
   return (
-    <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl p-6 h-full">
+    <div className="bg-[var(--bg-card)]/60 backdrop-blur-xl border border-white/10 rounded-2xl p-6 h-full shadow-2xl">
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
         <div className="p-2.5 rounded-xl bg-[var(--primary-20)]">
@@ -52,20 +52,21 @@ export const FireProjection: React.FC<FireProjectionProps> = ({ results, theme }
         </div>
       </div>
 
-      {/* Input Field */}
+      {/* Input Field - Recessed Pill Style */}
       <div className="mb-6">
         <label className="block text-sm text-[var(--text-muted)] mb-2">
           Target Annual Retirement Spend ($)
         </label>
         <div className="relative">
-          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)]">$</span>
+          <span className="absolute left-5 top-1/2 -translate-y-1/2 text-[var(--text-muted)]">$</span>
           <input
             type="number"
             value={targetAnnualSpend}
             onChange={(e) => setTargetAnnualSpend(Math.max(1, Number(e.target.value)))}
-            className="w-full bg-[var(--bg-input)] border border-[var(--border)] rounded-xl px-4 py-3 pl-8 
+            className="w-full bg-black/20 border-0 rounded-full px-6 py-3 pl-10 
+                     shadow-[inset_0_2px_4px_rgba(0,0,0,0.3)]
                      text-[var(--text-main)] placeholder-[var(--text-muted)]
-                     focus:outline-none focus:border-[var(--primary)] transition-colors"
+                     focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/50 transition-all"
             min="1"
           />
         </div>
@@ -73,14 +74,14 @@ export const FireProjection: React.FC<FireProjectionProps> = ({ results, theme }
 
       {/* Chart and Stats Row */}
       <div className="flex items-center gap-6">
-        {/* Donut Chart */}
+        {/* Donut Chart - Thin Modern Ring (75% inner radius) */}
         <div className="relative w-40 h-40 flex-shrink-0">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
                 data={chartData}
-                innerRadius={50}
-                outerRadius={70}
+                innerRadius={56}
+                outerRadius={75}
                 paddingAngle={2}
                 dataKey="value"
                 startAngle={90}
@@ -91,21 +92,21 @@ export const FireProjection: React.FC<FireProjectionProps> = ({ results, theme }
               </Pie>
             </PieChart>
           </ResponsiveContainer>
-          {/* Center Text */}
+          {/* Center Text - Heavy Typography */}
           <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <span className="text-2xl font-bold text-[var(--primary)]">{yearsWastedDisplay}</span>
+            <span className="text-3xl font-black tracking-tighter text-[var(--primary)]">{yearsWastedDisplay}</span>
             <span className="text-xs text-[var(--text-muted)]">years</span>
           </div>
         </div>
 
-        {/* Stats */}
+        {/* Stats - Premium Typography */}
         <div className="flex-1 space-y-4">
           <div>
-            <p className="text-3xl font-bold text-[var(--primary)]">
-              {yearsWastedDisplay} Years
+            <p className="text-6xl font-black tracking-tighter text-[var(--primary)]">
+              {yearsWastedDisplay}
             </p>
             <p className="text-sm text-[var(--text-muted)]">
-              of retirement sacrificed
+              years of retirement sacrificed
             </p>
           </div>
           
@@ -119,7 +120,7 @@ export const FireProjection: React.FC<FireProjectionProps> = ({ results, theme }
       </div>
 
       {/* Explanation */}
-      <div className="mt-6 p-4 bg-[var(--bg-hover)] rounded-xl border border-[var(--border)]">
+      <div className="mt-6 p-4 bg-[var(--bg-hover)] rounded-xl border border-white/10">
         <p className="text-sm text-[var(--text-muted)] leading-relaxed">
           <strong className="text-[var(--text-main)]">FIRE Methodology:</strong> Financial Independence, Retire Early. 
           This calculation shows how many years of retirement spending you could have funded with the compounded 
