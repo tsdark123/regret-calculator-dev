@@ -355,7 +355,7 @@ function MainApp() {
                                   />
                                   
                                   {/* Expand Button for Pro Dashboard */}
-                                  <div className="flex justify-center mt-2 mb-8">
+                                  <div className="flex justify-center mb-12">
                                     <motion.button
                                       onClick={handleToggleProDashboard}
                                       whileHover={{ scale: 1.02 }}

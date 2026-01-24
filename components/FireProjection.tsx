@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import { Flame, TrendingUp, Lock } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { CalculationResult, Theme } from '../types';
 import { formatCurrency } from '../utils/financials';
 
@@ -42,13 +43,19 @@ export const FireProjection: React.FC<FireProjectionProps> = ({ results, theme }
       {/* WIP Overlay */}
       {isWorkInProgress && (
         <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-[var(--bg-card)]/80 backdrop-blur-sm rounded-2xl">
-          <div className="p-4 rounded-full bg-[var(--bg-hover)] border border-[var(--border)] mb-4">
-            <Lock className="w-8 h-8 text-[var(--text-muted)]" />
-          </div>
-          <p className="text-[var(--text-main)] font-semibold text-lg mb-1">Coming Soon</p>
-          <p className="text-[var(--text-muted)] text-sm text-center max-w-[200px]">
-            FIRE Projection is currently in development
-          </p>
+          <motion.div
+            animate={{ y: [0, -8, 0] }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+            className="flex flex-col items-center"
+          >
+            <div className="p-4 rounded-full bg-[var(--bg-hover)] border border-[var(--border)] mb-4">
+              <Lock className="w-8 h-8 text-[var(--text-muted)]" />
+            </div>
+            <p className="text-[var(--text-main)] font-semibold text-lg mb-1">Coming Soon</p>
+            <p className="text-[var(--text-muted)] text-sm text-center max-w-[200px]">
+              FIRE Projection is currently in development
+            </p>
+          </motion.div>
         </div>
       )}
 
