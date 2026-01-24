@@ -213,20 +213,28 @@ function MainApp() {
   const handleToggleProDashboard = useCallback(() => {
     if (!isProDashboardExpanded) {
       setIsProDashboardExpanded(true);
-      // Wait for state update and DOM render, then scroll
+      // Wait for animation to complete, then scroll smoothly
       setTimeout(() => {
         if (proDashboardRef.current) {
-          const yOffset = -180; // Increased offset to scroll higher
-          const y = proDashboardRef.current.getBoundingClientRect().top + window.pageYOffset + yOffset;
-          window.scrollTo({ top: y, behavior: 'smooth' });
+          proDashboardRef.current.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'start',
+            inline: 'nearest'
+          });
         }
-      }, 100);
+      }, 400);
     } else {
       // Collapse and scroll back to top of results page
       setIsProDashboardExpanded(false);
-      if (inputSectionRef.current) {
-        inputSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
+      setTimeout(() => {
+        if (inputSectionRef.current) {
+          inputSectionRef.current.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'start',
+            inline: 'nearest'
+          });
+        }
+      }, 100);
     }
   }, [isProDashboardExpanded]);
   const handleReset = () => {
