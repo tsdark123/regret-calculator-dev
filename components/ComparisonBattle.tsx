@@ -18,9 +18,9 @@ const CHALLENGER_OPTIONS = [
   {
     id: 'doordash',
     name: 'Daily DoorDash',
-    monthlyCost: 25 * 30, // $25/day average order
+    monthlyCost: 25 * 30,
     displayCost: '$25/day',
-    icon: 'https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/doordash.svg',
+    icon: '/logos/doordash-logo.png',
     isEmoji: false,
     color: '#FF3008',
   },
@@ -36,7 +36,7 @@ const CHALLENGER_OPTIONS = [
   {
     id: 'cigarettes',
     name: 'Cigarettes',
-    monthlyCost: (9.50 / 7) * 30, // ~$9.50 pack/week → ~$40.71/mo
+    monthlyCost: (9.50 / 7) * 30,
     displayCost: '$9.50/pack/wk',
     icon: '🚬',
     isEmoji: true,
@@ -45,25 +45,25 @@ const CHALLENGER_OPTIONS = [
   {
     id: 'coffee',
     name: 'Daily Starbucks',
-    monthlyCost: 6.50 * 22, // ~$6.50/day, 22 workdays
+    monthlyCost: 6.50 * 22,
     displayCost: '$6.50/day',
-    icon: 'https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/starbucks.svg',
+    icon: '/logos/starbucks-logo.png',
     isEmoji: false,
     color: '#00704A',
   },
   {
     id: 'uber',
     name: 'Weekly Uber Rides',
-    monthlyCost: 35 * 4.3, // ~$35/week
+    monthlyCost: 35 * 4.3,
     displayCost: '$35/week',
-    icon: 'https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/uber.svg',
+    icon: '/logos/uber-logo.png',
     isEmoji: false,
     color: '#000000',
   },
   {
     id: 'lottery',
     name: 'Lottery Tickets',
-    monthlyCost: 20 * 4.3, // ~$20/week
+    monthlyCost: 20 * 4.3,
     displayCost: '$20/week',
     icon: '🎰',
     isEmoji: true,
@@ -72,7 +72,7 @@ const CHALLENGER_OPTIONS = [
   {
     id: 'fastfood',
     name: 'Fast Food Lunches',
-    monthlyCost: 12 * 22, // ~$12/lunch, 22 workdays
+    monthlyCost: 12 * 22,
     displayCost: '$12/lunch',
     icon: '🍔',
     isEmoji: true,
