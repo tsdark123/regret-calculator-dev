@@ -269,12 +269,12 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
           <button
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             className={`flex items-center gap-2.5 px-3.5 py-2.5 
-                     border border-[var(--border)] rounded-xl
+                     rounded-xl
                      text-[var(--text-main)] hover:border-[var(--primary)]/30
                      focus:outline-none transition-all duration-200
                      ${theme === 'ocean' 
-                       ? 'bg-white/90' 
-                       : 'bg-black/25'
+                       ? 'bg-blue-50 border border-blue-200/60' 
+                       : 'bg-black/25 border border-[var(--border)]'
                      }`}
           >
             {selectedChallenger.isEmoji ? (
