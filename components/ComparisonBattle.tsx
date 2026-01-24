@@ -347,11 +347,11 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
               }}
               formatter={(value: number) => formatCurrency(value)}
             />
-            {/* User's regrets - dotted grey line */}
+            {/* User's regrets - dotted primary theme line */}
             <Line 
               type="monotone" 
               dataKey="original" 
-              stroke="var(--text-muted)" 
+              stroke="var(--primary)" 
               strokeWidth={2}
               strokeDasharray="6 4"
               dot={false}
@@ -378,7 +378,10 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
             {assumptions.timeHorizonYears} years
           </span>
           ,{' '}
-          <span className="text-[var(--primary)] font-semibold">
+          <span 
+            className="font-semibold"
+            style={{ color: originalIsDeadlier ? 'var(--primary)' : selectedChallenger.color }}
+          >
             {deadlierName}
           </span>
           {' '}would cost you{' '}
@@ -386,7 +389,10 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
             {formatCurrency(difference)}
           </span>
           {' '}more in lost potential than{' '}
-          <span className="text-[var(--text-main)] font-medium">
+          <span 
+            className="font-medium"
+            style={{ color: originalIsDeadlier ? selectedChallenger.color : 'var(--primary)' }}
+          >
             {cheaperName}
           </span>
           .
