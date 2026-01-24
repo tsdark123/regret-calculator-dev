@@ -67,7 +67,7 @@ export const ResultsChart: React.FC<ChartProps> = ({ data, theme }) => {
   const yAxisWidth = Math.max(50, maxFormattedLabel.length * 9 + 8);
 
   return (
-    <div className="w-full h-[280px] md:h-[320px]">
+    <div className="w-full h-[280px] md:h-[320px] outline-none focus:outline-none" tabIndex={-1}>
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart
           data={data}
