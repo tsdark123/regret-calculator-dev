@@ -21,7 +21,7 @@ const CHALLENGER_OPTIONS = [
     name: 'Daily DoorDash',
     monthlyCost: 25 * 30,
     displayCost: '$25/day',
-    icon: '/logos/doordash-logo-new.png',
+    icon: '/logos/doordash-logo-hd.png',
     isEmoji: false,
     color: '#FF6B5B',
     isPlural: false,
