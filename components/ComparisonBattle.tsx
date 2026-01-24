@@ -182,12 +182,6 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
             </div>
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="text-lg font-bold text-[var(--primary)]">{regretMultiplier}x</span>
-          <span className="text-xs text-[var(--text-muted)]">
-            {parseFloat(regretMultiplier as string) >= 1 ? 'more expensive' : 'as expensive'}
-          </span>
-        </div>
       </div>
 
       {/* Status Badge */}
@@ -202,13 +196,28 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
         </span>
       </div>
 
-      {/* Progress Bar */}
-      <div className="flex items-center gap-3 mb-6">
-        <div className="flex-1 h-2 bg-[var(--border)] rounded-full overflow-hidden">
+      {/* Segmented Distribution Bar */}
+      <div className="mb-6">
+        <div className="flex h-2 rounded-full overflow-hidden">
           <div 
-            className="h-full bg-[var(--primary)] rounded-full transition-all duration-500"
+            className="h-full bg-[var(--primary)] transition-all duration-500"
             style={{ width: `${originalPercent}%` }}
           />
+          <div 
+            className="h-full bg-[var(--text-muted)]/40 transition-all duration-500"
+            style={{ width: `${100 - originalPercent}%` }}
+          />
+        </div>
+        <div className="flex items-center justify-between mt-2">
+          <span className="text-xs text-[var(--text-muted)]">
+            {originalPercent.toFixed(0)}% / {(100 - originalPercent).toFixed(0)}%
+          </span>
+          <div className="flex items-center gap-2">
+            <span className="text-lg font-bold text-[var(--primary)]">{regretMultiplier}x</span>
+            <span className="text-xs text-[var(--text-muted)]">
+              {parseFloat(regretMultiplier as string) >= 1 ? 'more expensive' : 'as expensive'}
+            </span>
+          </div>
         </div>
       </div>
 
