@@ -42,41 +42,49 @@ export const FireProjection: React.FC<FireProjectionProps> = ({ results, theme }
     <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl p-6 h-full relative overflow-hidden">
       {/* WIP Overlay */}
       {isWorkInProgress && (
-        <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-[var(--bg-card)]/80 backdrop-blur-sm rounded-2xl">
-          {/* Lock Icon - Primary float */}
-          <motion.div
-            animate={{ y: [0, -12, 0] }}
-            transition={{ 
-              duration: 3,
-              repeat: Infinity,
-              ease: [0.45, 0.05, 0.55, 0.95], // Custom cubic-bezier for ultra-smooth
-              repeatType: "loop"
-            }}
-            style={{ willChange: 'transform' }}
-            className="p-4 rounded-full bg-[var(--bg-hover)] border border-[var(--border)] mb-4"
-          >
-            <Lock className="w-8 h-8 text-[var(--text-muted)]" />
-          </motion.div>
+        <>
+          {/* Static blurred background - separate layer, never animated */}
+          <div className="absolute inset-0 z-20 bg-[var(--bg-card)]/80 backdrop-blur-sm rounded-2xl" />
           
-          {/* Text content - Subtle delayed float */}
-          <motion.div
-            animate={{ y: [0, -6, 0] }}
-            transition={{ 
-              duration: 3,
-              repeat: Infinity,
-              ease: [0.45, 0.05, 0.55, 0.95],
-              repeatType: "loop",
-              delay: 0.15
-            }}
-            style={{ willChange: 'transform' }}
-            className="flex flex-col items-center"
-          >
-            <p className="text-[var(--text-main)] font-semibold text-lg mb-1">Coming Soon</p>
-            <p className="text-[var(--text-muted)] text-sm text-center max-w-[200px]">
-              FIRE Projection is currently in development
-            </p>
-          </motion.div>
-        </div>
+          {/* Floating content container - isolated from blur layer */}
+          <div className="absolute inset-0 z-30 flex flex-col items-center justify-center pointer-events-none">
+            {/* Lock Icon - GPU-accelerated float */}
+            <motion.div
+              initial={{ transform: 'translate3d(0, 0, 0)' }}
+              animate={{ transform: ['translate3d(0, 0, 0)', 'translate3d(0, -15px, 0)', 'translate3d(0, 0, 0)'] }}
+              transition={{ 
+                duration: 3,
+                repeat: Infinity,
+                ease: [0.45, 0, 0.55, 1],
+                repeatType: "loop"
+              }}
+              style={{ willChange: 'transform' }}
+              className="p-4 rounded-full bg-[var(--bg-hover)] border border-[var(--border)] mb-4"
+            >
+              <Lock className="w-8 h-8 text-[var(--text-muted)]" />
+            </motion.div>
+            
+            {/* Text content - subtle delayed GPU float */}
+            <motion.div
+              initial={{ transform: 'translate3d(0, 0, 0)' }}
+              animate={{ transform: ['translate3d(0, 0, 0)', 'translate3d(0, -8px, 0)', 'translate3d(0, 0, 0)'] }}
+              transition={{ 
+                duration: 3,
+                repeat: Infinity,
+                ease: [0.45, 0, 0.55, 1],
+                repeatType: "loop",
+                delay: 0.12
+              }}
+              style={{ willChange: 'transform' }}
+              className="flex flex-col items-center"
+            >
+              <p className="text-[var(--text-main)] font-semibold text-lg mb-1">Coming Soon</p>
+              <p className="text-[var(--text-muted)] text-sm text-center max-w-[200px]">
+                FIRE Projection is currently in development
+              </p>
+            </motion.div>
+          </div>
+        </>
       )}
 
       {/* Content (blurred when WIP) */}
