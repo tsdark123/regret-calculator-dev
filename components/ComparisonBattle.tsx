@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Swords, BarChart3, ChevronDown, Check } from 'lucide-react';
+import { Swords, BarChart3, ChevronDown, Check, HelpCircle } from 'lucide-react';
 import { CalculationResult, Assumptions, Theme } from '../types';
 import { formatCurrency } from '../utils/financials';
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip, Legend } from 'recharts';
@@ -20,8 +20,8 @@ const CHALLENGER_OPTIONS = [
     name: 'Daily DoorDash',
     monthlyCost: 25 * 30, // $25/day average order
     displayCost: '$25/day',
-    icon: '🛵',
-    isEmoji: true,
+    icon: 'https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/doordash.svg',
+    isEmoji: false,
     color: '#FF3008',
   },
   {
@@ -47,8 +47,8 @@ const CHALLENGER_OPTIONS = [
     name: 'Daily Starbucks',
     monthlyCost: 6.50 * 22, // ~$6.50/day, 22 workdays
     displayCost: '$6.50/day',
-    icon: '☕',
-    isEmoji: true,
+    icon: 'https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/starbucks.svg',
+    isEmoji: false,
     color: '#00704A',
   },
   {
@@ -56,8 +56,8 @@ const CHALLENGER_OPTIONS = [
     name: 'Weekly Uber Rides',
     monthlyCost: 35 * 4.3, // ~$35/week
     displayCost: '$35/week',
-    icon: '🚗',
-    isEmoji: true,
+    icon: 'https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/uber.svg',
+    isEmoji: false,
     color: '#000000',
   },
   {
@@ -160,6 +160,17 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
           <h3 className="text-xl font-bold text-[var(--text-main)] tracking-tight">
             Head-to-Head Battle
           </h3>
+          {/* Info tooltip */}
+          <div className="relative group">
+            <HelpCircle className="w-4 h-4 text-[var(--text-muted)] cursor-help opacity-60 hover:opacity-100 transition-opacity" />
+            <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-3 py-2 
+                          bg-[var(--bg-card)] border border-[var(--border)] rounded-lg
+                          text-xs text-[var(--text-muted)] whitespace-nowrap
+                          opacity-0 pointer-events-none group-hover:opacity-100 
+                          transition-opacity duration-200 z-50 shadow-lg">
+              Compare your regrets against another habit to see which costs more over time.
+            </div>
+          </div>
         </div>
         <div className="flex items-center gap-2">
           <span className="text-2xl font-bold text-[var(--text-main)]">{originalPercent}%</span>
@@ -209,23 +220,24 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
         </div>
       </div>
 
-      {/* Challenger Dropdown - Compact Button Style */}
+      {/* Challenger Dropdown - Rounded Pill Style */}
       <div className="mb-4" ref={dropdownRef}>
         <div className="relative inline-block">
           <button
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            className="flex items-center gap-2 px-3 py-2 
-                     bg-black/20 border border-white/5 rounded-lg
-                     text-[var(--text-main)] hover:bg-black/30
-                     focus:outline-none transition-all duration-200"
+            className="flex items-center gap-2.5 px-4 py-2.5 
+                     bg-[var(--bg-hover)] border border-[var(--border)] rounded-full
+                     text-[var(--text-main)] hover:border-[var(--primary)]/30
+                     focus:outline-none transition-all duration-200
+                     shadow-[inset_0_1px_2px_rgba(0,0,0,0.2)]"
           >
             {selectedChallenger.isEmoji ? (
-              <span className="text-lg">{selectedChallenger.icon}</span>
+              <span className="text-base">{selectedChallenger.icon}</span>
             ) : (
               <img 
                 src={selectedChallenger.icon} 
                 alt={selectedChallenger.name}
-                className="w-5 h-5 object-contain"
+                className="w-4 h-4 object-contain"
               />
             )}
             <span className="font-medium text-sm">{selectedChallenger.name}</span>
@@ -239,10 +251,10 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
             />
           </button>
 
-          {/* Dropdown Menu */}
+          {/* Dropdown Menu - Rounded Style */}
           <div 
-            className={`absolute z-50 top-full left-0 mt-1.5 min-w-[240px]
-                       bg-[#1a1a1a] border border-white/10 rounded-lg 
+            className={`absolute z-50 top-full left-0 mt-2 min-w-[260px]
+                       bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl 
                        shadow-2xl overflow-hidden
                        transition-all duration-200 origin-top
                        ${isDropdownOpen 
@@ -250,39 +262,43 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
                          : 'opacity-0 scale-y-95 -translate-y-2 pointer-events-none'
                        }`}
           >
-            {CHALLENGER_OPTIONS.map((option, index) => (
-              <button
-                key={option.id}
-                onClick={() => handleSelectChallenger(option)}
-                className={`w-full flex items-center justify-between gap-3 px-3 py-2.5
-                          hover:bg-white/5 transition-colors duration-150
-                          ${index !== CHALLENGER_OPTIONS.length - 1 ? 'border-b border-white/5' : ''}
-                          ${selectedChallenger.id === option.id ? 'bg-white/5' : ''}`}
-              >
-                <div className="flex items-center gap-2.5">
-                  {option.isEmoji ? (
-                    <span className="text-lg w-5 text-center">{option.icon}</span>
-                  ) : (
-                    <img 
-                      src={option.icon} 
-                      alt={option.name}
-                      className="w-5 h-5 object-contain"
-                    />
-                  )}
-                  <span className="font-medium text-sm text-[var(--text-main)]">
-                    {option.name}
-                  </span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-[var(--text-muted)] text-xs">
-                    {option.displayCost}
-                  </span>
-                  {selectedChallenger.id === option.id && (
-                    <Check className="w-3.5 h-3.5 text-[var(--primary)]" />
-                  )}
-                </div>
-              </button>
-            ))}
+            <div className="p-1.5">
+              {CHALLENGER_OPTIONS.map((option) => (
+                <button
+                  key={option.id}
+                  onClick={() => handleSelectChallenger(option)}
+                  className={`w-full flex items-center justify-between gap-3 px-3 py-2.5
+                            rounded-xl transition-colors duration-150
+                            ${selectedChallenger.id === option.id 
+                              ? 'bg-[var(--primary)]/10' 
+                              : 'hover:bg-[var(--bg-hover)]'
+                            }`}
+                >
+                  <div className="flex items-center gap-2.5">
+                    {option.isEmoji ? (
+                      <span className="text-base w-5 text-center">{option.icon}</span>
+                    ) : (
+                      <img 
+                        src={option.icon} 
+                        alt={option.name}
+                        className="w-5 h-5 object-contain"
+                      />
+                    )}
+                    <span className="font-medium text-sm text-[var(--text-main)]">
+                      {option.name}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[var(--text-muted)] text-xs">
+                      {option.displayCost}
+                    </span>
+                    {selectedChallenger.id === option.id && (
+                      <Check className="w-3.5 h-3.5 text-[var(--primary)]" />
+                    )}
+                  </div>
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -309,20 +325,22 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
               }}
               formatter={(value: number) => formatCurrency(value)}
             />
+            {/* User's regrets - dotted grey line */}
             <Line 
               type="monotone" 
               dataKey="original" 
-              stroke="var(--primary)" 
-              strokeWidth={2.5}
-              dot={false}
-              name={results.expenseSummary || 'Your Regrets'}
-            />
-            <Line 
-              type="monotone" 
-              dataKey="challenger" 
               stroke="var(--text-muted)" 
               strokeWidth={2}
               strokeDasharray="6 4"
+              dot={false}
+              name={results.expenseSummary || 'Your Regrets'}
+            />
+            {/* Challenger - solid brand color line */}
+            <Line 
+              type="monotone" 
+              dataKey="challenger" 
+              stroke={selectedChallenger.color}
+              strokeWidth={2.5}
               dot={false}
               name={vsHabitName || 'Challenger'}
             />
