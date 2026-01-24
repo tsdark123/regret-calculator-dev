@@ -270,8 +270,8 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             className={`flex items-center gap-2.5 px-3.5 py-2.5 
                      rounded-xl focus:outline-none transition-all duration-200
-                     ${theme === 'ocean' 
-                       ? 'bg-white/30 border border-white/60 backdrop-blur-md shadow-sm text-slate-800 hover:bg-white/40' 
+                     ${theme === 'blue' 
+                       ? '!bg-white/30 !border !border-white/80 backdrop-blur-md shadow-sm !text-blue-900 hover:!bg-white/40' 
                        : 'bg-black/25 border border-[var(--border)] text-[var(--text-main)] hover:border-[var(--primary)]/30'
                      }`}
           >
@@ -281,7 +281,7 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
               <img 
                 src={selectedChallenger.icon} 
                 alt={selectedChallenger.name}
-                className={`w-4 h-4 object-contain ${selectedChallenger.needsInvert && theme === 'ocean' ? 'invert' : ''}`}
+                className={`w-4 h-4 object-contain ${selectedChallenger.needsInvert && theme === 'blue' ? 'invert' : ''}`}
               />
             )}
             <span className="font-medium text-sm">{selectedChallenger.name}</span>
@@ -298,8 +298,10 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
           {/* Dropdown Menu - Rounded Style */}
           <div 
             className={`absolute z-50 top-full left-0 mt-2 min-w-[260px]
-                       bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl 
-                       shadow-2xl overflow-hidden
+                       ${theme === 'blue'
+                         ? 'bg-white/90 border border-white/80 backdrop-blur-lg'
+                         : 'bg-[var(--bg-card)] border border-[var(--border)]'
+                       } rounded-2xl shadow-2xl overflow-hidden
                        transition-all duration-200 origin-top
                        ${isDropdownOpen 
                          ? 'opacity-100 scale-y-100 translate-y-0' 
@@ -325,7 +327,7 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
                       <img 
                         src={option.icon} 
                         alt={option.name}
-                        className={`w-5 h-5 object-contain ${option.needsInvert && theme === 'ocean' ? 'invert' : ''}`}
+                        className={`w-5 h-5 object-contain ${option.needsInvert && theme === 'blue' ? 'invert' : ''}`}
                       />
                     )}
                     <span className="font-medium text-sm text-[var(--text-main)]">
