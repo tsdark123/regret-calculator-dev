@@ -47,37 +47,24 @@ export const FireProjection: React.FC<FireProjectionProps> = ({ results, theme }
           <div className="absolute inset-0 z-20 bg-[var(--bg-card)]/80 backdrop-blur-sm rounded-2xl" />
           
           {/* Floating content container - isolated from blur layer */}
-          <div className="absolute inset-0 z-30 flex flex-col items-center justify-center pointer-events-none">
-            {/* Lock Icon - GPU-accelerated float */}
+          <div className="absolute inset-0 z-30 flex items-center justify-center pointer-events-none">
+            {/* Single parent wrapper - all children move as one unit */}
             <motion.div
-              initial={{ transform: 'translate3d(0, 0, 0)' }}
-              animate={{ transform: ['translate3d(0, 0, 0)', 'translate3d(0, -15px, 0)', 'translate3d(0, 0, 0)'] }}
+              animate={{ y: [0, -10, 0] }}
               transition={{ 
                 duration: 3,
                 repeat: Infinity,
-                ease: [0.45, 0, 0.55, 1],
-                repeatType: "loop"
-              }}
-              style={{ willChange: 'transform' }}
-              className="p-4 rounded-full bg-[var(--bg-hover)] border border-[var(--border)] mb-4"
-            >
-              <Lock className="w-8 h-8 text-[var(--text-muted)]" />
-            </motion.div>
-            
-            {/* Text content - subtle delayed GPU float */}
-            <motion.div
-              initial={{ transform: 'translate3d(0, 0, 0)' }}
-              animate={{ transform: ['translate3d(0, 0, 0)', 'translate3d(0, -8px, 0)', 'translate3d(0, 0, 0)'] }}
-              transition={{ 
-                duration: 3,
-                repeat: Infinity,
-                ease: [0.45, 0, 0.55, 1],
-                repeatType: "loop",
-                delay: 0.12
+                ease: "easeInOut"
               }}
               style={{ willChange: 'transform' }}
               className="flex flex-col items-center"
             >
+              {/* Lock Icon */}
+              <div className="p-4 rounded-full bg-[var(--bg-hover)] border border-[var(--border)] mb-4">
+                <Lock className="w-8 h-8 text-[var(--text-muted)]" />
+              </div>
+              
+              {/* Text content */}
               <p className="text-[var(--text-main)] font-semibold text-lg mb-1">Coming Soon</p>
               <p className="text-[var(--text-muted)] text-sm text-center max-w-[200px]">
                 FIRE Projection is currently in development
