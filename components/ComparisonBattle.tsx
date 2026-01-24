@@ -40,7 +40,7 @@ const CHALLENGER_OPTIONS = [
     displayCost: '$9.50/pack/wk',
     icon: '🚬',
     isEmoji: true,
-    color: '#78716C',
+    color: '#8B7355',
   },
   {
     id: 'coffee',
@@ -58,7 +58,7 @@ const CHALLENGER_OPTIONS = [
     displayCost: '$35/week',
     icon: '/logos/uber-logo.png',
     isEmoji: false,
-    color: '#000000',
+    color: '#6B7280',
   },
   {
     id: 'lottery',
@@ -87,7 +87,8 @@ interface ComparisonBattleProps {
 }
 
 export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, assumptions, theme }) => {
-  const [selectedChallenger, setSelectedChallenger] = useState(CHALLENGER_OPTIONS[0]);
+  // Default to Cigarettes (index 3)
+  const [selectedChallenger, setSelectedChallenger] = useState(CHALLENGER_OPTIONS[3]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -187,7 +188,7 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
       {/* Status Badge */}
       <div className="flex items-center gap-3 mb-4">
         <span 
-          className="px-3 py-1 rounded-full text-xs font-medium bg-transparent border border-white/10"
+          className="px-3 py-1 rounded-full text-xs font-medium bg-transparent border border-[var(--border)]"
           style={{ 
             color: originalIsDeadlier ? 'var(--primary)' : selectedChallenger.color
           }}
@@ -200,12 +201,18 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
       <div className="mb-6">
         <div className="flex h-2 rounded-full overflow-hidden">
           <div 
-            className="h-full bg-[var(--primary)] transition-all duration-500"
-            style={{ width: `${originalPercent}%` }}
+            className="h-full transition-all duration-500"
+            style={{ 
+              width: `${originalPercent}%`,
+              backgroundColor: 'var(--primary)'
+            }}
           />
           <div 
-            className="h-full bg-[var(--text-muted)]/40 transition-all duration-500"
-            style={{ width: `${100 - originalPercent}%` }}
+            className="h-full transition-all duration-500"
+            style={{ 
+              width: `${100 - originalPercent}%`,
+              backgroundColor: selectedChallenger.color
+            }}
           />
         </div>
         <div className="flex items-center justify-between mt-2">
