@@ -10,6 +10,51 @@ const getBackgroundStyle = (value: number, min: number, max: number) => {
     };
 };
 
+// Smart formatting that switches to scientific notation for extreme values
+const formatSmartCurrency = (value: number): string => {
+    if (!isFinite(value) || isNaN(value)) return '$0';
+    const absValue = Math.abs(value);
+    if (absValue >= 1e15) {
+        return `$${value.toExponential(2)}`;
+    }
+    if (absValue >= 1e12) {
+        return `$${(value / 1e12).toLocaleString(undefined, { maximumFractionDigits: 1 })}T`;
+    }
+    if (absValue >= 1e9) {
+        return `$${(value / 1e9).toLocaleString(undefined, { maximumFractionDigits: 1 })}B`;
+    }
+    if (absValue >= 1e6) {
+        return `$${(value / 1e6).toLocaleString(undefined, { maximumFractionDigits: 1 })}M`;
+    }
+    if (absValue >= 1e3) {
+        return `$${(value / 1e3).toLocaleString(undefined, { maximumFractionDigits: 1 })}K`;
+    }
+    return `$${value.toLocaleString(undefined, { maximumFractionDigits: 0 })}`;
+};
+
+// Smart years formatting
+const formatSmartYears = (value: number): string => {
+    if (!isFinite(value) || isNaN(value) || value <= 0) return '∞';
+    if (value >= 1e6) return value.toExponential(1);
+    if (value >= 1000) return `${(value / 1000).toFixed(1)}K`;
+    return value.toFixed(1);
+};
+
+// Dynamic text size based on string length
+const getResultSizeClass = (text: string): string => {
+    const len = text.length;
+    if (len > 12) return 'text-xl';
+    if (len > 9) return 'text-2xl';
+    return 'text-3xl';
+};
+
+const getYearsSizeClass = (text: string): string => {
+    const len = text.length;
+    if (len > 6) return 'text-4xl';
+    if (len > 4) return 'text-6xl';
+    return 'text-8xl';
+};
+
 // --- Tool 1: Inflation Calculator ---
 const InflationTool = () => {
     const [amount, setAmount] = useState(100);
@@ -19,7 +64,7 @@ const InflationTool = () => {
     const futureValue = amount * Math.pow(1 + rate / 100, years);
 
     return (
-        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-3xl p-8 shadow-2xl flex flex-col h-full hover:border-[var(--text-muted)] transition-colors">
+        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-3xl p-8 shadow-2xl flex flex-col h-full hover:border-[var(--text-muted)] transition-colors w-full min-w-0 overflow-hidden">
             <div className="flex items-center gap-3 mb-3">
                 <DollarSign className="w-6 h-6 text-[var(--text-muted)]" />
                 <h3 className="text-lg font-bold text-[var(--text-main)] uppercase tracking-wider">Inflation Reality</h3>
@@ -61,13 +106,15 @@ const InflationTool = () => {
                 </div>
             </div>
 
-            <div className="mt-10 pt-8 border-t border-[var(--border)]">
-                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-2 mb-2">
-                    <span className="text-sm text-[var(--text-muted)] font-medium">Future Cost Equivalent:</span>
-                    <span className="text-[var(--primary)] font-bold text-3xl tracking-tight">{formatCurrency(futureValue)}</span>
+            <div className="mt-10 pt-8 border-t border-[var(--border)] overflow-hidden min-w-0">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-2 mb-2 min-w-0">
+                    <span className="text-sm text-[var(--text-muted)] font-medium shrink-0">Future Cost Equivalent:</span>
+                    <span className={`text-[var(--primary)] font-bold tracking-tight break-all ${getResultSizeClass(formatSmartCurrency(futureValue))}`} style={{ overflowWrap: 'anywhere' }}>
+                        {formatSmartCurrency(futureValue)}
+                    </span>
                 </div>
-                <p className="text-xs text-[var(--text-muted)] italic">
-                    You'll need {formatCurrency(futureValue)} in {years} years to buy what costs {formatCurrency(amount)} today.
+                <p className="text-xs text-[var(--text-muted)] italic break-all" style={{ overflowWrap: 'anywhere' }}>
+                    You'll need {formatSmartCurrency(futureValue)} in {years.toLocaleString()} years to buy what costs {formatSmartCurrency(amount)} today.
                 </p>
             </div>
         </div>
@@ -80,7 +127,7 @@ const RuleOf72Tool = () => {
     const yearsToDouble = 72 / rate;
 
     return (
-        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-3xl p-8 shadow-2xl flex flex-col h-full hover:border-[var(--text-muted)] transition-colors">
+        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-3xl p-8 shadow-2xl flex flex-col h-full hover:border-[var(--text-muted)] transition-colors w-full min-w-0 overflow-hidden">
             <div className="flex items-center gap-3 mb-3">
                 <Clock className="w-6 h-6 text-[var(--text-muted)]" />
                 <h3 className="text-lg font-bold text-[var(--text-main)] uppercase tracking-wider">Rule of 72</h3>
@@ -112,8 +159,10 @@ const RuleOf72Tool = () => {
                 </div>
             </div>
 
-            <div className="mt-10 pt-8 border-t border-[var(--border)] text-center">
-                <div className="text-8xl font-black text-[var(--text-main)] mb-2 tracking-tighter">{yearsToDouble.toFixed(1)}</div>
+            <div className="mt-10 pt-8 border-t border-[var(--border)] text-center overflow-hidden min-w-0">
+                <div className={`font-black text-[var(--text-main)] mb-2 tracking-tighter break-all ${getYearsSizeClass(formatSmartYears(yearsToDouble))}`} style={{ overflowWrap: 'anywhere' }}>
+                    {formatSmartYears(yearsToDouble)}
+                </div>
                 <div className="text-base text-[var(--text-muted)] uppercase tracking-widest font-bold">Years</div>
                 <p className="text-xs text-[var(--text-muted)] mt-4 italic">Time to double your investment.</p>
             </div>
@@ -137,7 +186,7 @@ const ReverseGoalTool = () => {
         : (goal * r) / (Math.pow(1 + r, n) - 1);
 
     return (
-        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-3xl p-8 shadow-2xl flex flex-col h-full hover:border-[var(--text-muted)] transition-colors md:col-span-2 md:max-w-[calc(50%-1.25rem)] md:justify-self-center lg:col-span-1 lg:max-w-none">
+        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-3xl p-8 shadow-2xl flex flex-col h-full hover:border-[var(--text-muted)] transition-colors w-full min-w-0 overflow-hidden md:col-span-2 md:max-w-[calc(50%-1.25rem)] md:justify-self-center lg:col-span-1 lg:max-w-none">
             <div className="flex items-center gap-3 mb-3">
                 <Target className="w-6 h-6 text-[var(--text-muted)]" />
                 <h3 className="text-lg font-bold text-[var(--text-main)] uppercase tracking-wider">Reverse Goal</h3>
@@ -178,13 +227,15 @@ const ReverseGoalTool = () => {
                 </div>
             </div>
 
-            <div className="mt-10 pt-8 border-t border-[var(--border)]">
-                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-2 mb-2">
-                    <span className="text-sm text-[var(--text-muted)] font-medium">Monthly Savings Needed:</span>
-                    <span className="text-green-400 font-bold text-3xl tracking-tight">{formatCurrency(monthlyContribution)}</span>
+            <div className="mt-10 pt-8 border-t border-[var(--border)] overflow-hidden min-w-0">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-2 mb-2 min-w-0">
+                    <span className="text-sm text-[var(--text-muted)] font-medium shrink-0">Monthly Savings Needed:</span>
+                    <span className={`text-green-400 font-bold tracking-tight break-all ${getResultSizeClass(formatSmartCurrency(monthlyContribution))}`} style={{ overflowWrap: 'anywhere' }}>
+                        {formatSmartCurrency(monthlyContribution)}
+                    </span>
                 </div>
-                <p className="text-xs text-[var(--text-muted)] italic">
-                    Save this monthly to reach {formatCurrencyShort(goal)}.
+                <p className="text-xs text-[var(--text-muted)] italic break-all" style={{ overflowWrap: 'anywhere' }}>
+                    Save this monthly to reach {formatSmartCurrency(goal)}.
                 </p>
             </div>
         </div>
