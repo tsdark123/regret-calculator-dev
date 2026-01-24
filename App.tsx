@@ -1,4 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Hero } from './components/Hero';
 import { Navbar } from './components/Navbar';
 import { QueueModule } from './components/QueueModule';
@@ -66,6 +67,7 @@ function MainApp() {
   const [resultsKey, setResultsKey] = useState(0);
   const [isStockModalOpen, setIsStockModalOpen] = useState(false);
   const [isProDashboardExpanded, setIsProDashboardExpanded] = useState(false);
+  const proDashboardRef = useRef<HTMLDivElement>(null);
   
   // View State: 'input' | 'results' | 'tools' | 'roadmap'
   const [viewMode, setViewMode] = useState<'input' | 'results' | 'tools' | 'roadmap'>('input');
@@ -222,6 +224,21 @@ function MainApp() {
       setViewMode('input');
   };
 
+  const handleToggleProDashboard = useCallback(() => {
+    if (!isProDashboardExpanded) {
+      setIsProDashboardExpanded(true);
+      // Wait for state update and DOM render, then scroll
+      setTimeout(() => {
+        if (proDashboardRef.current) {
+          const yOffset = -100; // Offset from top
+          const y = proDashboardRef.current.getBoundingClientRect().top + window.pageYOffset + yOffset;
+          window.scrollTo({ top: y, behavior: 'smooth' });
+        }
+      }, 100);
+    } else {
+      setIsProDashboardExpanded(false);
+    }
+  }, [isProDashboardExpanded]);
   const handleReset = () => {
     setExpenses([{ id: '1', name: 'Subscription', amount: 15, frequency: 'Monthly', isWant: true }]);
     setResults(null);
@@ -338,27 +355,61 @@ function MainApp() {
                                   />
                                   
                                   {/* Expand Button for Pro Dashboard */}
-                                  <div className="flex justify-center my-8">
-                                    <button
-                                      onClick={() => setIsProDashboardExpanded(!isProDashboardExpanded)}
+                                  <div className="flex justify-center my-4">
+                                    <motion.button
+                                      onClick={handleToggleProDashboard}
+                                      whileHover={{ scale: 1.02 }}
+                                      whileTap={{ scale: 0.98 }}
                                       className="flex items-center gap-2 px-6 py-3 border border-[var(--border)] 
                                                  rounded-xl text-[var(--text-muted)] hover:text-[var(--text-main)] 
-                                                 hover:border-[var(--text-muted)] transition-all text-sm font-medium"
+                                                 hover:border-[var(--text-muted)] transition-colors text-sm font-medium"
                                     >
-                                      {isProDashboardExpanded ? '↑ Collapse' : '↓ Expand Advanced Analysis & Projections'}
-                                    </button>
+                                      <motion.span
+                                        animate={{ rotate: isProDashboardExpanded ? 180 : 0 }}
+                                        transition={{ duration: 0.3, ease: "easeInOut" }}
+                                      >
+                                        ↓
+                                      </motion.span>
+                                      {isProDashboardExpanded ? 'Collapse' : 'Expand Advanced Analysis & Projections'}
+                                    </motion.button>
                                   </div>
 
-                                  {/* Pro Dashboard - Animated */}
-                                  {isProDashboardExpanded && (
-                                    <div className="animate-fade-in">
-                                      <ProDashboard 
-                                        results={results} 
-                                        assumptions={assumptions} 
-                                        theme={theme}
-                                      />
-                                    </div>
-                                  )}
+                                  {/* Pro Dashboard - Animated with Framer Motion */}
+                                  <div ref={proDashboardRef}>
+                                    <AnimatePresence>
+                                      {isProDashboardExpanded && (
+                                        <motion.div
+                                          initial={{ opacity: 0, height: 0, y: -20 }}
+                                          animate={{ 
+                                            opacity: 1, 
+                                            height: "auto", 
+                                            y: 0,
+                                            transition: {
+                                              height: { duration: 0.4, ease: [0.04, 0.62, 0.23, 0.98] },
+                                              opacity: { duration: 0.3, delay: 0.1 },
+                                              y: { duration: 0.4, ease: "easeOut" }
+                                            }
+                                          }}
+                                          exit={{ 
+                                            opacity: 0, 
+                                            height: 0,
+                                            y: -10,
+                                            transition: {
+                                              height: { duration: 0.3, ease: "easeInOut" },
+                                              opacity: { duration: 0.2 }
+                                            }
+                                          }}
+                                          className="overflow-hidden"
+                                        >
+                                          <ProDashboard 
+                                            results={results} 
+                                            assumptions={assumptions} 
+                                            theme={theme}
+                                          />
+                                        </motion.div>
+                                      )}
+                                    </AnimatePresence>
+                                  </div>
                               </div>
                           )}
                       </div>
