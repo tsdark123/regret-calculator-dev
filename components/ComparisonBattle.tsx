@@ -281,7 +281,7 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
               <img 
                 src={selectedChallenger.icon} 
                 alt={selectedChallenger.name}
-                className={`w-4 h-4 object-contain ${selectedChallenger.needsInvert && theme === 'blue' ? 'invert' : ''}`}
+                className={`w-4 h-4 object-contain ${selectedChallenger.needsInvert && theme !== 'blue' ? 'invert' : ''}`}
               />
             )}
             <span className="font-medium text-sm">{selectedChallenger.name}</span>
@@ -299,7 +299,7 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
           <div 
             className={`absolute z-50 top-full left-0 mt-2 min-w-[260px]
                        ${theme === 'blue'
-                         ? 'bg-sky-50/95 border border-sky-200/60 backdrop-blur-lg'
+                         ? 'bg-white border border-gray-200/60'
                          : 'bg-[var(--bg-card)] border border-[var(--border)]'
                        } rounded-2xl shadow-2xl overflow-hidden
                        transition-all duration-200 origin-top
@@ -327,7 +327,7 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
                       <img 
                         src={option.icon} 
                         alt={option.name}
-                        className={`w-5 h-5 object-contain ${option.needsInvert && theme === 'blue' ? 'invert' : ''}`}
+                        className={`w-5 h-5 object-contain ${option.needsInvert && theme !== 'blue' ? 'invert' : ''}`}
                       />
                     )}
                     <span className="font-medium text-sm text-[var(--text-main)]">
