@@ -15,6 +15,7 @@ import { ParticleBackground } from './components/ParticleBackground';
 import { MobileMaintenance } from './components/MobileMaintenance';
 import { AdminStats } from './components/AdminStats';
 import { AnalyticsTracker } from './components/AnalyticsTracker';
+import { ProDashboard } from './components/ProDashboard';
 import { Expense, Assumptions, CalculationResult, StockOption, Theme } from './types';
 import { calculateResults } from './utils/financials';
 import { getStoredTheme, saveTheme } from './utils/theme';
@@ -64,6 +65,7 @@ function MainApp() {
   const [results, setResults] = useState<CalculationResult | null>(null);
   const [resultsKey, setResultsKey] = useState(0);
   const [isStockModalOpen, setIsStockModalOpen] = useState(false);
+  const [isProDashboardExpanded, setIsProDashboardExpanded] = useState(false);
   
   // View State: 'input' | 'results' | 'tools' | 'roadmap'
   const [viewMode, setViewMode] = useState<'input' | 'results' | 'tools' | 'roadmap'>('input');
@@ -334,6 +336,29 @@ function MainApp() {
                                       selectedStock={assumptions.selectedStock}
                                       theme={theme}
                                   />
+                                  
+                                  {/* Expand Button for Pro Dashboard */}
+                                  <div className="flex justify-center my-8">
+                                    <button
+                                      onClick={() => setIsProDashboardExpanded(!isProDashboardExpanded)}
+                                      className="flex items-center gap-2 px-6 py-3 border border-[var(--border)] 
+                                                 rounded-xl text-[var(--text-muted)] hover:text-[var(--text-main)] 
+                                                 hover:border-[var(--text-muted)] transition-all text-sm font-medium"
+                                    >
+                                      {isProDashboardExpanded ? '↑ Collapse' : '↓ Expand Advanced Analysis & Projections'}
+                                    </button>
+                                  </div>
+
+                                  {/* Pro Dashboard - Animated */}
+                                  {isProDashboardExpanded && (
+                                    <div className="animate-fade-in">
+                                      <ProDashboard 
+                                        results={results} 
+                                        assumptions={assumptions} 
+                                        theme={theme}
+                                      />
+                                    </div>
+                                  )}
                               </div>
                           )}
                       </div>
