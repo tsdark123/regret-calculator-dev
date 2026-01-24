@@ -271,7 +271,7 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
             className={`flex items-center gap-2.5 px-3.5 py-2.5 
                      rounded-xl focus:outline-none transition-all duration-200
                      ${theme === 'blue' 
-                       ? '!bg-sky-100/80 !border !border-sky-200/60 backdrop-blur-md shadow-sm !text-sky-900 hover:!bg-sky-100/90' 
+                       ? '!bg-sky-100/50 !border !border-sky-200/40 backdrop-blur-md shadow-sm !text-sky-800 hover:!bg-sky-100/60' 
                        : 'bg-black/25 border border-[var(--border)] text-[var(--text-main)] hover:border-[var(--primary)]/30'
                      }`}
           >
