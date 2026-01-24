@@ -204,7 +204,7 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
             color: originalIsDeadlier ? 'var(--primary)' : selectedChallenger.color
           }}
         >
-          {deadlierName} {originalIsDeadlier ? (results.expenses.length > 1 ? 'are' : 'is') : (selectedChallenger.isPlural ? 'are' : 'is')} the deadlier habit
+          {deadlierName} {originalIsDeadlier ? 'is' : (selectedChallenger.isPlural ? 'are' : 'is')} the deadlier habit
         </span>
       </div>
 
