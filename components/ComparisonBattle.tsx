@@ -13,7 +13,7 @@ const CHALLENGER_OPTIONS = [
     displayCost: '$17.99/mo',
     icon: 'https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/netflix.svg',
     isEmoji: false,
-    color: '#E50914',
+    color: '#F45B69',
     isPlural: false,
   },
   {
@@ -23,7 +23,7 @@ const CHALLENGER_OPTIONS = [
     displayCost: '$25/day',
     icon: '/logos/doordash-logo.png',
     isEmoji: false,
-    color: '#FF3008',
+    color: '#FF6B5B',
     isPlural: false,
     needsInvert: true,
   },
@@ -76,7 +76,7 @@ const CHALLENGER_OPTIONS = [
     displayCost: '$20/week',
     icon: '🎰',
     isEmoji: true,
-    color: '#F59E0B',
+    color: '#FBBF4D',
     isPlural: true,
   },
   {
