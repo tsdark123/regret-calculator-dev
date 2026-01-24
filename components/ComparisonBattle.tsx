@@ -213,7 +213,10 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
             {originalPercent.toFixed(0)}% / {(100 - originalPercent).toFixed(0)}%
           </span>
           <div className="flex items-center gap-2">
-            <span className="text-lg font-bold text-[var(--primary)]">{regretMultiplier}x</span>
+            <span 
+              className="text-lg font-bold"
+              style={{ color: originalIsDeadlier ? 'var(--primary)' : selectedChallenger.color }}
+            >{regretMultiplier}x</span>
             <span className="text-xs text-[var(--text-muted)]">
               {parseFloat(regretMultiplier as string) >= 1 ? 'more expensive' : 'as expensive'}
             </span>
