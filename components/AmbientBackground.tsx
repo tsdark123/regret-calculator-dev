@@ -29,19 +29,19 @@ const MiniChart3 = ({ className }: { className?: string }) => (
 
 export const AmbientBackground: React.FC = () => {
   return (
-    <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none -z-0">
+    <div className="absolute inset-0 w-full h-full overflow-visible pointer-events-none -z-0">
       {/* 1. Floating Chart Top Left - Increased Opacity */}
-      <div className="absolute top-[5%] left-[-2%] md:left-[5%] w-64 h-32 text-purple-500/10 rotate-[-8deg] animate-float">
+      <div className="absolute top-[8%] left-[-2%] md:left-[5%] w-64 h-32 text-purple-500/10 rotate-[-8deg] animate-float">
          <MiniChart1 className="w-full h-full" />
       </div>
 
       {/* 2. Floating Bar Chart Right - Increased Opacity */}
-      <div className="fixed top-[35%] right-[0%] md:right-[5%] w-48 h-48 text-slate-700/20 rotate-[12deg] animate-float-delayed z-0">
+      <div className="absolute top-[35%] right-[0%] md:right-[5%] w-48 h-48 text-slate-700/20 rotate-[12deg] animate-float-delayed z-0">
          <MiniChart2 className="w-full h-full" />
       </div>
       
       {/* 3. Donut Chart Bottom Left */}
-      <div className="fixed bottom-[20%] left-[10%] w-24 h-24 text-slate-600/10 animate-spin-slow duration-[20s] z-0">
+      <div className="absolute bottom-[20%] left-[10%] w-24 h-24 text-slate-600/10 animate-spin-slow duration-[20s] z-0">
           <MiniChart3 className="w-full h-full" />
       </div>
 

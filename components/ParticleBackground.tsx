@@ -246,11 +246,13 @@ export const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ theme = 
             ref={canvasRef}
             style={{
                 position: 'fixed',
-                inset: 0,
+                top: 0,
+                left: 0,
                 width: '100vw',
                 height: '100vh',
                 zIndex: 0,
                 pointerEvents: 'none',
+                overflow: 'visible',
             }}
         />
     );
