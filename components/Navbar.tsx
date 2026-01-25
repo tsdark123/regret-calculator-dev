@@ -167,8 +167,8 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, onNavigate, currentTh
           <ThemeDropdownDesktop currentTheme={currentTheme} onThemeChange={onThemeChange} />
         </div>
 
-        {/* Mobile: Combined black box with logo and nav */}
-        <div className="flex md:hidden items-center justify-between w-full bg-black border-y border-black px-4 py-2.5 -mt-7 z-20">
+        {/* Mobile: Combined theme-aware box with logo and nav */}
+        <div className="flex md:hidden items-center justify-between w-full bg-[var(--bg-card)] border-y border-[var(--border)] px-4 py-2.5 -mt-7 z-20">
           <a 
             href="https://www.linkedin.com/in/sepehrz/"
             target="_blank"
