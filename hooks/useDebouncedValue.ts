@@ -1,18 +1,9 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 export const useDebouncedValue = <T>(externalValue: T, delay: number = 500) => {
+  // Initialize with external value - component remount (via key prop) handles expense switching
   const [value, setValue] = useState<T>(externalValue);
   const [debouncedValue, setDebouncedValue] = useState<T>(externalValue);
-  const prevExternalValue = useRef<T>(externalValue);
-
-  // Sync internal state when external value changes (e.g., switching items)
-  useEffect(() => {
-    if (prevExternalValue.current !== externalValue) {
-      setValue(externalValue);
-      setDebouncedValue(externalValue);
-      prevExternalValue.current = externalValue;
-    }
-  }, [externalValue]);
 
   const setValueImmediate = useCallback((newValue: T) => {
     setValue(newValue);

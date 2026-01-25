@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Trash2, Plus, Calculator, ChevronDown, Check, ChevronUp, ArrowRight, ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Trash2, Plus, Calculator, ChevronDown, Check, ChevronUp, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Expense, Frequency } from '../types';
-import { useDebouncedNumber } from '../hooks/useDebouncedValue';
 
 interface QueueModuleProps {
   expenses: Expense[];
@@ -69,44 +68,63 @@ const NameInput = ({ value, onChange }: { value: string; onChange: (val: string)
   );
 };
 
-// Internal Custom Amount Input Component with Debouncing
+// Internal Custom Amount Input Component - Simplified direct pattern like NameInput
 const AmountInput = ({ value, onChange }: { value: number; onChange: (val: number) => void }) => {
-  const [debouncedValue, setImmediateValue, currentValue] = useDebouncedNumber(value, 300, 0);
+  const [localValue, setLocalValue] = useState(value);
+  const debounceTimer = useRef<NodeJS.Timeout>();
 
-  // Notify parent when debounced value changes
+  // Sync local value when prop changes (component remount handles expense switching)
   useEffect(() => {
-    if (debouncedValue !== value) {
-      onChange(debouncedValue);
+    setLocalValue(value);
+  }, [value]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const parsed = parseFloat(e.target.value);
+    const newValue = isNaN(parsed) ? 0 : Math.max(0, parsed);
+    setLocalValue(newValue);
+    
+    // Clear existing timer
+    if (debounceTimer.current) {
+      clearTimeout(debounceTimer.current);
     }
-  }, [debouncedValue, onChange, value]);
-
-  // Flush value on unmount to prevent data loss when navigating steps
-  useEffect(() => {
-    return () => {
-      // On unmount, if there's a pending value different from parent, commit it
-      if (currentValue !== value) {
-        onChange(currentValue);
-      }
-    };
-  }, [currentValue, value, onChange]);
-
-  const handleIncrement = (e: React.MouseEvent) => {
-    e.preventDefault();
-    const newValue = Number((currentValue + 1).toFixed(2));
-    setImmediateValue(newValue);
-  };
-
-  const handleDecrement = (e: React.MouseEvent) => {
-    e.preventDefault();
-    const newValue = Number(Math.max(0, currentValue - 1).toFixed(2));
-    setImmediateValue(newValue);
+    
+    // Set new timer for debounced update to parent
+    debounceTimer.current = setTimeout(() => {
+      onChange(newValue);
+    }, 300);
   };
 
   // Flush immediately on blur to commit value before navigation
   const handleBlur = () => {
-    if (currentValue !== value) {
-      onChange(currentValue);
+    if (debounceTimer.current) {
+      clearTimeout(debounceTimer.current);
     }
+    if (localValue !== value) {
+      onChange(localValue);
+    }
+  };
+
+  // Cleanup timer on unmount
+  useEffect(() => {
+    return () => {
+      if (debounceTimer.current) {
+        clearTimeout(debounceTimer.current);
+      }
+    };
+  }, []);
+
+  const handleIncrement = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const newValue = Number((localValue + 1).toFixed(2));
+    setLocalValue(newValue);
+    onChange(newValue); // Immediate update for button clicks
+  };
+
+  const handleDecrement = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const newValue = Number(Math.max(0, localValue - 1).toFixed(2));
+    setLocalValue(newValue);
+    onChange(newValue); // Immediate update for button clicks
   };
 
   return (
@@ -116,11 +134,8 @@ const AmountInput = ({ value, onChange }: { value: number; onChange: (val: numbe
         type="number"
         min="0"
         step="0.01"
-        value={currentValue === 0 ? '' : currentValue}
-        onChange={(e) => {
-            const val = parseFloat(e.target.value);
-            setImmediateValue(isNaN(val) ? 0 : val);
-        }}
+        value={localValue === 0 ? '' : localValue}
+        onChange={handleChange}
         onBlur={handleBlur}
         placeholder="0"
         className="w-full bg-[var(--bg-input)] text-[var(--text-main)] pl-7 pr-8 py-3 rounded-xl border border-[var(--border)] focus:border-[var(--primary)] focus:outline-none transition-colors placeholder:text-[var(--text-muted)] placeholder:opacity-50 text-sm font-medium appearance-none"
@@ -236,7 +251,9 @@ export const QueueModule: React.FC<QueueModuleProps> = ({
   };
 
   // Handle add with navigation to new expense - optimized for instant feedback
+  // Mobile limit: max 3 expenses during beta
   const handleAddExpense = () => {
+    if (isMobile && expenses.length >= 3) return; // Mobile hard limit
     const newIndex = expenses.length; // Capture before state update
     onAdd();
     setMobileExpenseIndex(newIndex); // Navigate immediately, no delay
@@ -479,13 +496,16 @@ export const QueueModule: React.FC<QueueModuleProps> = ({
 
         {/* Action Buttons - Mobile optimized touch targets */}
         <div className="flex flex-col sm:flex-row gap-3 mt-auto pt-2">
-          <button
-            onClick={handleAddExpense}
-            className="flex-none sm:w-40 py-2.5 border border-[var(--border)] bg-[var(--bg-input)] rounded-xl text-[var(--text-muted)] font-medium hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] transition-all flex items-center justify-center gap-2 text-xs active:scale-[0.98]"
-          >
-            <Plus className="w-4 h-4" />
-            Add another
-          </button>
+          {/* Mobile: Hide button when limit reached, Desktop: Always show */}
+          {!(isMobile && expenses.length >= 3) && (
+            <button
+              onClick={handleAddExpense}
+              className="flex-none sm:w-40 py-2.5 border border-[var(--border)] bg-[var(--bg-input)] rounded-xl text-[var(--text-muted)] font-medium hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] transition-all flex items-center justify-center gap-2 text-xs active:scale-[0.98]"
+            >
+              <Plus className="w-4 h-4" />
+              Add another
+            </button>
+          )}
           
           <button
             onClick={onAnalyze}
