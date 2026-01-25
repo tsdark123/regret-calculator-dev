@@ -6,15 +6,15 @@ import React from 'react';
 export const BackgroundTexture: React.FC = () => {
   return (
     <div 
-      className="absolute inset-0 pointer-events-none"
-      style={{ zIndex: -5 }}
+      className="md:hidden fixed inset-0 pointer-events-none"
+      style={{ zIndex: -1 }}
     >
-      {/* Primary noise texture - temporarily at 6% for visibility testing */}
+      {/* Primary noise texture */}
       <div 
         className="absolute inset-0"
         style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-          opacity: 0.06,
+          opacity: 0.03,
           mixBlendMode: 'overlay',
         }}
       />
@@ -24,7 +24,7 @@ export const BackgroundTexture: React.FC = () => {
         className="absolute inset-0"
         style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='grain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' seed='15' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23grain)'/%3E%3C/svg%3E")`,
-          opacity: 0.04,
+          opacity: 0.02,
           mixBlendMode: 'soft-light',
         }}
       />

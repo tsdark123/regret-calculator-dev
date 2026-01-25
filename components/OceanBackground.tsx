@@ -5,7 +5,8 @@ import { motion } from 'framer-motion';
 export const OceanBackground: React.FC = () => {
   return (
     <div 
-      className="absolute inset-0 pointer-events-none overflow-hidden"
+      className="md:hidden fixed inset-0 pointer-events-none overflow-hidden"
+      style={{ zIndex: -1 }}
     >
       {/* Bioluminescent gradient orbs */}
       <motion.div

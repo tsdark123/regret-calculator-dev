@@ -453,7 +453,7 @@ function MainApp() {
   return (
     <>
       <AnalyticsTracker />
-      <div className={`flex flex-col theme-${theme} min-h-screen font-sans selection:bg-[var(--primary)] selection:text-white relative lg:bg-[var(--bg-main)] bg-transparent text-[var(--text-main)] transition-colors duration-500`}>
+      <div className={`flex flex-col theme-${theme} min-h-screen font-sans selection:bg-[var(--primary)] selection:text-white relative bg-[var(--bg-main)] text-[var(--text-main)] transition-colors duration-500`}>
         {/* Full-Viewport Particle Background - Outside all containers */}
         <ParticleBackground theme={theme} />
         
