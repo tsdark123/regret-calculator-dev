@@ -201,7 +201,7 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
   const [showTheory, setShowTheory] = useState(false);
 
   return (
-    <section className="min-h-[85vh] md:min-h-[90vh] flex flex-col items-center justify-center text-center px-4 relative overflow-hidden pt-16 md:pt-32 select-none">
+    <section className="min-h-[85vh] md:min-h-[90vh] flex flex-col items-center justify-center text-center px-4 relative overflow-hidden pt-8 md:pt-32 select-none">
       
       {/* --- Background Elements - Desktop only for performance --- */}
       <div className="hidden md:block">
@@ -255,19 +255,19 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
 
       {/* --- Main Content --- */}
 
-      <h1 className="text-7xl sm:text-8xl md:text-8xl font-bold tracking-tighter mb-6 md:mb-8 text-[var(--text-main)] drop-shadow-2xl leading-[1.1] animate-fade-in-down z-10 max-w-4xl">
+      <h1 className="text-7xl sm:text-8xl md:text-8xl font-bold tracking-tighter mb-4 md:mb-8 text-[var(--text-main)] drop-shadow-2xl leading-[1.1] animate-fade-in-down z-10 max-w-4xl">
         Calculated Growth.<br />
         <span className="text-[var(--primary)]">Zero Regret.</span>
       </h1>
       
-      <p className="text-xl sm:text-2xl md:text-2xl text-[var(--text-muted)] max-w-3xl mb-8 md:mb-12 leading-relaxed font-light animate-fade-in-up delay-100 opacity-0 z-10 px-4">
+      <p className="text-xl sm:text-2xl md:text-2xl text-[var(--text-muted)] max-w-3xl mb-6 md:mb-12 leading-relaxed font-light animate-fade-in-up delay-100 opacity-0 z-10 px-4">
         See how the price of inaction grows over time. <br className="hidden md:block"/>
         Input your habits to see what waiting is <span className="text-[var(--text-main)] font-medium">really</span> costing you.
       </p>
 
 
       {/* Button Cluster - Vertical list on mobile, horizontal on desktop */}
-      <div className="flex flex-col md:flex-row items-stretch md:items-center gap-3 md:gap-4 animate-fade-in-up delay-200 opacity-0 w-full max-w-md md:max-w-none justify-center mb-8 md:mb-16 z-20 px-6">
+      <div className="flex flex-col md:flex-row items-stretch md:items-center gap-3 md:gap-4 animate-fade-in-up delay-200 opacity-0 w-full max-w-md md:max-w-none justify-center mb-6 md:mb-16 z-20 px-6">
          
         {/* Mobile: Vertical list of wide buttons (Learn → Calculate → Presets) */}
         <div className="flex flex-col md:hidden gap-3 w-full">

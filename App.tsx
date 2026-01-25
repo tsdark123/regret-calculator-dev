@@ -131,23 +131,39 @@ function MainApp() {
   useEffect(() => {
     if (window.innerWidth < 1024) {
       if (currentPath === '/' || currentPath === '') {
-        // Home page: disable scroll
+        // Home page: disable scroll completely
+        document.documentElement.style.overflow = 'hidden';
+        document.documentElement.style.height = '100vh';
         document.body.style.overflow = 'hidden';
         document.body.style.height = '100vh';
+        document.body.style.position = 'fixed';
+        document.body.style.width = '100%';
       } else {
         // /calculate page: enable scroll
+        document.documentElement.style.overflow = 'auto';
+        document.documentElement.style.height = 'auto';
         document.body.style.overflow = 'auto';
         document.body.style.height = 'auto';
+        document.body.style.position = 'static';
+        document.body.style.width = 'auto';
       }
     } else {
       // Desktop: always enable scroll
+      document.documentElement.style.overflow = 'auto';
+      document.documentElement.style.height = 'auto';
       document.body.style.overflow = 'auto';
       document.body.style.height = 'auto';
+      document.body.style.position = 'static';
+      document.body.style.width = 'auto';
     }
 
     return () => {
+      document.documentElement.style.overflow = 'auto';
+      document.documentElement.style.height = 'auto';
       document.body.style.overflow = 'auto';
       document.body.style.height = 'auto';
+      document.body.style.position = 'static';
+      document.body.style.width = 'auto';
     };
   }, [currentPath]);
 
