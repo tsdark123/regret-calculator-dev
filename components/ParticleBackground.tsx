@@ -12,7 +12,7 @@ interface ParticleBackgroundProps {
     theme?: 'purple' | 'green' | 'blue';
 }
 
-export const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ theme = 'purple' }) => {
+export const ParticleBackground: React.FC<ParticleBackgroundProps> = React.memo(({ theme = 'purple' }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const particlesRef = useRef<Particle[]>([]);
     const mouseRef = useRef({ x: -1000, y: -1000 });
@@ -254,4 +254,4 @@ export const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ theme = 
             }}
         />
     );
-};
+});

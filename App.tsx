@@ -13,6 +13,7 @@ import { Roadmap } from './components/Roadmap';
 import { LoadingScreen } from './components/LoadingScreen';
 import { ParticleBackground } from './components/ParticleBackground';
 import { ThemeBackground } from './components/ThemeBackground';
+import { SnowBackground } from './components/SnowBackground';
 // Mobile maintenance removed - full responsive support enabled
 import { AdminStats } from './components/AdminStats';
 import { AnalyticsTracker } from './components/AnalyticsTracker';
@@ -454,6 +455,9 @@ function MainApp() {
         {/* Full-Viewport Particle Background - Outside all containers */}
         <ParticleBackground theme={theme} />
         
+        {/* Snow Particle Effect - Mobile only, behind all UI */}
+        <SnowBackground theme={theme} />
+        
         {/* Desktop Navbar */}
         <Navbar 
           activeTab={activeTab} 
@@ -754,13 +758,7 @@ function MainApp() {
             )}
         </div>
         
-        {/* Mobile Bottom Navigation */}
-        <MobileBottomNav 
-          activeTab={activeTab}
-          onNavigate={handleNavigate}
-          currentTheme={theme}
-          onThemeChange={setTheme}
-        />
+        {/* Mobile Bottom Navigation - Removed, now in top Navbar */}
       </div>
     </>
   );

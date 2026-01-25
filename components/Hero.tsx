@@ -255,12 +255,19 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
 
       {/* --- Main Content --- */}
 
-      <h1 className="text-7xl sm:text-8xl md:text-8xl font-bold tracking-tighter mb-4 md:mb-8 text-[var(--text-main)] drop-shadow-2xl leading-[1.1] animate-fade-in-down z-10 max-w-4xl">
+      {/* Beta Notice - Mobile Only - Absolutely positioned */}
+      <div className="md:hidden absolute top-16 left-0 right-0 flex items-center justify-center gap-2 px-4 py-3 bg-[var(--bg-card)]/40 backdrop-blur-sm z-20">
+        <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-[pulse_0.8s_ease-in-out_infinite]" />
+        <span className="text-[9px] font-mono tracking-wider text-[var(--text-muted)] uppercase">Beta</span>
+        <span className="text-[12px] text-[var(--text-muted)]">Best experience on desktop. Mobile is in beta.</span>
+      </div>
+
+      <h1 className="text-[3.754rem] sm:text-8xl md:text-8xl font-bold tracking-tighter mb-4 md:mb-8 text-[var(--text-main)] drop-shadow-2xl leading-[1.1] animate-fade-in-down z-10 max-w-4xl mt-20 md:mt-0">
         Calculated Growth.<br />
         <span className="text-[var(--primary)]">Zero Regret.</span>
       </h1>
       
-      <p className="text-xl sm:text-2xl md:text-2xl text-[var(--text-muted)] max-w-3xl mb-6 md:mb-12 leading-relaxed font-light animate-fade-in-up delay-100 opacity-0 z-10 px-4">
+      <p className="text-[1.1rem] sm:text-2xl md:text-2xl text-[var(--text-muted)] max-w-3xl mb-6 md:mb-12 leading-relaxed font-light animate-fade-in-up delay-100 opacity-0 z-10 px-4">
         See how the price of inaction grows over time. <br className="hidden md:block"/>
         Input your habits to see what waiting is <span className="text-[var(--text-main)] font-medium">really</span> costing you.
       </p>
@@ -274,47 +281,51 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
           {/* 1. Learn - How it Works */}
           <button 
             onClick={() => setShowTheory(true)}
-            className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)]/60 text-[var(--text-main)] font-semibold text-base hover:bg-[var(--bg-hover)] transition-all backdrop-blur-sm active:scale-[0.98] shadow-lg"
+            className="w-full flex items-center justify-center gap-3 px-5 py-3.5 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)]/60 text-[var(--text-main)] font-semibold text-[0.95rem] hover:bg-[var(--bg-hover)] transition-all backdrop-blur-sm active:scale-[0.98] shadow-lg"
           >
-            <BookOpen className="w-5 h-5 text-blue-400" />
+            <BookOpen className="w-[1.1rem] h-[1.1rem] text-blue-400" />
             <span>How it Works</span>
           </button>
 
           {/* 2. Calculate - Main CTA */}
           <button
             onClick={onStart}
-            className="group w-full flex items-center justify-center gap-3 px-6 py-4 font-bold text-white transition-all duration-300 bg-[var(--primary)] rounded-2xl hover:bg-[var(--primary-hover)] active:scale-[0.98] shadow-xl shadow-[var(--primary)]/25 text-base"
+            className="group w-full flex items-center justify-center gap-3 px-5 py-3.5 font-bold text-white transition-all duration-300 bg-[var(--primary)] rounded-2xl hover:bg-[var(--primary-hover)] active:scale-[0.98] shadow-xl shadow-[var(--primary)]/25 text-[0.95rem]"
           >
             <span>Calculate Your Regret</span>
-            <ArrowDown className="w-5 h-5 group-hover:translate-y-1 transition-transform duration-300" />
+            <ArrowDown className="w-[1.1rem] h-[1.1rem] group-hover:translate-y-1 transition-transform duration-300" />
           </button>
 
           {/* 3. Presets - Quick Load */}
           <button 
             onClick={() => setShowPreset(true)}
-            className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)]/60 text-[var(--text-main)] font-semibold text-base hover:bg-[var(--bg-hover)] transition-all backdrop-blur-sm active:scale-[0.98] shadow-lg"
+            className="w-full flex items-center justify-center gap-3 px-5 py-3.5 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)]/60 text-[var(--text-main)] font-semibold text-[0.95rem] hover:bg-[var(--bg-hover)] transition-all backdrop-blur-sm active:scale-[0.98] shadow-lg"
           >
-            <Zap className="w-5 h-5 text-yellow-400" />
+            <Zap className="w-[1.1rem] h-[1.1rem] text-yellow-400" />
             <span>Quick Load Presets</span>
           </button>
 
-          {/* Beta Notice - Mobile Only */}
-          <div className="mt-4 flex items-start gap-3 px-4 py-3 rounded-xl bg-[var(--bg-card)]/40 border border-[var(--border)]/50 backdrop-blur-sm">
-            <div className="flex-shrink-0 mt-0.5">
-              <div className="p-2 rounded-lg bg-gradient-to-br from-[var(--primary)]/20 to-transparent border border-[var(--primary)]/30">
-                <svg className="w-4 h-4 text-[var(--primary)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
-                </svg>
+          {/* Mobile Stats Bar */}
+          <div className="w-full mt-4 bg-[var(--bg-card)]/50 backdrop-blur-md border border-[var(--border)] rounded-2xl py-4 px-3 shadow-xl">
+            <div className="grid grid-cols-3 gap-3">
+              <div className="flex flex-col items-center justify-center">
+                <span className="text-xl font-bold text-[var(--text-main)] tracking-tight mb-1">
+                  <StatCounter value={decisionCount} suffix="+" />
+                </span>
+                <span className="text-[8px] text-[var(--text-muted)] font-semibold uppercase tracking-wider text-center leading-tight">Decisions Analyzed</span>
               </div>
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
-                <span className="text-[9px] font-mono tracking-wider text-[var(--text-muted)] uppercase">Beta</span>
+              <div className="flex flex-col items-center justify-center border-x border-white/5">
+                <span className="text-xl font-bold text-[var(--text-main)] tracking-tight mb-1">
+                  <StatCounter value={960} suffix="M+" />
+                </span>
+                <span className="text-[8px] text-[var(--text-muted)] font-semibold uppercase tracking-wider text-center leading-tight">Total Capital Wasted</span>
               </div>
-              <p className="text-xs text-[var(--text-muted)] leading-relaxed">
-                Best experience on desktop. Mobile is in beta.
-              </p>
+              <div className="flex flex-col items-center justify-center">
+                <span className="text-xl font-bold text-[var(--text-main)] tracking-tight mb-1">
+                  <StatCounter value={667} suffix="%+" />
+                </span>
+                <span className="text-[8px] text-[var(--text-muted)] font-semibold uppercase tracking-wider text-center leading-tight">Avg. Annual Yield Missed</span>
+              </div>
             </div>
           </div>
         </div>
