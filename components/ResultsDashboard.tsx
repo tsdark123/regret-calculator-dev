@@ -344,12 +344,12 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({
   theme,
 }) => {
   const dashboardRef = useRef<HTMLDivElement>(null);
-  const comparisonName = selectedStock ? selectedStock.name : "the market";
+  const comparisonName = selectedStock ? selectedStock.name : `${assumptions.annualReturn}% Custom Return`;
   const comparisonColor = selectedStock ? selectedStock.color.replace('bg-', 'text-') : 'text-[var(--primary)]';
 
   return (
-    <div ref={dashboardRef} className="w-full pb-12">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-8 gap-4 border-b border-[var(--border)] pb-6">
+    <div ref={dashboardRef} className="w-full pb-12 pt-2 lg:pt-0">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-6 lg:mb-8 gap-4 border-b border-[var(--border)] pb-4 lg:pb-6">
         <div>
            <h2 className="text-3xl font-bold text-[var(--text-main)] mb-2">Your Results</h2>
            <p className="text-[var(--text-muted)] text-sm">

@@ -321,21 +321,22 @@ export const Roadmap: React.FC = () => {
                 <span className="text-lg font-bold text-[var(--text-main)] leading-tight">Regret Calculator</span>
                 <span className="text-xs text-[var(--primary)] font-semibold tracking-wide">Official Updates</span>
               </div>
+            </div>
+          </div>
 
-              {/* MOVED PULSING ARROW HERE */}
+          {/* Right Icons */}
+          <div className="flex items-center gap-2 lg:gap-5 text-[var(--text-muted)]">
+            {/* Mobile: Fixed down arrow button, Desktop: Search icon */}
+            <div className="lg:hidden">
               <button
                 onClick={scrollToNextSection}
-                className="ml-1 p-2 bg-[var(--bg-card)] border border-[var(--border)] rounded-full shadow-sm hover:border-[var(--primary)] transition-colors group cursor-pointer animate-sub-bounce"
+                className="p-2 bg-[var(--bg-card)] border border-[var(--border)] rounded-full shadow-sm hover:border-[var(--primary)] transition-colors group cursor-pointer animate-[flashRing_1.5s_ease-in-out_infinite]"
                 title="Jump to latest"
               >
                 <ChevronDown className="w-4 h-4 text-[var(--text-muted)] group-hover:text-[var(--primary)]" />
               </button>
             </div>
-          </div>
-
-          {/* Right Icons */}
-          <div className="flex items-center gap-5 text-[var(--text-muted)]">
-            <Search className="w-6 h-6 cursor-pointer hover:text-[var(--text-main)] transition-colors" />
+            <Search className="hidden lg:block w-6 h-6 cursor-pointer hover:text-[var(--text-main)] transition-colors" />
             <MoreVertical className="w-6 h-6 cursor-pointer hover:text-[var(--text-main)] transition-colors" />
           </div>
         </div>

@@ -52,18 +52,18 @@ export const StockSelector: React.FC<StockSelectorProps> = ({ isOpen, onClose, o
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
-      {/* Backdrop */}
+      {/* Backdrop - Blur only */}
       <div 
-        className="absolute inset-0 bg-black/80 backdrop-blur-md animate-fade-in-up"
+        className="absolute inset-0 backdrop-blur-md animate-fade-in-up"
         onClick={onClose}
       />
 
-      {/* Modal Content - Updated to use theme variables */}
-      <div className="relative w-full max-w-2xl bg-[var(--bg-card)] border border-[var(--border)] rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh] animate-fade-in-down">
+      {/* Modal Content - Mobile: reduced height, Desktop: normal */}
+      <div className="relative w-full max-w-2xl bg-[var(--bg-card)] border border-[var(--border)] rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[70vh] lg:max-h-[85vh] animate-fade-in-down">
         
-        {/* Header / Search */}
-        <div className="p-6 border-b border-[var(--border)]">
-          <div className="flex items-center justify-between mb-6">
+        {/* Header / Search - Mobile: reduced padding */}
+        <div className="p-4 lg:p-6 border-b border-[var(--border)]">
+          <div className="flex items-center justify-between mb-3 lg:mb-6">
             <h2 className="text-xl font-bold text-[var(--text-main)]">Select Investment</h2>
             <button onClick={onClose} className="p-2 hover:bg-[var(--bg-hover)] rounded-full transition-colors">
               <X className="w-5 h-5 text-[var(--text-muted)]" />

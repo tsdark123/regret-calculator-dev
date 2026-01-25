@@ -228,6 +228,16 @@
         }
       }
 
+      /* Flashing ring animation for roadmap down arrow - GPU accelerated */
+      @keyframes flashRing {
+        0%, 100% {
+            box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+        }
+        50% {
+            box-shadow: 0 0 0 1px var(--primary-50);
+        }
+      }
+
       /* New looping draw animation */
       @keyframes draw-loop {
         0% {

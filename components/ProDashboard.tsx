@@ -11,7 +11,7 @@ interface ProDashboardProps {
 
 export const ProDashboard: React.FC<ProDashboardProps> = ({ results, assumptions, theme }) => {
   return (
-    <div className="w-full pb-12 md:pb-12 pb-24">
+    <div className="w-full pb-4 md:pb-12">
       {/* Mobile Layout - Vertically Stacked */}
       <div className="flex flex-col md:hidden gap-6 px-2">
         <div className="w-full">

@@ -180,12 +180,7 @@ function MainApp() {
     }
   }, [currentPath, results]);
 
-  // Auto-expand ProDashboard on mobile /results page so head-to-head battle graph is visible
-  useEffect(() => {
-    if (window.innerWidth < 1024 && (currentPath === '/results' || currentPath.startsWith('/results')) && results && !isProDashboardExpanded) {
-      setIsProDashboardExpanded(true);
-    }
-  }, [currentPath, results]);
+  // Removed auto-expand ProDashboard - users should manually expand if they want to see advanced analysis
 
   // Disable scroll on home, /calculate, and /roadmap for mobile. /results and /tools can scroll.
   useEffect(() => {
