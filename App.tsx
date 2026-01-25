@@ -1,10 +1,9 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useCallback, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Hero } from './components/Hero';
 import { Navbar } from './components/Navbar';
 import { QueueModule } from './components/QueueModule';
 import { SettingsPanel } from './components/SettingsPanel';
-import { ResultsDashboard } from './components/ResultsDashboard';
 import { StockSelector } from './components/StockSelector';
 import { Footer } from './components/Footer';
 import { AmbientBackground } from './components/AmbientBackground';
@@ -16,8 +15,11 @@ import { ParticleBackground } from './components/ParticleBackground';
 // Mobile maintenance removed - full responsive support enabled
 import { AdminStats } from './components/AdminStats';
 import { AnalyticsTracker } from './components/AnalyticsTracker';
-import { ProDashboard } from './components/ProDashboard';
 import { ArrowRight, Calculator } from 'lucide-react';
+
+// Lazy load heavy chart components for better mobile performance
+const ResultsDashboard = lazy(() => import('./components/ResultsDashboard').then(module => ({ default: module.ResultsDashboard })));
+const ProDashboard = lazy(() => import('./components/ProDashboard').then(module => ({ default: module.ProDashboard })));
 import { Expense, Assumptions, CalculationResult, StockOption, Theme } from './types';
 import { calculateResults } from './utils/financials';
 import { getStoredTheme, saveTheme } from './utils/theme';
@@ -372,112 +374,104 @@ function MainApp() {
                                     </div>
                                 </div>
 
-                                {/* Mobile: 3-Step Wizard with Fade Transitions */}
+                                {/* Mobile: 3-Step Wizard with Lightweight CSS Animations */}
                                 <div className="lg:hidden">
-                                    <AnimatePresence mode="wait">
-                                        {mobileStep === 1 && (
-                                            <motion.div
-                                                key="step-1"
-                                                initial={{ opacity: 0, y: 20 }}
-                                                animate={{ opacity: 1, y: 0 }}
-                                                exit={{ opacity: 0, y: -20 }}
-                                                transition={{ duration: 0.3 }}
-                                            >
-                                                <QueueModule
-                                                    expenses={expenses}
-                                                    onAdd={addExpense}
-                                                    onRemove={removeExpense}
-                                                    onUpdate={updateExpense}
-                                                    onAnalyze={() => setMobileStep(2)}
-                                                />
-                                            </motion.div>
-                                        )}
+                                    {mobileStep === 1 && (
+                                        <div key="step-1" className="animate-fade-in-up" style={{ animationDuration: '0.35s' }}>
+                                            <QueueModule
+                                                expenses={expenses}
+                                                onAdd={addExpense}
+                                                onRemove={removeExpense}
+                                                onUpdate={updateExpense}
+                                                onAnalyze={() => setMobileStep(2)}
+                                            />
+                                        </div>
+                                    )}
 
-                                        {mobileStep === 2 && (
-                                            <motion.div
-                                                key="step-2"
-                                                initial={{ opacity: 0, y: 20 }}
-                                                animate={{ opacity: 1, y: 0 }}
-                                                exit={{ opacity: 0, y: -20 }}
-                                                transition={{ duration: 0.3 }}
-                                                className="bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl md:rounded-3xl p-4 md:p-5 shadow-2xl backdrop-blur-sm"
-                                            >
-                                                <div className="flex items-center gap-3 mb-3 md:mb-4">
-                                                    <div className="w-6 h-6 rounded-full bg-[var(--primary)] bg-opacity-10 flex items-center justify-center text-[var(--primary)] font-bold text-xs ring-1 ring-[var(--primary)] ring-opacity-20">2</div>
-                                                    <h2 className="text-xs md:text-sm font-bold text-[var(--text-main)] uppercase tracking-wider">Assumptions</h2>
-                                                </div>
-                                                <SettingsPanel 
-                                                    assumptions={assumptions} 
-                                                    onChange={updateAssumptions} 
-                                                    onOpenStockSelector={() => setIsStockModalOpen(true)}
-                                                />
-                                                <div className="flex flex-col sm:flex-row gap-3 mt-4 pt-2">
-                                                    <button
-                                                        onClick={() => setMobileStep(3)}
-                                                        className="flex-1 py-2.5 bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-white rounded-xl font-bold shadow-lg shadow-[var(--primary)]/20 transition-all flex items-center justify-center gap-2 active:scale-[0.98] text-sm"
-                                                    >
-                                                        <ArrowRight className="w-4 h-4" />
-                                                        Next Step
-                                                    </button>
-                                                </div>
-                                            </motion.div>
-                                        )}
+                                    {mobileStep === 2 && (
+                                        <div 
+                                            key="step-2"
+                                            className="bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl md:rounded-3xl p-4 md:p-5 shadow-2xl backdrop-blur-sm animate-fade-in-up"
+                                            style={{ animationDuration: '0.35s' }}
+                                        >
+                                            <div className="flex items-center gap-3 mb-3 md:mb-4">
+                                                <div className="w-6 h-6 rounded-full bg-[var(--primary)] bg-opacity-10 flex items-center justify-center text-[var(--primary)] font-bold text-xs ring-1 ring-[var(--primary)] ring-opacity-20">2</div>
+                                                <h2 className="text-xs md:text-sm font-bold text-[var(--text-main)] uppercase tracking-wider">Assumptions</h2>
+                                            </div>
+                                            <SettingsPanel 
+                                                assumptions={assumptions} 
+                                                onChange={updateAssumptions} 
+                                                onOpenStockSelector={() => setIsStockModalOpen(true)}
+                                            />
+                                            <div className="flex flex-col sm:flex-row gap-3 mt-4 pt-2">
+                                                <button
+                                                    onClick={() => setMobileStep(3)}
+                                                    className="flex-1 py-2.5 bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-white rounded-xl font-bold shadow-lg shadow-[var(--primary)]/20 transition-all flex items-center justify-center gap-2 active:scale-[0.98] text-sm"
+                                                >
+                                                    <ArrowRight className="w-4 h-4" />
+                                                    Next Step
+                                                </button>
+                                            </div>
+                                        </div>
+                                    )}
 
-                                        {mobileStep === 3 && (
-                                            <motion.div
-                                                key="step-3"
-                                                initial={{ opacity: 0, y: 20 }}
-                                                animate={{ opacity: 1, y: 0 }}
-                                                exit={{ opacity: 0, y: -20 }}
-                                                transition={{ duration: 0.3 }}
-                                                className="bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl md:rounded-3xl p-4 md:p-5 shadow-2xl backdrop-blur-sm"
-                                            >
-                                                <div className="flex items-center gap-3 mb-3 md:mb-4">
-                                                    <div className="w-6 h-6 rounded-full bg-[var(--primary)] bg-opacity-10 flex items-center justify-center text-[var(--primary)] font-bold text-xs ring-1 ring-[var(--primary)] ring-opacity-20">3</div>
-                                                    <h2 className="text-xs md:text-sm font-bold text-[var(--text-main)] uppercase tracking-wider">Final Wisdom</h2>
+                                    {mobileStep === 3 && (
+                                        <div 
+                                            key="step-3"
+                                            className="bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl md:rounded-3xl p-4 md:p-5 shadow-2xl backdrop-blur-sm animate-fade-in-up"
+                                            style={{ animationDuration: '0.35s' }}
+                                        >
+                                            <div className="flex items-center gap-3 mb-3 md:mb-4">
+                                                <div className="w-6 h-6 rounded-full bg-[var(--primary)] bg-opacity-10 flex items-center justify-center text-[var(--primary)] font-bold text-xs ring-1 ring-[var(--primary)] ring-opacity-20">3</div>
+                                                <h2 className="text-xs md:text-sm font-bold text-[var(--text-main)] uppercase tracking-wider">Final Wisdom</h2>
+                                            </div>
+                                            <div className="space-y-3 text-[var(--text-muted)] text-sm mb-4">
+                                                <p>You're about to see how <span className="text-[var(--text-main)] font-semibold">{expenses.length} decision{expenses.length !== 1 ? 's' : ''}</span> compound over <span className="text-[var(--text-main)] font-semibold">{assumptions.timeHorizonYears} years</span>.</p>
+                                                <p>Remember: Every dollar spent today is a dollar that can't grow tomorrow.</p>
+                                                <div className="bg-[var(--bg-hover)] p-4 rounded-xl border border-[var(--border)] mt-4">
+                                                    <p className="text-xs text-[var(--text-muted)] italic">
+                                                        "The best time to start investing was yesterday. The second best time is now."
+                                                    </p>
                                                 </div>
-                                                <div className="space-y-3 text-[var(--text-muted)] text-sm mb-4">
-                                                    <p>You're about to see how <span className="text-[var(--text-main)] font-semibold">{expenses.length} decision{expenses.length !== 1 ? 's' : ''}</span> compound over <span className="text-[var(--text-main)] font-semibold">{assumptions.timeHorizonYears} years</span>.</p>
-                                                    <p>Remember: Every dollar spent today is a dollar that can't grow tomorrow.</p>
-                                                    <div className="bg-[var(--bg-hover)] p-4 rounded-xl border border-[var(--border)] mt-4">
-                                                        <p className="text-xs text-[var(--text-muted)] italic">
-                                                            "The best time to start investing was yesterday. The second best time is now."
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                                <div className="flex flex-col gap-3 pt-2">
-                                                    <button
-                                                        onClick={handleAnalyze}
-                                                        className="w-full py-4 bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-white rounded-xl font-bold shadow-lg transition-all flex items-center justify-center gap-2 active:scale-[0.98] text-base"
-                                                    >
-                                                        <Calculator className="w-5 h-5" />
-                                                        Analyze My Regret
-                                                    </button>
-                                                    <button
-                                                        onClick={() => setMobileStep(1)}
-                                                        className="w-full py-2 text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors text-sm"
-                                                    >
-                                                        ← Back to Start
-                                                    </button>
-                                                </div>
-                                            </motion.div>
-                                        )}
-                                    </AnimatePresence>
+                                            </div>
+                                            <div className="flex flex-col gap-3 pt-2">
+                                                <button
+                                                    onClick={handleAnalyze}
+                                                    className="w-full py-4 bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-white rounded-xl font-bold shadow-lg transition-all flex items-center justify-center gap-2 active:scale-[0.98] text-base"
+                                                >
+                                                    <Calculator className="w-5 h-5" />
+                                                    Analyze My Regret
+                                                </button>
+                                                <button
+                                                    onClick={() => setMobileStep(1)}
+                                                    className="w-full py-2 text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors text-sm"
+                                                >
+                                                    ← Back to Start
+                                                </button>
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
                               </>
                           )}
 
                           {viewMode === 'results' && results && (
                               <div key={resultsKey} className="w-full animate-fade-in-up">
-                                  <ResultsDashboard 
-                                      results={results} 
-                                      assumptions={assumptions}
-                                      horizon={assumptions.timeHorizonYears}
-                                      onReset={handleReset}
-                                      onEdit={handleEditInputs}
-                                      selectedStock={assumptions.selectedStock}
-                                      theme={theme}
-                                  />
+                                  <Suspense fallback={
+                                      <div className="w-full flex items-center justify-center py-20">
+                                          <div className="animate-pulse text-[var(--text-muted)]">Loading results...</div>
+                                      </div>
+                                  }>
+                                      <ResultsDashboard 
+                                          results={results} 
+                                          assumptions={assumptions}
+                                          horizon={assumptions.timeHorizonYears}
+                                          onReset={handleReset}
+                                          onEdit={handleEditInputs}
+                                          selectedStock={assumptions.selectedStock}
+                                          theme={theme}
+                                      />
+                                  </Suspense>
                                   
                                   {/* Expand Button for Pro Dashboard */}
                                   <div ref={expandButtonRef} className="flex justify-center -mt-4 mb-4">
@@ -533,11 +527,17 @@ function MainApp() {
                                           style={{ originY: 0 }}
                                           className="will-change-transform overflow-hidden"
                                         >
-                                          <ProDashboard 
-                                            results={results} 
-                                            assumptions={assumptions} 
-                                            theme={theme}
-                                          />
+                                          <Suspense fallback={
+                                              <div className="w-full flex items-center justify-center py-20">
+                                                  <div className="animate-pulse text-[var(--text-muted)]">Loading advanced analysis...</div>
+                                              </div>
+                                          }>
+                                              <ProDashboard 
+                                                results={results} 
+                                                assumptions={assumptions} 
+                                                theme={theme}
+                                              />
+                                          </Suspense>
                                         </motion.div>
                                       )}
                                     </AnimatePresence>
