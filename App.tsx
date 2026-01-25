@@ -15,6 +15,7 @@ import { ParticleBackground } from './components/ParticleBackground';
 // Mobile maintenance removed - full responsive support enabled
 import { AdminStats } from './components/AdminStats';
 import { AnalyticsTracker } from './components/AnalyticsTracker';
+import { MobileBottomNav } from './components/MobileBottomNav';
 import { ArrowRight, Calculator } from 'lucide-react';
 
 import { ResultsDashboard } from './components/ResultsDashboard';
@@ -114,6 +115,17 @@ function MainApp() {
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
+
+  // Guardrail: Redirect from /results if no results data exists
+  useEffect(() => {
+    if ((currentPath === '/results' || currentPath.startsWith('/results')) && !results) {
+      // No results data - redirect to home
+      window.history.replaceState({}, '', '/');
+      setCurrentPath('/');
+      setViewMode('input');
+      setMobileStep(1);
+    }
+  }, [currentPath, results]);
 
   // Disable scroll on home page for mobile, enable on /calculate
   useEffect(() => {
@@ -265,10 +277,10 @@ function MainApp() {
           expenseName: firstExpenseName
         });
         
-        // Mobile: Navigate to /calculate and trigger fade-in
+        // Mobile: Navigate to /results route
         if (window.innerWidth < 1024) {
-            window.history.pushState({}, '', '/calculate');
-            setCurrentPath('/calculate');
+            window.history.pushState({}, '', '/results');
+            setCurrentPath('/results');
             setShowCalculateContent(false);
             window.scrollTo({ top: 0, behavior: 'smooth' });
             // Trigger fade-in after a brief delay
@@ -416,8 +428,8 @@ function MainApp() {
             ) : (
               /* VIEW: CALCULATOR (HERO + MAIN) */
               <>
-                  {/* Hero Section - Hidden on /calculate route for mobile */}
-                  {(window.innerWidth >= 1024 || currentPath === '/' || currentPath === '') && (
+                  {/* Hero Section - Hidden on /calculate and /results routes for mobile */}
+                  {(window.innerWidth >= 1024 || (currentPath === '/' || currentPath === '')) && !(window.innerWidth < 1024 && (currentPath === '/results' || currentPath.startsWith('/results'))) && (
                     <>
                       {/* Purple Beam for Hero Section - Positioned absolutely at top level */}
                       <div className="absolute top-[8%] left-[50%] -translate-x-1/2 w-[500px] h-[500px] bg-purple-900/5 blur-[100px] rounded-full pointer-events-none z-[5]" />
@@ -430,7 +442,7 @@ function MainApp() {
                     </>
                   )}
                   
-                  <main className={`px-4 md:px-8 w-full min-h-[600px] relative ${(window.innerWidth < 1024 && (currentPath === '/calculate' || currentPath.startsWith('/calculate'))) ? 'pt-24 pb-8' : 'py-8'}`} ref={inputSectionRef} style={{
+                  <main className={`px-4 md:px-8 w-full min-h-[600px] relative ${(window.innerWidth < 1024 && (currentPath === '/calculate' || currentPath.startsWith('/calculate') || currentPath === '/results' || currentPath.startsWith('/results'))) ? 'pt-24 pb-24' : 'py-8'}`} ref={inputSectionRef} style={{
                       display: (window.innerWidth < 1024 && (currentPath === '/' || currentPath === '')) ? 'none' : 'block'
                   }}>
                       <AmbientBackground />
@@ -478,6 +490,8 @@ function MainApp() {
                                                 onRemove={removeExpense}
                                                 onUpdate={updateExpense}
                                                 onAnalyze={() => setMobileStep(2)}
+                                                buttonText="Next Step →"
+                                                buttonIcon="arrow"
                                             />
                                         </div>
                                     )}
@@ -638,6 +652,14 @@ function MainApp() {
               </>
             )}
         </div>
+        
+        {/* Mobile Bottom Navigation */}
+        <MobileBottomNav 
+          activeTab={activeTab}
+          onNavigate={handleNavigate}
+          currentTheme={theme}
+          onThemeChange={setTheme}
+        />
       </div>
     </>
   );

@@ -46,9 +46,9 @@ export const AmbientBackground: React.FC = () => {
           <MiniChart3 className="w-full h-full" />
       </div>
 
-      {/* 4. Deep Background Ticker Lines */}
-      <div className="absolute top-[15%] left-0 w-full h-px bg-gradient-to-r from-transparent via-purple-500/10 to-transparent" />
-      <div className="absolute top-[85%] left-0 w-full h-px bg-gradient-to-r from-transparent via-white/5 to-transparent" />
+      {/* 4. Deep Background Ticker Lines - Fixed to span full viewport width */}
+      <div className="absolute top-[15%] left-0 right-0 w-[100vw] h-px bg-gradient-to-r from-transparent via-purple-500/10 to-transparent" style={{ marginLeft: 'calc(-50vw + 50%)' }} />
+      <div className="absolute top-[85%] left-0 right-0 w-[100vw] h-px bg-gradient-to-r from-transparent via-white/5 to-transparent" style={{ marginLeft: 'calc(-50vw + 50%)' }} />
       
       {/* 5. Random Particles */}
       <div className="absolute top-[20%] left-[40%] w-1.5 h-1.5 bg-purple-500 rounded-full blur-[1px] opacity-30 animate-pulse" />

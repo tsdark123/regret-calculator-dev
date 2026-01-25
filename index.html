@@ -306,6 +306,28 @@
       input[type=range]:focus {
         outline: none;
       }
+
+      /* Safe area padding for mobile bottom nav */
+      .safe-area-pb {
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+      }
+
+      /* Hide scrollbar utility */
+      .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+      }
+
+      /* Mobile-specific: Prevent horizontal scroll */
+      @media (max-width: 1023px) {
+        html, body {
+          overflow-x: hidden;
+          max-width: 100vw;
+        }
+      }
     </style>
   <script type="importmap">
 {

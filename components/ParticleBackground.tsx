@@ -78,7 +78,11 @@ export const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ theme = 
         resizeCanvas();
         window.addEventListener('resize', resizeCanvas);
 
+        // Disable interactivity on mobile to save CPU
+        const isMobile = window.innerWidth < 1024;
+        
         const handleMouseMove = (e: MouseEvent) => {
+            if (isMobile) return; // Skip on mobile
             mouseRef.current = {
                 x: e.clientX,
                 y: e.clientY,
@@ -86,11 +90,15 @@ export const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ theme = 
         };
 
         const handleMouseLeave = () => {
+            if (isMobile) return; // Skip on mobile
             mouseRef.current = { x: -1000, y: -1000 };
         };
 
-        window.addEventListener('mousemove', handleMouseMove);
-        window.addEventListener('mouseleave', handleMouseLeave);
+        // Only add mouse listeners on desktop
+        if (!isMobile) {
+            window.addEventListener('mousemove', handleMouseMove);
+            window.addEventListener('mouseleave', handleMouseLeave);
+        }
 
         const linkDistance = 150;
         const grabDistance = 180;
@@ -223,8 +231,10 @@ export const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ theme = 
 
         return () => {
             window.removeEventListener('resize', resizeCanvas);
-            window.removeEventListener('mousemove', handleMouseMove);
-            window.removeEventListener('mouseleave', handleMouseLeave);
+            if (!isMobile) {
+                window.removeEventListener('mousemove', handleMouseMove);
+                window.removeEventListener('mouseleave', handleMouseLeave);
+            }
             if (animationRef.current) {
                 cancelAnimationFrame(animationRef.current);
             }

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Trash2, Plus, Calculator, ChevronDown, Check, ChevronUp } from 'lucide-react';
+import { Trash2, Plus, Calculator, ChevronDown, Check, ChevronUp, ArrowRight } from 'lucide-react';
 import { Expense, Frequency } from '../types';
 import { useDebouncedNumber } from '../hooks/useDebouncedValue';
 
@@ -9,6 +9,8 @@ interface QueueModuleProps {
   onRemove: (id: string) => void;
   onUpdate: (id: string, field: keyof Expense, value: any) => void;
   onAnalyze: () => void;
+  buttonText?: string;
+  buttonIcon?: 'calculator' | 'arrow';
 }
 
 // Internal Custom Amount Input Component with Debouncing
@@ -138,6 +140,8 @@ export const QueueModule: React.FC<QueueModuleProps> = ({
   onRemove,
   onUpdate,
   onAnalyze,
+  buttonText = 'Analyze',
+  buttonIcon = 'calculator',
 }) => {
   // Ensure we display at least 5 rows (filled + ghost)
   const minRows = 5;
@@ -275,8 +279,8 @@ export const QueueModule: React.FC<QueueModuleProps> = ({
             onClick={onAnalyze}
             className="flex-1 py-2.5 bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-white rounded-xl font-bold shadow-lg shadow-[var(--primary)]/20 transition-all flex items-center justify-center gap-2 active:scale-[0.98] text-sm"
           >
-            <Calculator className="w-4 h-4" />
-            Analyze
+            {buttonIcon === 'arrow' ? <ArrowRight className="w-4 h-4" /> : <Calculator className="w-4 h-4" />}
+            {buttonText}
           </button>
         </div>
       </div>
