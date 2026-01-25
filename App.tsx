@@ -12,6 +12,7 @@ import { ToolsDashboard } from './components/ToolsDashboard';
 import { Roadmap } from './components/Roadmap';
 import { LoadingScreen } from './components/LoadingScreen';
 import { ParticleBackground } from './components/ParticleBackground';
+import { ThemeBackground } from './components/ThemeBackground';
 // Mobile maintenance removed - full responsive support enabled
 import { AdminStats } from './components/AdminStats';
 import { AnalyticsTracker } from './components/AnalyticsTracker';
@@ -452,7 +453,7 @@ function MainApp() {
   return (
     <>
       <AnalyticsTracker />
-      <div className={`flex flex-col theme-${theme} min-h-screen font-sans selection:bg-[var(--primary)] selection:text-white relative bg-[var(--bg-main)] text-[var(--text-main)] transition-colors duration-500`}>
+      <div className={`flex flex-col theme-${theme} min-h-screen font-sans selection:bg-[var(--primary)] selection:text-white relative lg:bg-[var(--bg-main)] bg-transparent text-[var(--text-main)] transition-colors duration-500`}>
         {/* Full-Viewport Particle Background - Outside all containers */}
         <ParticleBackground theme={theme} />
         
@@ -505,6 +506,10 @@ function MainApp() {
                       display: (window.innerWidth < 1024 && (currentPath === '/' || currentPath === '')) ? 'none' : 'block'
                   }}>
                       <AmbientBackground />
+                      {/* Theme-aware backgrounds for /calculate on mobile only */}
+                      {(currentPath === '/calculate' || currentPath.startsWith('/calculate')) && (
+                        <ThemeBackground theme={theme} />
+                      )}
                       <div className="max-w-[96rem] mx-auto space-y-8 relative z-10">
                           
                           {viewMode === 'input' && (
@@ -595,14 +600,22 @@ function MainApp() {
                                                 
                                                 {/* Analysis Preview */}
                                                 <div className="bg-[var(--bg-input)] p-3 rounded-xl border border-[var(--border)] mt-3">
-                                                    <p className="text-[10px] uppercase tracking-wider text-[var(--text-muted)] font-semibold mb-2">Your Expenses</p>
+                                                    <p className="text-[10px] uppercase tracking-wider text-[var(--text-muted)] font-semibold mb-2">Your Expenses (Monthly Equivalent)</p>
                                                     <div className="space-y-1.5">
-                                                        {expenses.slice(0, 3).map((exp, i) => (
-                                                            <div key={exp.id} className="flex items-center justify-between text-xs">
-                                                                <span className="text-[var(--text-main)] truncate max-w-[140px]">{exp.name || `Expense ${i + 1}`}</span>
-                                                                <span className="text-[var(--primary)] font-semibold">${exp.amount}/{exp.frequency === 'Monthly' ? 'mo' : exp.frequency === 'Weekly' ? 'wk' : exp.frequency === 'Yearly' ? 'yr' : '1x'}</span>
-                                                            </div>
-                                                        ))}
+                                                        {expenses.slice(0, 3).map((exp, i) => {
+                                                            const amt = exp.amount || 0;
+                                                            let monthlyAmt = 0;
+                                                            if (exp.frequency === 'Weekly') monthlyAmt = amt * 4.33;
+                                                            else if (exp.frequency === 'Monthly') monthlyAmt = amt;
+                                                            else if (exp.frequency === 'Yearly') monthlyAmt = amt / 12;
+                                                            else if (exp.frequency === 'One-time') monthlyAmt = amt / (assumptions.timeHorizonYears * 12);
+                                                            return (
+                                                                <div key={exp.id} className="flex items-center justify-between text-xs">
+                                                                    <span className="text-[var(--text-main)] truncate max-w-[140px]">{exp.name || `Expense ${i + 1}`}</span>
+                                                                    <span className="text-[var(--primary)] font-semibold">${monthlyAmt.toFixed(2)}/mo</span>
+                                                                </div>
+                                                            );
+                                                        })}
                                                         {expenses.length > 3 && (
                                                             <p className="text-[10px] text-[var(--text-muted)]">+{expenses.length - 3} more...</p>
                                                         )}
@@ -615,8 +628,9 @@ function MainApp() {
                                                                 if (exp.frequency === 'Weekly') return sum + (amt * 4.33);
                                                                 if (exp.frequency === 'Monthly') return sum + amt;
                                                                 if (exp.frequency === 'Yearly') return sum + (amt / 12);
-                                                                return sum + (amt / (assumptions.timeHorizonYears * 12));
-                                                            }, 0).toFixed(0)}
+                                                                if (exp.frequency === 'One-time') return sum + (amt / (assumptions.timeHorizonYears * 12));
+                                                                return sum;
+                                                            }, 0).toFixed(2)}
                                                         </span>
                                                     </div>
                                                 </div>
