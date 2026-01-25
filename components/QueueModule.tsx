@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Trash2, Plus, Calculator, ChevronDown, Check, ChevronUp, ArrowRight } from 'lucide-react';
+import { Trash2, Plus, Calculator, ChevronDown, Check, ChevronUp } from 'lucide-react';
 import { Expense, Frequency } from '../types';
 import { useDebouncedNumber } from '../hooks/useDebouncedValue';
 
@@ -275,10 +275,8 @@ export const QueueModule: React.FC<QueueModuleProps> = ({
             onClick={onAnalyze}
             className="flex-1 py-2.5 bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-white rounded-xl font-bold shadow-lg shadow-[var(--primary)]/20 transition-all flex items-center justify-center gap-2 active:scale-[0.98] text-sm"
           >
-            <ArrowRight className="w-4 h-4 lg:hidden" />
-            <Calculator className="w-4 h-4 hidden lg:inline" />
-            <span className="lg:hidden">Next Step</span>
-            <span className="hidden lg:inline">Analyze</span>
+            <Calculator className="w-4 h-4" />
+            Analyze
           </button>
         </div>
       </div>

@@ -17,8 +17,8 @@ import { AdminStats } from './components/AdminStats';
 import { AnalyticsTracker } from './components/AnalyticsTracker';
 import { ArrowRight, Calculator } from 'lucide-react';
 
-// Lazy load heavy chart components for better mobile performance
-const ResultsDashboard = lazy(() => import('./components/ResultsDashboard').then(module => ({ default: module.ResultsDashboard })));
+import { ResultsDashboard } from './components/ResultsDashboard';
+// Lazy load ProDashboard only (optional content) for better mobile performance
 const ProDashboard = lazy(() => import('./components/ProDashboard').then(module => ({ default: module.ProDashboard })));
 import { Expense, Assumptions, CalculationResult, StockOption, Theme } from './types';
 import { calculateResults } from './utils/financials';
@@ -276,11 +276,9 @@ function MainApp() {
               setShowCalculateContent(true);
             }, 100);
         } else {
-            // Desktop: Scroll with offset to perfectly frame the results dashboard
+            // Desktop: Just scroll
             if (inputSectionRef.current) {
-                const scrollOffset = 100;
-                const top = inputSectionRef.current.getBoundingClientRect().top + window.scrollY - scrollOffset;
-                window.scrollTo({ top, behavior: 'smooth' });
+                inputSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         }
     }, 2000);
@@ -552,21 +550,16 @@ function MainApp() {
                           )}
 
                           {viewMode === 'results' && results && (
-                              <div key={resultsKey} className="w-full animate-fade-in-up" style={{
-                                  opacity: (window.innerWidth < 1024 && (currentPath === '/calculate' || currentPath.startsWith('/calculate'))) ? (showCalculateContent ? 1 : 0) : 1,
-                                  transform: (window.innerWidth < 1024 && (currentPath === '/calculate' || currentPath.startsWith('/calculate'))) ? (showCalculateContent ? 'translateY(0)' : 'translateY(20px)') : 'none',
-                                  transition: 'opacity 0.6s ease-out, transform 0.6s ease-out'
-                              }}>
-                                  <Suspense fallback={null}>
-                                      <ResultsDashboard 
-                                          results={results} 
-                                          assumptions={assumptions}
-                                          horizon={assumptions.timeHorizonYears}
-                                          onReset={handleReset}
-                                          onEdit={handleEditInputs}
-                                          selectedStock={assumptions.selectedStock}
-                                          theme={theme}
-                                      />
+                              <div key={resultsKey} className="w-full animate-fade-in-up">
+                                  <ResultsDashboard 
+                                      results={results} 
+                                      assumptions={assumptions}
+                                      horizon={assumptions.timeHorizonYears}
+                                      onReset={handleReset}
+                                      onEdit={handleEditInputs}
+                                      selectedStock={assumptions.selectedStock}
+                                      theme={theme}
+                                  />
                                   
                                   {/* Expand Button for Pro Dashboard */}
                                   <div ref={expandButtonRef} className="flex justify-center -mt-4 mb-4">
@@ -637,7 +630,6 @@ function MainApp() {
                                       )}
                                     </AnimatePresence>
                                   </div>
-                                  </Suspense>
                               </div>
                           )}
                       </div>
