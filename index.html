@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calculated Growth, Zero Regret</title>
+    <!-- Prevent flash of default theme by reading localStorage synchronously -->
+    <script>
+      (function() {
+        var theme = localStorage.getItem('regret-calc-theme') || 'purple';
+        document.documentElement.classList.add('theme-' + theme);
+        document.documentElement.style.visibility = 'hidden';
+      })();
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+      html {
+        font-size: 90%;
+      }
+
+      :root {
+        /* Default Purple Theme */
+        --primary: #a855f7;
+        --primary-20: #a855f733; /* 20% opacity */
+        --primary-50: #a855f780; /* 50% opacity */
+        --primary-hover: #9333ea;
+        --bg-main: #0c0d10;
+        --bg-card: #0f1012;
+        --bg-input: #050505;
+        --bg-hover: #181a20;
+        --border: rgba(255, 255, 255, 0.1);
+        --text-main: #ffffff;
+        --text-muted: #94a3b8;
+        --chart-gradient-start: rgba(147, 51, 234, 0.4);
+        --chart-gradient-end: rgba(147, 51, 234, 0.05);
+        --nav-active-bg: rgba(255, 255, 255, 0.1);
+        --nav-active-text: #ffffff;
+        
+        /* Footer Specifics */
+        --bg-footer: #0c0d10;
+        --bg-faq: #181a20;
+      }
+
+      .theme-purple {
+        --primary: #a855f7;
+        --primary-20: #a855f733;
+        --primary-50: #a855f780;
+        --primary-hover: #9333ea;
+        --bg-main: #0c0d10;
+        --bg-card: #0f1012;
+        --bg-input: #050505;
+        --bg-hover: #181a20;
+        --border: rgba(255, 255, 255, 0.1);
+        --text-main: #ffffff;
+        --text-muted: #94a3b8;
+        --chart-gradient-start: rgba(147, 51, 234, 0.4);
+        --chart-gradient-end: rgba(147, 51, 234, 0.05);
+        --nav-active-bg: rgba(255, 255, 255, 0.1);
+        --nav-active-text: #ffffff;
+        
+        --bg-footer: #0c0d10;
+        --bg-faq: #181a20;
+      }
+
+      .theme-green {
+        /* Updated Matrix/Finance Theme */
+        --primary: #10b981; /* Emerald 500 */
+        --primary-20: #10b98133;
+        --primary-50: #10b98180;
+        --primary-hover: #059669; /* Emerald 600 */
+        --bg-main: #0c0d10; /* Dark Grey (Same as Default) */
+        --bg-card: #0f1012; /* Dark Grey (Same as Default) */
+        --bg-input: #050505;
+        --bg-hover: #181a20;
+        --border: rgba(255, 255, 255, 0.1);
+        --text-main: #ffffff;
+        --text-muted: #94a3b8;
+        --chart-gradient-start: rgba(16, 185, 129, 0.4);
+        --chart-gradient-end: rgba(16, 185, 129, 0.05);
+        --nav-active-bg: rgba(255, 255, 255, 0.1);
+        --nav-active-text: #ffffff;
+        
+        --bg-footer: #0c0d10;
+        --bg-faq: #181a20;
+      }
+
+      .theme-blue {
+        --primary: #2563eb;
+        --primary-20: #2563eb33;
+        --primary-50: #2563eb80;
+        --primary-hover: #1d4ed8;
+        --bg-main: #f0f9ff;
+        --bg-card: #ffffff;
+        --bg-input: #f1f5f9;
+        --bg-hover: #e2e8f0;
+        --border: #bfdbfe;
+        --text-main: #0f172a;
+        --text-muted: #64748b;
+        --chart-gradient-start: rgba(37, 99, 235, 0.3);
+        --chart-gradient-end: rgba(37, 99, 235, 0.05);
+        --nav-active-bg: #0f172a; /* Dark background for active tab in light mode */
+        --nav-active-text: #ffffff;
+        
+        /* Ocean Theme Footer Gradient */
+        --bg-footer: linear-gradient(to bottom, #f0f9ff, #dbeafe);
+        --bg-faq: #ffffff;
+      }
+
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: var(--bg-main);
+        color: var(--text-main);
+        overflow-x: hidden;
+        min-height: 100vh;
+        transition: background-color 0.5s ease, color 0.5s ease;
+        /* Disable text selection globally */
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        cursor: default;
+      }
+      
+      /* Re-enable text selection for inputs and textareas */
+      input, textarea {
+        -webkit-user-select: text;
+        -moz-user-select: text;
+        -ms-user-select: text;
+        user-select: text;
+        cursor: text;
+      }
+
+      /* Hide standard arrow spinners */
+      input[type=number]::-webkit-inner-spin-button, 
+      input[type=number]::-webkit-outer-spin-button { 
+        -webkit-appearance: none; 
+        margin: 0; 
+      }
+      input[type=number] {
+        -moz-appearance: textfield;
+      }
+      
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: var(--bg-main); 
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #27272a; 
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #3f3f46; 
+      }
+
+      /* Animations */
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      
+      @keyframes fadeInDown {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes float {
+        0%, 100% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-20px);
+        }
+      }
+
+      @keyframes floatDelayed {
+        0%, 100% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-15px);
+        }
+      }
+
+      @keyframes ripple {
+        0% {
+            transform: scale(0.8);
+            opacity: 1;
+        }
+        100% {
+            transform: scale(3);
+            opacity: 0;
+        }
+      }
+
+      @keyframes subtleBounce {
+        0%, 100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-4px);
+        }
+      }
+
+      /* New looping draw animation */
+      @keyframes draw-loop {
+        0% {
+            stroke-dasharray: 0, 2000;
+            stroke-dashoffset: 0;
+            opacity: 0;
+        }
+        10% {
+            opacity: 1;
+        }
+        60% {
+            stroke-dasharray: 2000, 0;
+            stroke-dashoffset: 0;
+            opacity: 1;
+        }
+        70% {
+            opacity: 0;
+        }
+        100% {
+            opacity: 0;
+        }
+      }
+
+      .animate-fade-in-up {
+        animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      }
+
+      .animate-fade-in-down {
+        animation: fadeInDown 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      }
+
+      .animate-float {
+        animation: float 6s ease-in-out infinite;
+      }
+
+      .animate-float-delayed {
+        animation: floatDelayed 8s ease-in-out infinite 2s;
+      }
+
+      .animate-ripple {
+        animation: ripple 2s linear infinite;
+      }
+
+      .animate-draw-loop {
+        animation: draw-loop 6s linear infinite;
+      }
+
+      .delay-100 { animation-delay: 100ms; }
+      .delay-200 { animation-delay: 200ms; }
+      .delay-300 { animation-delay: 300ms; }
+      .delay-600 { animation-delay: 600ms; }
+
+      /* Custom Range Slider Styling */
+      input[type=range] {
+        -webkit-appearance: none;
+        width: 100%;
+        background: transparent;
+      }
+      
+      input[type=range]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        height: 18px;
+        width: 18px;
+        border-radius: 50%;
+        background: var(--bg-input);
+        border: 2px solid var(--primary); 
+        cursor: pointer;
+        margin-top: -7px;
+        box-shadow: 0 0 10px var(--primary);
+        transition: transform 0.1s;
+      }
+      
+      input[type=range]::-webkit-slider-thumb:hover {
+        transform: scale(1.1);
+      }
+
+      input[type=range]::-moz-range-thumb {
+        height: 18px;
+        width: 18px;
+        border-radius: 50%;
+        background: var(--bg-input);
+        border: 2px solid var(--primary);
+        cursor: pointer;
+        box-shadow: 0 0 10px var(--primary);
+      }
+
+      input[type=range]::-webkit-slider-runnable-track {
+        width: 100%;
+        height: 4px;
+        cursor: pointer;
+        border-radius: 999px;
+      }
+      
+      input[type=range]:focus {
+        outline: none;
+      }
+
+      /* Safe area padding for mobile bottom nav */
+      .safe-area-pb {
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+      }
+
+      /* Hide scrollbar utility */
+      .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+      }
+
+      /* Mobile-specific: Prevent horizontal scroll */
+      @media (max-width: 1023px) {
+        html, body {
+          overflow-x: hidden;
+          max-width: 100vw;
+        }
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "recharts": "https://esm.sh/recharts@^3.6.0",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3"
+  }
+}
+</script>
+<script type="module">
+  // Your web app's Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyDdnKgoq03cbiiDzXdyUppPbaRzdarsS1A",
+    authDomain: "regretcalculator-93baa.firebaseapp.com",
+    databaseURL: "https://regretcalculator-93baa-default-rtdb.firebaseio.com",
+    projectId: "regretcalculator-93baa",
+    storageBucket: "regretcalculator-93baa.firebasestorage.app",
+    messagingSenderId: "120485266617",
+    appId: "1:120485266617:web:e8ed6a8dca6eae1bf44768"
+  };
+
+  // Import and initialize Firebase with correct ESM URLs
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getDatabase, ref, onValue, runTransaction, push, set, remove, onDisconnect, query, limitToLast, orderByChild } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+  import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+  const app = initializeApp(firebaseConfig);
+  const database = getDatabase(app);
+  const auth = getAuth(app);
+  const counterRef = ref(database, 'decisionsAnalyzed');
+
+  // Expose Firebase for React components
+  window.firebaseDB = database;
+  window.firebaseAuth = auth;
+  window.firebaseRef = ref;
+  window.firebaseOnValue = onValue;
+  window.firebaseRunTransaction = runTransaction;
+  window.firebasePush = push;
+  window.firebaseSet = set;
+  window.firebaseRemove = remove;
+  window.firebaseOnDisconnect = onDisconnect;
+  window.firebaseQuery = query;
+  window.firebaseLimitToLast = limitToLast;
+  window.firebaseOrderByChild = orderByChild;
+  window.firebaseSignIn = signInWithEmailAndPassword;
+  window.firebaseSignOut = signOut;
+  window.firebaseOnAuthStateChanged = onAuthStateChanged;
+
+  // 1. Function to update the counter display in real-time
+  onValue(counterRef, (snapshot) => {
+    let count = snapshot.val();
+    // Enforce minimum floor of 3564 even if DB has lower (e.g. 546)
+    if (!count || count < 3564) {
+        count = 3564;
+    }
+    
+    // Update the React state via the global setter if available
+    if (window.setGlobalDecisionCount) {
+        window.setGlobalDecisionCount(count);
+    }
+  });
+
+  // 2. Make the increment function globally accessible for App.tsx to call
+  window.incrementCounter = function() {
+    runTransaction(counterRef, (currentCount) => {
+      // If doesn't exist or is too low, jump to baseline + 1
+      if (!currentCount || currentCount < 3564) {
+          return 3565;
+      }
+      return currentCount + 1;
+    });
+  };
+
+  // 3. NEW: Global function to log activity events
+  window.logActivityEvent = function(data) {
+    const activityRef = ref(database, 'analytics/activity_log');
+    const newEntryRef = push(activityRef);
+    set(newEntryRef, {
+      city: data.city || 'Unknown',
+      timestamp: Date.now(),
+      regretAmount: Math.round(data.regretAmount),
+      expenseName: data.expenseName || 'Expense'
+    });
+  };
+</script>
+<!-- Make sure your other script files are below this -->
+
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <div id="root"></div>
+    
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>
