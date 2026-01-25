@@ -97,9 +97,6 @@ function MainApp() {
   
   // Loading State
   const [isLoading, setIsLoading] = useState(false);
-  
-  // Mobile calculate page fade-in state
-  const [showCalculateContent, setShowCalculateContent] = useState(false);
 
   // Financial wisdom quotes
   const financialWisdoms = [
@@ -240,12 +237,7 @@ function MainApp() {
       setCurrentPath('/calculate');
       setActiveTab('calculate');
       setViewMode('input');
-      setShowCalculateContent(false);
       window.scrollTo({ top: 0, behavior: 'smooth' });
-      // Trigger fade-in after a brief delay
-      setTimeout(() => {
-        setShowCalculateContent(true);
-      }, 100);
       return;
     }
 
@@ -339,12 +331,7 @@ function MainApp() {
         if (window.innerWidth < 1024) {
             window.history.pushState({}, '', '/results');
             setCurrentPath('/results');
-            setShowCalculateContent(false);
             window.scrollTo({ top: 0, behavior: 'smooth' });
-            // Trigger fade-in after a brief delay
-            setTimeout(() => {
-              setShowCalculateContent(true);
-            }, 100);
         } else {
             // Desktop: Just scroll
             if (inputSectionRef.current) {
@@ -540,11 +527,12 @@ function MainApp() {
                                 </div>
 
                                 {/* Mobile: 3-Step Wizard with Lightweight CSS Animations */}
-                                <div className="lg:hidden" style={{
-                                    opacity: (window.innerWidth < 1024 && (currentPath === '/calculate' || currentPath.startsWith('/calculate'))) ? (showCalculateContent ? 1 : 0) : 1,
-                                    transform: (window.innerWidth < 1024 && (currentPath === '/calculate' || currentPath.startsWith('/calculate'))) ? (showCalculateContent ? 'translateY(0)' : 'translateY(20px)') : 'none',
-                                    transition: 'opacity 0.6s ease-out, transform 0.6s ease-out'
-                                }}>
+                                {/* Key forces remount when navigating to /calculate, triggering animation like Financial Toolbox */}
+                                <div 
+                                    key={`mobile-wizard-${currentPath === '/calculate' || currentPath.startsWith('/calculate') ? 'calculate' : 'other'}`}
+                                    className="lg:hidden animate-fade-in-up"
+                                    style={{ animationDuration: '0.5s' }}
+                                >
                                     {mobileStep === 1 && (
                                         <div key="step-1" className="animate-fade-in-up" style={{ animationDuration: '0.35s' }}>
                                             <QueueModule
