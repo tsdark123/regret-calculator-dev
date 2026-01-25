@@ -247,12 +247,13 @@ interface ToolsDashboardProps {
 
 export const ToolsDashboard: React.FC<ToolsDashboardProps> = ({ theme = 'purple' }) => {
     return (
-        <div className="w-full animate-fade-in-up pb-12 relative min-h-screen" style={{ background: 'transparent' }}>
-                <div className="text-center mb-20 pt-10 relative z-10">
-                    <h2 className="text-5xl md:text-6xl font-bold text-[var(--text-main)] mb-6 tracking-tight">Financial Toolbox</h2>
-                    <p className="text-[var(--text-muted)] max-w-3xl mx-auto text-xl font-light leading-relaxed">
-                        Calculators to help you plan your future and understand the math behind your money.
-                    </p>
+        <div className="w-full animate-fade-in-up pb-12 relative overflow-y-auto" style={{ background: 'transparent' }}>
+                <div className="text-center mb-12 pt-4 relative z-10">
+                    <h2 className="text-6xl md:text-7xl font-bold text-[var(--text-main)] mb-4 tracking-tight">Financial Toolbox</h2>
+                    <div className="flex flex-col gap-1 text-[var(--text-muted)] max-w-3xl mx-auto text-base md:text-lg font-light">
+                        <p>Calculators to help you plan your future</p>
+                        <p>and understand the math behind your money.</p>
+                    </div>
                 </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 max-w-7xl mx-auto px-4 lg:px-0 relative z-10">
