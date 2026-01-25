@@ -203,16 +203,14 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
   return (
     <section className="min-h-[85vh] md:min-h-[90vh] flex flex-col items-center justify-center text-center px-4 relative overflow-hidden pt-16 md:pt-32 select-none">
       
-      {/* --- Background Elements - Desktop only for performance --- */}
-      <div className="hidden md:block">
-        <BackgroundGraph />
-      </div>
+      {/* --- Background Elements --- */}
+      <BackgroundGraph />
       
-      {/* 1. Central Glow - Simpler on mobile */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] md:w-[600px] h-[300px] md:h-[600px] bg-[var(--primary)] opacity-8 md:opacity-15 rounded-full blur-[40px] md:blur-[120px] -z-10 pointer-events-none" style={{ willChange: 'transform' }} />
+      {/* 1. Central Glow - Smaller on mobile */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] md:w-[600px] h-[300px] md:h-[600px] bg-[var(--primary)] opacity-15 rounded-full blur-[80px] md:blur-[120px] -z-10 pointer-events-none" />
       
-      {/* 2. Animated Grid Pattern - Desktop only */}
-      <div className="hidden md:block absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_70%_70%_at_50%_50%,black,transparent)] -z-20 pointer-events-none" />
+      {/* 2. Animated Grid Pattern */}
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:2rem_2rem] md:bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_70%_70%_at_50%_50%,black,transparent)] -z-20 pointer-events-none" />
 
       {/* 3. Left Side: Bar Graph Decoration - Desktop only */}
       <div className="absolute left-[5%] lg:left-[8%] top-1/2 -translate-y-1/2 hidden xl:flex flex-col gap-4 opacity-60 -z-10 pointer-events-none select-none transition-opacity duration-700 hover:opacity-80">
@@ -255,46 +253,51 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
 
       {/* --- Main Content --- */}
 
-      <h1 className="text-7xl sm:text-8xl md:text-8xl font-bold tracking-tighter mb-6 md:mb-8 text-[var(--text-main)] drop-shadow-2xl leading-[1.1] animate-fade-in-down z-10 max-w-4xl">
+      <h1 className="text-4xl sm:text-5xl md:text-8xl font-bold tracking-tighter mb-4 md:mb-8 text-[var(--text-main)] drop-shadow-2xl leading-[1.1] animate-fade-in-down z-10">
         Calculated Growth.<br />
         <span className="text-[var(--primary)]">Zero Regret.</span>
       </h1>
       
-      <p className="text-xl sm:text-2xl md:text-2xl text-[var(--text-muted)] max-w-3xl mb-8 md:mb-12 leading-relaxed font-light animate-fade-in-up delay-100 opacity-0 z-10 px-4">
+      <p className="text-base sm:text-lg md:text-2xl text-[var(--text-muted)] max-w-3xl mb-6 md:mb-12 leading-relaxed font-light animate-fade-in-up delay-100 opacity-0 z-10 px-2">
         See how the price of inaction grows over time. <br className="hidden md:block"/>
         Input your habits to see what waiting is <span className="text-[var(--text-main)] font-medium">really</span> costing you.
       </p>
 
 
-      {/* Button Cluster - Vertical stack on mobile, horizontal on desktop */}
-      <div className="flex flex-col md:flex-row items-stretch md:items-center gap-3 md:gap-4 animate-fade-in-up delay-200 opacity-0 w-full max-w-md md:max-w-none justify-center mb-8 md:mb-16 z-20 px-6">
+      {/* Button Cluster - Mobile optimized with 48px+ touch targets */}
+      <div className="flex flex-col md:flex-row items-center gap-3 md:gap-4 animate-fade-in-up delay-200 opacity-0 w-full max-w-md md:max-w-none justify-center mb-8 md:mb-16 z-20 px-4">
          
-        {/* 1. Learn - First on mobile */}
-        <button 
-          onClick={() => setShowTheory(true)}
-          className="w-full md:w-auto flex items-center justify-center gap-2 px-6 py-[13px] rounded-2xl border border-[var(--border)] bg-[var(--bg-card)]/40 text-[var(--text-muted)] font-medium text-sm hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] transition-all backdrop-blur-sm active:scale-[0.98]"
-        >
-          <BookOpen className="w-4 h-4 text-blue-400" />
-          <span>How it Works</span>
-        </button>
+        {/* Secondary buttons + Main CTA wrapper */}
+        <div className="flex gap-3 w-full md:contents">
+          {/* Left: Presets */}
+          <button 
+            onClick={() => setShowPreset(true)}
+            className="flex-1 md:flex-none flex items-center gap-2 px-4 py-[13px] md:px-6 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)]/40 text-[var(--text-muted)] font-medium text-sm hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] transition-all backdrop-blur-sm justify-center active:scale-[0.98] order-2 md:order-none"
+          >
+            <Zap className="w-4 h-4 text-yellow-400" />
+            <span className="hidden sm:inline">Quick Load</span>
+            <span className="sm:hidden">Presets</span>
+          </button>
 
-        {/* 2. Calculate Your Regret - Second on mobile */}
-        <button
-          onClick={onStart}
-          className="w-full md:w-auto group relative inline-flex items-center justify-center px-10 py-[15px] md:py-[13px] font-semibold text-white transition-all duration-300 bg-[var(--primary)] rounded-2xl hover:bg-[var(--primary-hover)] hover:scale-[1.02] active:scale-[0.98] hover:shadow-[0_0_30px_var(--primary)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary)] focus:ring-offset-[var(--bg-main)] shadow-xl text-base"
-        >
-          <span className="mr-3">Calculate Your Regret</span>
-          <ArrowDown className="w-4 h-4 group-hover:translate-y-1 transition-transform duration-300" />
-        </button>
+          {/* Center: Main CTA - First on mobile for prominence */}
+          <button
+            onClick={onStart}
+            className="group relative inline-flex items-center justify-center px-8 py-[15px] md:px-10 md:py-[13px] font-semibold text-white transition-all duration-300 bg-[var(--primary)] rounded-2xl hover:bg-[var(--primary-hover)] hover:scale-[1.02] active:scale-[0.98] hover:shadow-[0_0_30px_var(--primary)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary)] focus:ring-offset-[var(--bg-main)] shadow-xl w-full md:w-auto order-first md:order-none"
+          >
+            <span className="mr-3 text-base">Calculate Your Regret</span>
+            <ArrowDown className="w-4 h-4 group-hover:translate-y-1 transition-transform duration-300" />
+          </button>
 
-        {/* 3. Presets - Third on mobile */}
-        <button 
-          onClick={() => setShowPreset(true)}
-          className="w-full md:w-auto flex items-center justify-center gap-2 px-6 py-[13px] rounded-2xl border border-[var(--border)] bg-[var(--bg-card)]/40 text-[var(--text-muted)] font-medium text-sm hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] transition-all backdrop-blur-sm active:scale-[0.98]"
-        >
-          <Zap className="w-4 h-4 text-yellow-400" />
-          <span>Quick Load</span>
-        </button>
+          {/* Right: Theory */}
+          <button 
+            onClick={() => setShowTheory(true)}
+            className="flex-1 md:flex-none flex items-center gap-2 px-4 py-[13px] md:px-6 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)]/40 text-[var(--text-muted)] font-medium text-sm hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] transition-all backdrop-blur-sm justify-center active:scale-[0.98] order-3 md:order-none"
+          >
+            <BookOpen className="w-4 h-4 text-blue-400" />
+            <span className="hidden sm:inline">How it Works</span>
+            <span className="sm:hidden">Learn</span>
+          </button>
+        </div>
       </div>
 
       {/* Stats Bar (Desktop Only) */}
