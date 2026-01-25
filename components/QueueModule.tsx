@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Trash2, Plus, Calculator, ChevronDown, Check, ChevronUp, ArrowRight } from 'lucide-react';
+import { Trash2, Plus, Calculator, ChevronDown, Check, ChevronUp, ArrowRight, ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Expense, Frequency } from '../types';
 import { useDebouncedNumber } from '../hooks/useDebouncedValue';
 
@@ -16,13 +16,6 @@ interface QueueModuleProps {
 // Internal Custom Amount Input Component with Debouncing
 const AmountInput = ({ value, onChange }: { value: number; onChange: (val: number) => void }) => {
   const [debouncedValue, setImmediateValue, currentValue] = useDebouncedNumber(value, 300, 0);
-
-  // Update debounced value when parent value changes
-  useEffect(() => {
-    if (value !== debouncedValue) {
-      setImmediateValue(value);
-    }
-  }, [value, debouncedValue, setImmediateValue]);
 
   // Notify parent when debounced value changes
   useEffect(() => {
@@ -143,6 +136,53 @@ export const QueueModule: React.FC<QueueModuleProps> = ({
   buttonText = 'Analyze',
   buttonIcon = 'calculator',
 }) => {
+  // Mobile: Track which expense is currently visible
+  const [mobileExpenseIndex, setMobileExpenseIndex] = useState(0);
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 1024;
+
+  // When expenses change, ensure index is valid
+  useEffect(() => {
+    if (mobileExpenseIndex >= expenses.length && expenses.length > 0) {
+      setMobileExpenseIndex(expenses.length - 1);
+    }
+  }, [expenses.length, mobileExpenseIndex]);
+
+  // Navigate to next expense on mobile
+  const goToNextExpense = () => {
+    if (mobileExpenseIndex < expenses.length - 1) {
+      setMobileExpenseIndex(mobileExpenseIndex + 1);
+    }
+  };
+
+  // Navigate to previous expense on mobile
+  const goToPrevExpense = () => {
+    if (mobileExpenseIndex > 0) {
+      setMobileExpenseIndex(mobileExpenseIndex - 1);
+    }
+  };
+
+  // Handle add with navigation to new expense
+  const handleAddExpense = () => {
+    onAdd();
+    // Navigate to the new expense after a brief delay
+    setTimeout(() => {
+      setMobileExpenseIndex(expenses.length); // Will be the new expense's index
+    }, 50);
+  };
+
+  // Handle delete with proper index adjustment
+  const handleDeleteExpense = (id: string) => {
+    const deletingIndex = expenses.findIndex(e => e.id === id);
+    onRemove(id);
+    
+    // Adjust index after deletion
+    if (deletingIndex === mobileExpenseIndex && mobileExpenseIndex > 0) {
+      setMobileExpenseIndex(mobileExpenseIndex - 1);
+    } else if (deletingIndex < mobileExpenseIndex) {
+      setMobileExpenseIndex(mobileExpenseIndex - 1);
+    }
+  };
+
   // Ensure we display at least 5 rows (filled + ghost)
   const minRows = 5;
   const ghostRowCount = Math.max(0, minRows - expenses.length);
@@ -158,73 +198,176 @@ export const QueueModule: React.FC<QueueModuleProps> = ({
             <h2 className="text-xs md:text-sm font-bold text-[var(--text-main)] uppercase tracking-wider">Bad Decisions Analyzed</h2>
         </div>
 
-        {/* List of expenses - Mobile optimized */}
-        <div className="space-y-3 md:space-y-2 mb-4 flex-grow overflow-y-auto max-h-[50vh] md:max-h-none">
-          {expenses.map((expense) => (
-            <div
-              key={expense.id}
-              className="group flex flex-col gap-3 p-4 md:p-3 rounded-xl md:rounded-2xl bg-[var(--bg-hover)] border border-[var(--border)] hover:border-[var(--primary)] transition-all duration-200"
-            >
-              {/* Mobile: Stack vertically, Desktop: Single row with all elements */}
-              <div className="flex flex-col md:flex-row md:items-end gap-3">
-                {/* Expense Name */}
-                <div className="flex-1 w-full">
-                  <label className="block text-[10px] font-semibold text-[var(--text-muted)] mb-1.5 ml-1 uppercase tracking-wider">Expense Name</label>
-                  <input
-                    type="text"
-                    value={expense.name}
-                    onChange={(e) => onUpdate(expense.id, 'name', e.target.value)}
-                    placeholder="e.g. Netflix"
-                    className="w-full bg-[var(--bg-input)] text-[var(--text-main)] px-4 py-3 rounded-xl border border-[var(--border)] focus:border-[var(--primary)] focus:outline-none transition-colors placeholder:text-[var(--text-muted)] placeholder:opacity-50 text-sm font-medium"
-                  />
-                </div>
-
-                {/* Amount */}
-                <div className="flex-1 md:flex-none md:w-32">
-                  <label className="block text-[10px] font-semibold text-[var(--text-muted)] mb-1.5 ml-1 uppercase tracking-wider">Amount</label>
-                  <AmountInput 
-                    value={expense.amount} 
-                    onChange={(val) => onUpdate(expense.id, 'amount', val)} 
-                  />
-                </div>
-
-                {/* Frequency */}
-                <div className="flex-1 md:flex-none md:w-40 relative">
-                  <label className="block text-[10px] font-semibold text-[var(--text-muted)] mb-1.5 ml-1 uppercase tracking-wider">Frequency</label>
-                  <CustomSelect 
-                    value={expense.frequency}
-                    options={['Weekly', 'Monthly', 'Yearly', 'One-time']}
-                    onChange={(val) => onUpdate(expense.id, 'frequency', val as Frequency)}
-                  />
-                </div>
-
-                {/* Want Toggle - aligned with input boxes */}
-                <div className="flex items-center h-[46px]">
-                  <label className="relative inline-flex items-center cursor-pointer group">
-                    <input 
-                      type="checkbox" 
-                      checked={expense.isWant}
-                      onChange={(e) => onUpdate(expense.id, 'isWant', e.target.checked)}
-                      className="sr-only peer" 
+        {/* List of expenses - Desktop: scrollable list, Mobile: single card with navigation */}
+        <div className="space-y-3 md:space-y-2 mb-4 flex-grow md:overflow-y-auto md:max-h-none">
+          {/* Desktop: Show all expenses */}
+          <div className="hidden md:block space-y-2">
+            {expenses.map((expense) => (
+              <div
+                key={expense.id}
+                className="group flex flex-col gap-3 p-3 rounded-2xl bg-[var(--bg-hover)] border border-[var(--border)] hover:border-[var(--primary)] transition-all duration-200"
+              >
+                <div className="flex flex-row items-end gap-3">
+                  {/* Expense Name */}
+                  <div className="flex-1">
+                    <label className="block text-[10px] font-semibold text-[var(--text-muted)] mb-1.5 ml-1 uppercase tracking-wider">Expense Name</label>
+                    <input
+                      type="text"
+                      value={expense.name}
+                      onChange={(e) => onUpdate(expense.id, 'name', e.target.value)}
+                      placeholder="e.g. Netflix"
+                      className="w-full bg-[var(--bg-input)] text-[var(--text-main)] px-4 py-3 rounded-xl border border-[var(--border)] focus:border-[var(--primary)] focus:outline-none transition-colors placeholder:text-[var(--text-muted)] placeholder:opacity-50 text-sm font-medium"
                     />
-                    <div className="w-11 h-6 bg-[var(--bg-input)] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-[var(--text-muted)] after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--bg-input)] peer-checked:after:bg-[var(--primary)] transition-colors border border-[var(--border)]"></div>
-                    <span className="ml-2 text-xs text-[var(--text-muted)] font-medium uppercase tracking-wider group-hover:text-[var(--text-main)] transition-colors">{expense.isWant ? 'WANT' : 'NEED'}</span>
-                  </label>
-                </div>
+                  </div>
 
-                {/* Delete button - aligned with input boxes */}
-                <div className="flex items-center h-[46px]">
-                  <button
-                    onClick={() => onRemove(expense.id)}
-                    className="p-2 text-[var(--text-muted)] hover:text-red-400 transition-colors rounded-xl hover:bg-red-900/10 flex items-center justify-center active:scale-95"
-                    title="Remove decision"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
+                  {/* Amount */}
+                  <div className="w-32">
+                    <label className="block text-[10px] font-semibold text-[var(--text-muted)] mb-1.5 ml-1 uppercase tracking-wider">Amount</label>
+                    <AmountInput 
+                      value={expense.amount} 
+                      onChange={(val) => onUpdate(expense.id, 'amount', val)} 
+                    />
+                  </div>
+
+                  {/* Frequency */}
+                  <div className="w-40 relative">
+                    <label className="block text-[10px] font-semibold text-[var(--text-muted)] mb-1.5 ml-1 uppercase tracking-wider">Frequency</label>
+                    <CustomSelect 
+                      value={expense.frequency}
+                      options={['Weekly', 'Monthly', 'Yearly', 'One-time']}
+                      onChange={(val) => onUpdate(expense.id, 'frequency', val as Frequency)}
+                    />
+                  </div>
+
+                  {/* Want Toggle */}
+                  <div className="flex items-center h-[46px]">
+                    <label className="relative inline-flex items-center cursor-pointer group">
+                      <input 
+                        type="checkbox" 
+                        checked={expense.isWant}
+                        onChange={(e) => onUpdate(expense.id, 'isWant', e.target.checked)}
+                        className="sr-only peer" 
+                      />
+                      <div className="w-11 h-6 bg-[var(--bg-input)] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-[var(--text-muted)] after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--bg-input)] peer-checked:after:bg-[var(--primary)] transition-colors border border-[var(--border)]"></div>
+                      <span className="ml-2 text-xs text-[var(--text-muted)] font-medium uppercase tracking-wider group-hover:text-[var(--text-main)] transition-colors">{expense.isWant ? 'WANT' : 'NEED'}</span>
+                    </label>
+                  </div>
+
+                  {/* Delete button */}
+                  <div className="flex items-center h-[46px]">
+                    <button
+                      onClick={() => handleDeleteExpense(expense.id)}
+                      className="p-2 text-[var(--text-muted)] hover:text-red-400 transition-colors rounded-xl hover:bg-red-900/10 flex items-center justify-center active:scale-95"
+                      title="Remove decision"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
+
+          {/* Mobile: Single expense card with navigation arrows */}
+          <div className="md:hidden">
+            {expenses.length > 0 && expenses[mobileExpenseIndex] && (
+              <div className="relative">
+                {/* Navigation indicator */}
+                <div className="flex items-center justify-center gap-2 mb-3">
+                  {expenses.map((_, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => setMobileExpenseIndex(idx)}
+                      className={`w-2 h-2 rounded-full transition-all ${idx === mobileExpenseIndex ? 'bg-[var(--primary)] w-4' : 'bg-[var(--border)]'}`}
+                    />
+                  ))}
+                </div>
+
+                <div className="group flex flex-col gap-3 p-4 rounded-xl bg-[var(--bg-hover)] border border-[var(--border)] transition-all duration-200">
+                  {/* Top row: Trash on left, pagination info center, Next arrow on right */}
+                  <div className="flex items-center justify-between mb-2">
+                    <button
+                      onClick={() => handleDeleteExpense(expenses[mobileExpenseIndex].id)}
+                      className="p-2 text-[var(--text-muted)] hover:text-red-400 transition-colors rounded-xl hover:bg-red-900/10 flex items-center justify-center active:scale-95"
+                      title="Remove decision"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                    
+                    <span className="text-xs text-[var(--text-muted)] font-medium">
+                      {mobileExpenseIndex + 1} of {expenses.length}
+                    </span>
+
+                    {/* Right arrow - subtle bounce animation when there are more expenses */}
+                    {expenses.length > 1 && mobileExpenseIndex < expenses.length - 1 ? (
+                      <button
+                        onClick={goToNextExpense}
+                        className="p-2 text-[var(--primary)] hover:text-[var(--primary-hover)] transition-colors rounded-xl hover:bg-[var(--primary)]/10 flex items-center justify-center active:scale-95 animate-[subtleBounce_1.5s_ease-in-out_infinite]"
+                        title="Next expense"
+                      >
+                        <ChevronRight className="w-5 h-5" />
+                      </button>
+                    ) : mobileExpenseIndex > 0 ? (
+                      <button
+                        onClick={goToPrevExpense}
+                        className="p-2 text-[var(--text-muted)] hover:text-[var(--primary)] transition-colors rounded-xl hover:bg-[var(--primary)]/10 flex items-center justify-center active:scale-95"
+                        title="Previous expense"
+                      >
+                        <ChevronLeft className="w-5 h-5" />
+                      </button>
+                    ) : (
+                      <div className="w-9 h-9" /> // Placeholder for alignment
+                    )}
+                  </div>
+
+                  {/* Expense Name */}
+                  <div className="w-full">
+                    <label className="block text-[10px] font-semibold text-[var(--text-muted)] mb-1.5 ml-1 uppercase tracking-wider">Expense Name</label>
+                    <input
+                      type="text"
+                      value={expenses[mobileExpenseIndex].name}
+                      onChange={(e) => onUpdate(expenses[mobileExpenseIndex].id, 'name', e.target.value)}
+                      placeholder="e.g. Netflix"
+                      className="w-full bg-[var(--bg-input)] text-[var(--text-main)] px-4 py-3 rounded-xl border border-[var(--border)] focus:border-[var(--primary)] focus:outline-none transition-colors placeholder:text-[var(--text-muted)] placeholder:opacity-50 text-sm font-medium"
+                    />
+                  </div>
+
+                  {/* Amount */}
+                  <div className="w-full">
+                    <label className="block text-[10px] font-semibold text-[var(--text-muted)] mb-1.5 ml-1 uppercase tracking-wider">Amount</label>
+                    <AmountInput 
+                      value={expenses[mobileExpenseIndex].amount} 
+                      onChange={(val) => onUpdate(expenses[mobileExpenseIndex].id, 'amount', val)} 
+                    />
+                  </div>
+
+                  {/* Frequency */}
+                  <div className="w-full relative">
+                    <label className="block text-[10px] font-semibold text-[var(--text-muted)] mb-1.5 ml-1 uppercase tracking-wider">Frequency</label>
+                    <CustomSelect 
+                      value={expenses[mobileExpenseIndex].frequency}
+                      options={['Weekly', 'Monthly', 'Yearly', 'One-time']}
+                      onChange={(val) => onUpdate(expenses[mobileExpenseIndex].id, 'frequency', val as Frequency)}
+                    />
+                  </div>
+
+                  {/* Want Toggle */}
+                  <div className="flex items-center">
+                    <label className="relative inline-flex items-center cursor-pointer group">
+                      <input 
+                        type="checkbox" 
+                        checked={expenses[mobileExpenseIndex].isWant}
+                        onChange={(e) => onUpdate(expenses[mobileExpenseIndex].id, 'isWant', e.target.checked)}
+                        className="sr-only peer" 
+                      />
+                      <div className="w-11 h-6 bg-[var(--bg-input)] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-[var(--text-muted)] after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--bg-input)] peer-checked:after:bg-[var(--primary)] transition-colors border border-[var(--border)]"></div>
+                      <span className="ml-2 text-xs text-[var(--text-muted)] font-medium uppercase tracking-wider group-hover:text-[var(--text-main)] transition-colors">{expenses[mobileExpenseIndex].isWant ? 'WANT' : 'NEED'}</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
 
           {/* GHOST ROWS: Visual placeholders to fill space, hidden on mobile */}
           {ghostRows.map((_, idx) => (
@@ -268,7 +411,7 @@ export const QueueModule: React.FC<QueueModuleProps> = ({
         {/* Action Buttons - Mobile optimized touch targets */}
         <div className="flex flex-col sm:flex-row gap-3 mt-auto pt-2">
           <button
-            onClick={onAdd}
+            onClick={handleAddExpense}
             className="flex-none sm:w-40 py-2.5 border border-[var(--border)] bg-[var(--bg-input)] rounded-xl text-[var(--text-muted)] font-medium hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] transition-all flex items-center justify-center gap-2 text-xs active:scale-[0.98]"
           >
             <Plus className="w-4 h-4" />

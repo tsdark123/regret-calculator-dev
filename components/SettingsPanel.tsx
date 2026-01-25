@@ -124,12 +124,14 @@ interface SettingsPanelProps {
   assumptions: Assumptions;
   onChange: (field: keyof Assumptions, value: any) => void;
   onOpenStockSelector: () => void;
+  showStepNumber?: number;
 }
 
 export const SettingsPanel: React.FC<SettingsPanelProps> = ({
   assumptions,
   onChange,
   onOpenStockSelector,
+  showStepNumber,
 }) => {
   // Local state for real-time display updates
   const [displayAnnualReturn, setDisplayAnnualReturn] = React.useState(assumptions.annualReturn);
@@ -144,9 +146,13 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
   return (
     <div className="w-full h-full">
       <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-3xl p-6 shadow-2xl backdrop-blur-sm h-full flex flex-col">
-        <div className="flex items-center gap-2 mb-6">
-          <Settings className="w-4 h-4 text-[var(--text-muted)]" />
-          <h3 className="text-sm font-bold text-[var(--text-main)] uppercase tracking-wider">Assumptions</h3>
+        <div className="flex items-center gap-3 mb-6">
+          {showStepNumber ? (
+            <div className="w-6 h-6 rounded-full bg-[var(--primary)] bg-opacity-10 flex items-center justify-center text-[var(--primary)] font-bold text-xs ring-1 ring-[var(--primary)] ring-opacity-20">{showStepNumber}</div>
+          ) : (
+            <Settings className="w-4 h-4 text-[var(--text-muted)]" />
+          )}
+          <h3 className="text-xs md:text-sm font-bold text-[var(--text-main)] uppercase tracking-wider">Assumptions</h3>
         </div>
 
         <div className="space-y-7 flex-grow">
@@ -254,6 +260,15 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
             {/* Inflation Toggle */}
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
+                    <label className="relative inline-flex items-center cursor-pointer">
+                        <input 
+                        type="checkbox" 
+                        checked={assumptions.inflationAdjusted}
+                        onChange={(e) => onChange('inflationAdjusted', e.target.checked)}
+                        className="sr-only peer" 
+                        />
+                        <div className="w-11 h-6 bg-[var(--bg-input)] border border-[var(--border)] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-[var(--text-muted)] after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--bg-input)] peer-checked:after:bg-[var(--primary)] transition-colors"></div>
+                    </label>
                     <span className="text-sm font-medium text-[var(--text-muted)]">Inflation-adjusted</span>
                     <div className="group relative">
                     <Info className="w-3.5 h-3.5 text-[var(--text-muted)] cursor-help" />
@@ -263,25 +278,13 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                     </div>
                 </div>
                 
-                <label className="relative inline-flex items-center cursor-pointer">
-                    <input 
-                    type="checkbox" 
-                    checked={assumptions.inflationAdjusted}
-                    onChange={(e) => onChange('inflationAdjusted', e.target.checked)}
-                    className="sr-only peer" 
-                    />
-                    <div className="w-11 h-6 bg-[var(--bg-input)] border border-[var(--border)] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-[var(--text-muted)] after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--bg-input)] peer-checked:after:bg-[var(--primary)] transition-colors"></div>
-                </label>
-            </div>
-            
-            {assumptions.inflationAdjusted && (
-                <div className="flex justify-end pt-4 animate-fade-in-down">
-                    <div className="flex items-baseline gap-1 bg-[var(--bg-input)] rounded-xl border border-[var(--border)] px-3 py-1.5 w-20 justify-end">
-                    <span className="text-[var(--text-main)] font-semibold text-sm">{assumptions.inflationRate}</span>
-                    <span className="text-[var(--text-muted)] text-sm font-medium">%</span>
+                {assumptions.inflationAdjusted && (
+                    <div className="flex items-baseline gap-1 bg-[var(--bg-input)] rounded-xl border border-[var(--border)] px-3 py-1.5 min-w-[4.5rem] justify-center animate-fade-in-down">
+                        <span className="text-[var(--text-main)] font-semibold text-sm">{assumptions.inflationRate}</span>
+                        <span className="text-[var(--text-muted)] text-sm font-medium">%</span>
                     </div>
-                </div>
-            )}
+                )}
+            </div>
         </div>
       </div>
     </div>

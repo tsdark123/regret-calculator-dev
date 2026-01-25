@@ -26,8 +26,8 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
   ];
 
   const navItems = [
-    { id: 'home' as NavTab, label: 'Dashboard', icon: Home },
-    { id: 'calculate' as NavTab, label: 'Battle', icon: Swords },
+    { id: 'home' as NavTab, label: 'Home', icon: Home },
+    { id: 'calculate' as NavTab, label: 'Calculate', icon: Swords },
     { id: 'tools' as NavTab, label: 'Toolbox', icon: Wrench },
   ];
 

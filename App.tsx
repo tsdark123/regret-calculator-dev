@@ -127,11 +127,21 @@ function MainApp() {
     }
   }, [currentPath, results]);
 
-  // Disable scroll on home page for mobile, enable on /calculate
+  // Auto-expand ProDashboard on mobile /results page so head-to-head battle graph is visible
+  useEffect(() => {
+    if (window.innerWidth < 1024 && (currentPath === '/results' || currentPath.startsWith('/results')) && results && !isProDashboardExpanded) {
+      setIsProDashboardExpanded(true);
+    }
+  }, [currentPath, results]);
+
+  // Disable scroll on home and /calculate pages for mobile. Only /results and /tools can scroll.
   useEffect(() => {
     if (window.innerWidth < 1024) {
-      if (currentPath === '/' || currentPath === '') {
-        // Home page: disable scroll completely
+      const isScrollablePage = currentPath === '/results' || currentPath.startsWith('/results') || 
+                               currentPath === '/tools' || currentPath.startsWith('/tools');
+      
+      if (!isScrollablePage) {
+        // Home and /calculate: disable scroll completely
         document.documentElement.style.overflow = 'hidden';
         document.documentElement.style.height = '100vh';
         document.body.style.overflow = 'hidden';
@@ -139,7 +149,7 @@ function MainApp() {
         document.body.style.position = 'fixed';
         document.body.style.width = '100%';
       } else {
-        // /calculate page: enable scroll
+        // /results and /tools: enable scroll
         document.documentElement.style.overflow = 'auto';
         document.documentElement.style.height = 'auto';
         document.body.style.overflow = 'auto';
@@ -458,7 +468,7 @@ function MainApp() {
                     </>
                   )}
                   
-                  <main className={`px-4 md:px-8 w-full min-h-[600px] relative ${(window.innerWidth < 1024 && (currentPath === '/calculate' || currentPath.startsWith('/calculate') || currentPath === '/results' || currentPath.startsWith('/results'))) ? 'pt-24 pb-24' : 'py-8'}`} ref={inputSectionRef} style={{
+                  <main className={`px-4 md:px-8 w-full min-h-[600px] relative ${(window.innerWidth < 1024 && (currentPath === '/calculate' || currentPath.startsWith('/calculate') || currentPath === '/results' || currentPath.startsWith('/results'))) ? 'pt-20 pb-24' : 'py-8'}`} ref={inputSectionRef} style={{
                       display: (window.innerWidth < 1024 && (currentPath === '/' || currentPath === '')) ? 'none' : 'block'
                   }}>
                       <AmbientBackground />
@@ -515,17 +525,14 @@ function MainApp() {
                                     {mobileStep === 2 && (
                                         <div 
                                             key="step-2"
-                                            className="bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl md:rounded-3xl p-4 md:p-5 shadow-2xl backdrop-blur-sm animate-fade-in-up"
+                                            className="animate-fade-in-up"
                                             style={{ animationDuration: '0.35s' }}
                                         >
-                                            <div className="flex items-center gap-3 mb-3 md:mb-4">
-                                                <div className="w-6 h-6 rounded-full bg-[var(--primary)] bg-opacity-10 flex items-center justify-center text-[var(--primary)] font-bold text-xs ring-1 ring-[var(--primary)] ring-opacity-20">2</div>
-                                                <h2 className="text-xs md:text-sm font-bold text-[var(--text-main)] uppercase tracking-wider">Assumptions</h2>
-                                            </div>
                                             <SettingsPanel 
                                                 assumptions={assumptions} 
                                                 onChange={updateAssumptions} 
                                                 onOpenStockSelector={() => setIsStockModalOpen(true)}
+                                                showStepNumber={2}
                                             />
                                             <div className="flex flex-col sm:flex-row gap-3 mt-4 pt-2">
                                                 <button
