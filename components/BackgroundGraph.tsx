@@ -5,7 +5,7 @@ export const BackgroundGraph: React.FC = () => {
     <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none -z-15">
       <svg
         className="w-full h-full opacity-30"
-        viewBox="0 0 1440 800"
+        viewBox="0 0 100 100"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
         preserveAspectRatio="none"
@@ -17,16 +17,16 @@ export const BackgroundGraph: React.FC = () => {
             <stop offset="100%" style={{ stopColor: '#7c3aed', stopOpacity: 0 }} />
           </linearGradient>
           <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-            <feGaussianBlur stdDeviation="5" result="blur" />
+            <feGaussianBlur stdDeviation="2" result="blur" />
             <feComposite in="SourceGraphic" in2="blur" operator="over" />
           </filter>
         </defs>
         
-        {/* Animated Path 1 with Looping */}
+        {/* Animated Path 1 with Looping - Now spans full width */}
         <path
-          d="M-100,600 C200,550 400,650 600,450 S1000,500 1540,200"
+          d="M-10,75 C20,68 40,82 60,56 S85,62 110,25"
           stroke="url(#grad1)"
-          strokeWidth="3"
+          strokeWidth="0.5"
           strokeLinecap="round"
           fill="none"
           filter="url(#glow)"
@@ -35,9 +35,9 @@ export const BackgroundGraph: React.FC = () => {
 
         {/* Faint Echo Path */}
         <path
-          d="M-100,620 C200,570 400,670 600,470 S1000,520 1540,220"
+          d="M-10,78 C20,71 40,85 60,59 S85,65 110,28"
           stroke="#a855f7"
-          strokeWidth="1"
+          strokeWidth="0.2"
           strokeOpacity="0.2"
           fill="none"
           className="animate-pulse-slow"

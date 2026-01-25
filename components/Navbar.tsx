@@ -111,7 +111,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, onNavigate, currentTh
             <span className="font-bold text-[var(--text-main)] text-sm tracking-tight truncate max-w-[150px] md:max-w-none">Sepehr Zunoubi</span>
           </a>
           
-          <div className="block">
+          <div className="hidden md:block">
               <ThemeDropdown currentTheme={currentTheme} onThemeChange={onThemeChange} />
           </div>
         </div>
