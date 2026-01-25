@@ -84,8 +84,19 @@ function MainApp() {
   // Mobile wizard step state (1: Decisions, 2: Assumptions, 3: Final Wisdom)
   const [mobileStep, setMobileStep] = useState<1 | 2 | 3>(1);
   
+  // Route state for mobile navigation
+  const [currentPath, setCurrentPath] = useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      return window.location.pathname;
+    }
+    return '/';
+  });
+  
   // Loading State
   const [isLoading, setIsLoading] = useState(false);
+  
+  // Mobile calculate page fade-in state
+  const [showCalculateContent, setShowCalculateContent] = useState(false);
 
   // Mobile detection for responsive adaptations (no longer blocks the app)
   const [isMobileView, setIsMobileView] = useState(() => {
@@ -94,6 +105,39 @@ function MainApp() {
     }
     return false;
   });
+
+  // Listen for route changes
+  useEffect(() => {
+    const handlePopState = () => {
+      setCurrentPath(window.location.pathname);
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  // Disable scroll on home page for mobile, enable on /calculate
+  useEffect(() => {
+    if (window.innerWidth < 1024) {
+      if (currentPath === '/' || currentPath === '') {
+        // Home page: disable scroll
+        document.body.style.overflow = 'hidden';
+        document.body.style.height = '100vh';
+      } else {
+        // /calculate page: enable scroll
+        document.body.style.overflow = 'auto';
+        document.body.style.height = 'auto';
+      }
+    } else {
+      // Desktop: always enable scroll
+      document.body.style.overflow = 'auto';
+      document.body.style.height = 'auto';
+    }
+
+    return () => {
+      document.body.style.overflow = 'auto';
+      document.body.style.height = 'auto';
+    };
+  }, [currentPath]);
 
   const inputSectionRef = useRef<HTMLDivElement>(null);
 
@@ -120,6 +164,22 @@ function MainApp() {
   }, []);
 
   const handleStart = () => {
+    // Mobile: Navigate to /calculate route
+    if (window.innerWidth < 1024) {
+      window.history.pushState({}, '', '/calculate');
+      setCurrentPath('/calculate');
+      setActiveTab('calculate');
+      setViewMode('input');
+      setShowCalculateContent(false);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      // Trigger fade-in after a brief delay
+      setTimeout(() => {
+        setShowCalculateContent(true);
+      }, 100);
+      return;
+    }
+
+    // Desktop: Scroll to input section
     setActiveTab('calculate');
     const scrollOffset = 180;
 
@@ -205,8 +265,21 @@ function MainApp() {
           expenseName: firstExpenseName
         });
         
-        if (inputSectionRef.current) {
-            inputSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // Mobile: Navigate to /calculate and trigger fade-in
+        if (window.innerWidth < 1024) {
+            window.history.pushState({}, '', '/calculate');
+            setCurrentPath('/calculate');
+            setShowCalculateContent(false);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            // Trigger fade-in after a brief delay
+            setTimeout(() => {
+              setShowCalculateContent(true);
+            }, 100);
+        } else {
+            // Desktop: Just scroll
+            if (inputSectionRef.current) {
+                inputSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
         }
     }, 2000);
   };
@@ -282,8 +355,18 @@ function MainApp() {
   const handleNavigate = (tab: NavTab) => {
       setActiveTab(tab);
       if (tab === 'home') {
-          setViewMode('input');
-          window.scrollTo({ top: 0, behavior: 'smooth' });
+          // Mobile: Navigate back to home route
+          if (window.innerWidth < 1024) {
+              window.history.pushState({}, '', '/');
+              setCurrentPath('/');
+              setViewMode('input');
+              setMobileStep(1);
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+          } else {
+              // Desktop: Just scroll to top
+              setViewMode('input');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+          }
       } else if (tab === 'calculate') {
           handleStart();
       } else if (tab === 'tools') {
@@ -333,14 +416,19 @@ function MainApp() {
             ) : (
               /* VIEW: CALCULATOR (HERO + MAIN) */
               <>
-                  {/* Purple Beam for Hero Section - Positioned absolutely at top level */}
-                  <div className="absolute top-[8%] left-[50%] -translate-x-1/2 w-[500px] h-[500px] bg-purple-900/5 blur-[100px] rounded-full pointer-events-none z-[5]" />
-                  
-                  <Hero 
-                      onStart={handleStart} 
-                      onLoadPreset={handleLoadPreset} 
-                      decisionCount={decisionCount} 
-                  />
+                  {/* Hero Section - Hidden on /calculate route for mobile */}
+                  {(window.innerWidth >= 1024 || currentPath === '/' || currentPath === '') && (
+                    <>
+                      {/* Purple Beam for Hero Section - Positioned absolutely at top level */}
+                      <div className="absolute top-[8%] left-[50%] -translate-x-1/2 w-[500px] h-[500px] bg-purple-900/5 blur-[100px] rounded-full pointer-events-none z-[5]" />
+                      
+                      <Hero 
+                          onStart={handleStart} 
+                          onLoadPreset={handleLoadPreset} 
+                          decisionCount={decisionCount} 
+                      />
+                    </>
+                  )}
                   
                   <main className="px-4 py-8 md:px-8 w-full min-h-[600px] relative" ref={inputSectionRef}>
                       <AmbientBackground />
@@ -375,7 +463,11 @@ function MainApp() {
                                 </div>
 
                                 {/* Mobile: 3-Step Wizard with Lightweight CSS Animations */}
-                                <div className="lg:hidden">
+                                <div className="lg:hidden" style={{
+                                    opacity: (window.innerWidth < 1024 && (currentPath === '/calculate' || currentPath.startsWith('/calculate'))) ? (showCalculateContent ? 1 : 0) : 1,
+                                    transform: (window.innerWidth < 1024 && (currentPath === '/calculate' || currentPath.startsWith('/calculate'))) ? (showCalculateContent ? 'translateY(0)' : 'translateY(20px)') : 'none',
+                                    transition: 'opacity 0.6s ease-out, transform 0.6s ease-out'
+                                }}>
                                     {mobileStep === 1 && (
                                         <div key="step-1" className="animate-fade-in-up" style={{ animationDuration: '0.35s' }}>
                                             <QueueModule
@@ -456,7 +548,11 @@ function MainApp() {
                           )}
 
                           {viewMode === 'results' && results && (
-                              <div key={resultsKey} className="w-full animate-fade-in-up">
+                              <div key={resultsKey} className="w-full animate-fade-in-up" style={{
+                                  opacity: (window.innerWidth < 1024 && (currentPath === '/calculate' || currentPath.startsWith('/calculate'))) ? (showCalculateContent ? 1 : 0) : 1,
+                                  transform: (window.innerWidth < 1024 && (currentPath === '/calculate' || currentPath.startsWith('/calculate'))) ? (showCalculateContent ? 'translateY(0)' : 'translateY(20px)') : 'none',
+                                  transition: 'opacity 0.6s ease-out, transform 0.6s ease-out'
+                              }}>
                                   <Suspense fallback={
                                       <div className="w-full flex items-center justify-center py-20">
                                           <div className="animate-pulse text-[var(--text-muted)]">Loading results...</div>
