@@ -343,7 +343,7 @@ export const QueueModule: React.FC<QueueModuleProps> = ({
           {/* Mobile: Single expense card with navigation arrows */}
           <div className="md:hidden">
             {expenses.length > 0 && expenses[mobileExpenseIndex] && (
-              <div className="relative">
+              <div className="relative" key={expenses[mobileExpenseIndex].id}>
                 {/* Navigation indicator */}
                 <div className="flex items-center justify-center gap-2 mb-3">
                   {expenses.map((_, idx) => (

@@ -82,10 +82,6 @@ function MainApp() {
   
   // View State: 'input' | 'results' | 'tools' | 'roadmap'
   const [viewMode, setViewMode] = useState<'input' | 'results' | 'tools' | 'roadmap'>('input');
-  const [activeTab, setActiveTab] = useState<NavTab>('home');
-  
-  // Mobile wizard step state (1: Decisions, 2: Assumptions, 3: Final Wisdom)
-  const [mobileStep, setMobileStep] = useState<1 | 2 | 3>(1);
   
   // Route state for mobile navigation
   const [currentPath, setCurrentPath] = useState<string>(() => {
@@ -94,6 +90,21 @@ function MainApp() {
     }
     return '/';
   });
+  
+  // Active tab state - sync with current path on mount
+  const [activeTab, setActiveTab] = useState<NavTab>(() => {
+    if (typeof window !== 'undefined') {
+      const path = window.location.pathname;
+      if (path === '/calculate' || path.startsWith('/calculate')) return 'calculate';
+      if (path === '/results' || path.startsWith('/results')) return 'calculate';
+      if (path === '/tools' || path.startsWith('/tools')) return 'tools';
+      if (path === '/roadmap' || path.startsWith('/roadmap')) return 'roadmap';
+    }
+    return 'home';
+  });
+  
+  // Mobile wizard step state (1: Decisions, 2: Assumptions, 3: Final Wisdom)
+  const [mobileStep, setMobileStep] = useState<1 | 2 | 3>(1);
   
   // Loading State
   const [isLoading, setIsLoading] = useState(false);
