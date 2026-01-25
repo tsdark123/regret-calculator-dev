@@ -269,32 +269,37 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
       {/* Button Cluster - Vertical stack on mobile, horizontal on desktop */}
       <div className="flex flex-col md:flex-row items-stretch md:items-center gap-3 md:gap-4 animate-fade-in-up delay-200 opacity-0 w-full max-w-md md:max-w-none justify-center mb-8 md:mb-16 z-20 px-6">
          
-        {/* 1. Learn - First on mobile */}
-        <button 
-          onClick={() => setShowTheory(true)}
-          className="w-full md:w-auto flex items-center justify-center gap-2 px-6 py-[13px] rounded-2xl border border-[var(--border)] bg-[var(--bg-card)]/40 text-[var(--text-muted)] font-medium text-sm hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] transition-all backdrop-blur-sm active:scale-[0.98]"
-        >
-          <BookOpen className="w-4 h-4 text-blue-400" />
-          <span>How it Works</span>
-        </button>
+        {/* Secondary buttons + Main CTA wrapper */}
+        <div className="flex gap-3 w-full md:contents">
+          {/* Left: Presets */}
+          <button 
+            onClick={() => setShowPreset(true)}
+            className="flex-1 md:flex-none flex items-center gap-2 px-4 py-[13px] md:px-6 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)]/40 text-[var(--text-muted)] font-medium text-sm hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] transition-all backdrop-blur-sm justify-center active:scale-[0.98] order-2 md:order-none"
+          >
+            <Zap className="w-4 h-4 text-yellow-400" />
+            <span className="hidden sm:inline">Quick Load</span>
+            <span className="sm:hidden">Presets</span>
+          </button>
 
-        {/* 2. Calculate Your Regret - Second on mobile */}
-        <button
-          onClick={onStart}
-          className="w-full md:w-auto group relative inline-flex items-center justify-center px-10 py-[15px] md:py-[13px] font-semibold text-white transition-all duration-300 bg-[var(--primary)] rounded-2xl hover:bg-[var(--primary-hover)] hover:scale-[1.02] active:scale-[0.98] hover:shadow-[0_0_30px_var(--primary)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary)] focus:ring-offset-[var(--bg-main)] shadow-xl text-base"
-        >
-          <span className="mr-3">Calculate Your Regret</span>
-          <ArrowDown className="w-4 h-4 group-hover:translate-y-1 transition-transform duration-300" />
-        </button>
+          {/* Center: Main CTA - First on mobile for prominence */}
+          <button
+            onClick={onStart}
+            className="group relative inline-flex items-center justify-center px-8 py-[15px] md:px-10 md:py-[13px] font-semibold text-white transition-all duration-300 bg-[var(--primary)] rounded-2xl hover:bg-[var(--primary-hover)] hover:scale-[1.02] active:scale-[0.98] hover:shadow-[0_0_30px_var(--primary)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary)] focus:ring-offset-[var(--bg-main)] shadow-xl w-full md:w-auto order-first md:order-none"
+          >
+            <span className="mr-3 text-base">Calculate Your Regret</span>
+            <ArrowDown className="w-4 h-4 group-hover:translate-y-1 transition-transform duration-300" />
+          </button>
 
-        {/* 3. Presets - Third on mobile */}
-        <button 
-          onClick={() => setShowPreset(true)}
-          className="w-full md:w-auto flex items-center justify-center gap-2 px-6 py-[13px] rounded-2xl border border-[var(--border)] bg-[var(--bg-card)]/40 text-[var(--text-muted)] font-medium text-sm hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] transition-all backdrop-blur-sm active:scale-[0.98]"
-        >
-          <Zap className="w-4 h-4 text-yellow-400" />
-          <span>Quick Load</span>
-        </button>
+          {/* Right: Theory */}
+          <button 
+            onClick={() => setShowTheory(true)}
+            className="flex-1 md:flex-none flex items-center gap-2 px-4 py-[13px] md:px-6 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)]/40 text-[var(--text-muted)] font-medium text-sm hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] transition-all backdrop-blur-sm justify-center active:scale-[0.98] order-3 md:order-none"
+          >
+            <BookOpen className="w-4 h-4 text-blue-400" />
+            <span className="hidden sm:inline">How it Works</span>
+            <span className="sm:hidden">Learn</span>
+          </button>
+        </div>
       </div>
 
       {/* Stats Bar (Desktop Only) */}
