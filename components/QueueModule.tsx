@@ -13,6 +13,51 @@ interface QueueModuleProps {
   buttonIcon?: 'calculator' | 'arrow';
 }
 
+// Internal Debounced Name Input Component
+const NameInput = ({ value, onChange }: { value: string; onChange: (val: string) => void }) => {
+  const [localValue, setLocalValue] = useState(value);
+  const debounceTimer = useRef<NodeJS.Timeout>();
+
+  // Update local value when prop changes (e.g., switching expenses)
+  useEffect(() => {
+    setLocalValue(value);
+  }, [value]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+    setLocalValue(newValue);
+    
+    // Clear existing timer
+    if (debounceTimer.current) {
+      clearTimeout(debounceTimer.current);
+    }
+    
+    // Set new timer for debounced update
+    debounceTimer.current = setTimeout(() => {
+      onChange(newValue);
+    }, 150); // Short delay for name input
+  };
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (debounceTimer.current) {
+        clearTimeout(debounceTimer.current);
+      }
+    };
+  }, []);
+
+  return (
+    <input
+      type="text"
+      value={localValue}
+      onChange={handleChange}
+      placeholder="e.g. Netflix"
+      className="w-full bg-[var(--bg-input)] text-[var(--text-main)] px-4 py-3 rounded-xl border border-[var(--border)] focus:border-[var(--primary)] focus:outline-none transition-colors placeholder:text-[var(--text-muted)] placeholder:opacity-50 text-sm font-medium"
+    />
+  );
+};
+
 // Internal Custom Amount Input Component with Debouncing
 const AmountInput = ({ value, onChange }: { value: number; onChange: (val: number) => void }) => {
   const [debouncedValue, setImmediateValue, currentValue] = useDebouncedNumber(value, 300, 0);
@@ -323,12 +368,9 @@ export const QueueModule: React.FC<QueueModuleProps> = ({
                   {/* Expense Name */}
                   <div className="w-full">
                     <label className="block text-[10px] font-semibold text-[var(--text-muted)] mb-1.5 ml-1 uppercase tracking-wider">Expense Name</label>
-                    <input
-                      type="text"
+                    <NameInput
                       value={expenses[mobileExpenseIndex].name}
-                      onChange={(e) => onUpdate(expenses[mobileExpenseIndex].id, 'name', e.target.value)}
-                      placeholder="e.g. Netflix"
-                      className="w-full bg-[var(--bg-input)] text-[var(--text-main)] px-4 py-3 rounded-xl border border-[var(--border)] focus:border-[var(--primary)] focus:outline-none transition-colors placeholder:text-[var(--text-muted)] placeholder:opacity-50 text-sm font-medium"
+                      onChange={(val) => onUpdate(expenses[mobileExpenseIndex].id, 'name', val)}
                     />
                   </div>
 

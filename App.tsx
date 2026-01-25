@@ -16,7 +16,7 @@ import { ParticleBackground } from './components/ParticleBackground';
 import { AdminStats } from './components/AdminStats';
 import { AnalyticsTracker } from './components/AnalyticsTracker';
 import { MobileBottomNav } from './components/MobileBottomNav';
-import { ArrowRight, Calculator } from 'lucide-react';
+import { ArrowRight, Calculator, RefreshCw } from 'lucide-react';
 
 import { ResultsDashboard } from './components/ResultsDashboard';
 // Lazy load ProDashboard only (optional content) for better mobile performance
@@ -98,6 +98,39 @@ function MainApp() {
   
   // Mobile calculate page fade-in state
   const [showCalculateContent, setShowCalculateContent] = useState(false);
+
+  // Financial wisdom quotes
+  const financialWisdoms = [
+    "The best time to start investing was yesterday. The second best time is now.",
+    "Compound interest is the eighth wonder of the world. He who understands it, earns it; he who doesn't, pays it.",
+    "Do not save what is left after spending, but spend what is left after saving.",
+    "An investment in knowledge pays the best interest.",
+    "The stock market is a device for transferring money from the impatient to the patient.",
+    "Price is what you pay. Value is what you get.",
+    "The individual investor should act consistently as an investor and not as a speculator.",
+    "Risk comes from not knowing what you're doing.",
+    "Time in the market beats timing the market.",
+    "The four most dangerous words in investing are: 'This time it's different.'",
+    "Wide diversification is only required when investors do not understand what they are doing.",
+    "Never invest in a business you cannot understand.",
+    "The biggest risk of all is not taking one.",
+    "It's not how much money you make, but how much money you keep.",
+    "Investing should be more like watching paint dry or watching grass grow. If you want excitement, take $800 and go to Las Vegas.",
+    "The goal of a successful trader is to make the best trades. Money is secondary.",
+    "Every dollar you don't spend today is a seed for your financial forest tomorrow.",
+    "Small leaks sink great ships. Small expenses destroy great fortunes.",
+    "The pain of discipline weighs ounces. The pain of regret weighs tons.",
+    "Your future self is watching your decisions today. Make them proud.",
+    "Wealth is not about having a lot of money; it's about having a lot of options.",
+    "The habit of saving is itself an education; it fosters every virtue, teaches self-denial, cultivates the sense of order, trains to forethought.",
+    "Financial freedom is available to those who learn about it and work for it.",
+    "Don't wait to buy real estate. Buy real estate and wait."
+  ];
+  const [currentWisdomIndex, setCurrentWisdomIndex] = useState(0);
+
+  const cycleWisdom = () => {
+    setCurrentWisdomIndex((prev) => (prev + 1) % financialWisdoms.length);
+  };
 
   // Mobile detection for responsive adaptations (no longer blocks the app)
   const [isMobileView, setIsMobileView] = useState(() => {
@@ -549,23 +582,59 @@ function MainApp() {
                                     {mobileStep === 3 && (
                                         <div 
                                             key="step-3"
-                                            className="bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl md:rounded-3xl p-4 md:p-5 shadow-2xl backdrop-blur-sm animate-fade-in-up"
+                                            className="bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl md:rounded-3xl p-4 md:p-5 shadow-2xl backdrop-blur-sm animate-fade-in-up min-h-[400px] flex flex-col"
                                             style={{ animationDuration: '0.35s' }}
                                         >
                                             <div className="flex items-center gap-3 mb-3 md:mb-4">
                                                 <div className="w-6 h-6 rounded-full bg-[var(--primary)] bg-opacity-10 flex items-center justify-center text-[var(--primary)] font-bold text-xs ring-1 ring-[var(--primary)] ring-opacity-20">3</div>
                                                 <h2 className="text-xs md:text-sm font-bold text-[var(--text-main)] uppercase tracking-wider">Final Wisdom</h2>
                                             </div>
-                                            <div className="space-y-3 text-[var(--text-muted)] text-sm mb-4">
+                                            <div className="space-y-3 text-[var(--text-muted)] text-sm mb-4 flex-grow">
                                                 <p>You're about to see how <span className="text-[var(--text-main)] font-semibold">{expenses.length} decision{expenses.length !== 1 ? 's' : ''}</span> compound over <span className="text-[var(--text-main)] font-semibold">{assumptions.timeHorizonYears} years</span>.</p>
                                                 <p>Remember: Every dollar spent today is a dollar that can't grow tomorrow.</p>
-                                                <div className="bg-[var(--bg-hover)] p-4 rounded-xl border border-[var(--border)] mt-4">
-                                                    <p className="text-xs text-[var(--text-muted)] italic">
-                                                        "The best time to start investing was yesterday. The second best time is now."
+                                                
+                                                {/* Analysis Preview */}
+                                                <div className="bg-[var(--bg-input)] p-3 rounded-xl border border-[var(--border)] mt-3">
+                                                    <p className="text-[10px] uppercase tracking-wider text-[var(--text-muted)] font-semibold mb-2">Your Expenses</p>
+                                                    <div className="space-y-1.5">
+                                                        {expenses.slice(0, 3).map((exp, i) => (
+                                                            <div key={exp.id} className="flex items-center justify-between text-xs">
+                                                                <span className="text-[var(--text-main)] truncate max-w-[140px]">{exp.name || `Expense ${i + 1}`}</span>
+                                                                <span className="text-[var(--primary)] font-semibold">${exp.amount}/{exp.frequency === 'Monthly' ? 'mo' : exp.frequency === 'Weekly' ? 'wk' : exp.frequency === 'Yearly' ? 'yr' : '1x'}</span>
+                                                            </div>
+                                                        ))}
+                                                        {expenses.length > 3 && (
+                                                            <p className="text-[10px] text-[var(--text-muted)]">+{expenses.length - 3} more...</p>
+                                                        )}
+                                                    </div>
+                                                    <div className="border-t border-[var(--border)] mt-2 pt-2 flex items-center justify-between">
+                                                        <span className="text-[10px] text-[var(--text-muted)]">Est. Monthly Total</span>
+                                                        <span className="text-sm font-bold text-[var(--text-main)]">
+                                                            ${expenses.reduce((sum, exp) => {
+                                                                const amt = exp.amount || 0;
+                                                                if (exp.frequency === 'Weekly') return sum + (amt * 4.33);
+                                                                if (exp.frequency === 'Monthly') return sum + amt;
+                                                                if (exp.frequency === 'Yearly') return sum + (amt / 12);
+                                                                return sum + (amt / (assumptions.timeHorizonYears * 12));
+                                                            }, 0).toFixed(0)}
+                                                        </span>
+                                                    </div>
+                                                </div>
+
+                                                <div className="bg-[var(--bg-hover)] p-4 rounded-xl border border-[var(--border)] mt-3 relative">
+                                                    <p className="text-xs text-[var(--text-muted)] italic pr-8">
+                                                        "{financialWisdoms[currentWisdomIndex]}"
                                                     </p>
+                                                    <button
+                                                        onClick={cycleWisdom}
+                                                        className="absolute top-3 right-3 p-1.5 rounded-lg hover:bg-[var(--bg-card)] transition-all active:scale-95 group"
+                                                        title="Next wisdom"
+                                                    >
+                                                        <RefreshCw className="w-3.5 h-3.5 text-[var(--text-muted)] group-hover:text-[var(--primary)] transition-colors" />
+                                                    </button>
                                                 </div>
                                             </div>
-                                            <div className="flex flex-col gap-3 pt-2">
+                                            <div className="flex flex-col gap-3 pt-2 mt-auto">
                                                 <button
                                                     onClick={handleAnalyze}
                                                     className="w-full py-4 bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-white rounded-xl font-bold shadow-lg transition-all flex items-center justify-center gap-2 active:scale-[0.98] text-base"

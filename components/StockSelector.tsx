@@ -74,7 +74,6 @@ export const StockSelector: React.FC<StockSelectorProps> = ({ isOpen, onClose, o
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-muted)]" />
             <input
               type="text"
-              autoFocus
               placeholder="Search for stocks, funds, or crypto..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
