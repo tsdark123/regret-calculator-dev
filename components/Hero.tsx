@@ -297,6 +297,26 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
             <Zap className="w-5 h-5 text-yellow-400" />
             <span>Quick Load Presets</span>
           </button>
+
+          {/* Beta Notice - Mobile Only */}
+          <div className="mt-4 flex items-start gap-3 px-4 py-3 rounded-xl bg-[var(--bg-card)]/40 border border-[var(--border)]/50 backdrop-blur-sm">
+            <div className="flex-shrink-0 mt-0.5">
+              <div className="p-2 rounded-lg bg-gradient-to-br from-[var(--primary)]/20 to-transparent border border-[var(--primary)]/30">
+                <svg className="w-4 h-4 text-[var(--primary)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
+                </svg>
+              </div>
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+                <span className="text-[9px] font-mono tracking-wider text-[var(--text-muted)] uppercase">Beta</span>
+              </div>
+              <p className="text-xs text-[var(--text-muted)] leading-relaxed">
+                Best experience on desktop. Mobile is in beta.
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* Desktop: Horizontal layout */}
