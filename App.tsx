@@ -168,14 +168,11 @@ function MainApp() {
     }
   }, [currentPath, results]);
 
-  // Disable scroll on home and /calculate pages for mobile. Only /results and /tools can scroll.
+  // Disable scroll on home page for mobile only. /calculate, /results, and /tools can all scroll.
   useEffect(() => {
     if (window.innerWidth < 1024) {
-      const isScrollablePage = currentPath === '/results' || currentPath.startsWith('/results') || 
-                               currentPath === '/tools' || currentPath.startsWith('/tools');
-      
-      if (!isScrollablePage) {
-        // Home and /calculate: disable scroll completely
+      if (currentPath === '/' || currentPath === '') {
+        // Home page only: disable scroll completely
         document.documentElement.style.overflow = 'hidden';
         document.documentElement.style.height = '100vh';
         document.body.style.overflow = 'hidden';
@@ -183,7 +180,7 @@ function MainApp() {
         document.body.style.position = 'fixed';
         document.body.style.width = '100%';
       } else {
-        // /results and /tools: enable scroll
+        // All other pages (/calculate, /results, /tools): enable scroll
         document.documentElement.style.overflow = 'auto';
         document.documentElement.style.height = 'auto';
         document.body.style.overflow = 'auto';
@@ -502,9 +499,7 @@ function MainApp() {
                     </>
                   )}
                   
-                  <main className={`px-4 md:px-8 w-full min-h-[600px] relative ${(window.innerWidth < 1024 && (currentPath === '/calculate' || currentPath.startsWith('/calculate') || currentPath === '/results' || currentPath.startsWith('/results'))) ? 'pt-20 pb-24' : 'py-8'}`} ref={inputSectionRef} style={{
-                      display: (window.innerWidth < 1024 && (currentPath === '/' || currentPath === '')) ? 'none' : 'block'
-                  }}>
+                  <main className={`px-4 md:px-8 w-full min-h-[600px] relative ${(window.innerWidth < 1024 && (currentPath === '/calculate' || currentPath.startsWith('/calculate') || currentPath === '/results' || currentPath.startsWith('/results'))) ? 'pt-20 pb-24' : 'py-8'}`} ref={inputSectionRef}>
                       <AmbientBackground />
                       {/* Theme-aware backgrounds for /calculate on mobile only */}
                       {(currentPath === '/calculate' || currentPath.startsWith('/calculate')) && (
