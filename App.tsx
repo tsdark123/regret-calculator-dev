@@ -81,7 +81,16 @@ function MainApp() {
   const expandButtonRef = useRef<HTMLDivElement>(null);
   
   // View State: 'input' | 'results' | 'tools' | 'roadmap'
-  const [viewMode, setViewMode] = useState<'input' | 'results' | 'tools' | 'roadmap'>('input');
+  // Initialize based on current path for proper refresh behavior
+  const [viewMode, setViewMode] = useState<'input' | 'results' | 'tools' | 'roadmap'>(() => {
+    if (typeof window !== 'undefined') {
+      const path = window.location.pathname;
+      if (path === '/tools' || path.startsWith('/tools')) return 'tools';
+      if (path === '/roadmap' || path.startsWith('/roadmap')) return 'roadmap';
+      if (path === '/results' || path.startsWith('/results')) return 'results';
+    }
+    return 'input';
+  });
   
   // Route state for mobile navigation
   const [currentPath, setCurrentPath] = useState<string>(() => {
@@ -178,11 +187,14 @@ function MainApp() {
     }
   }, [currentPath, results]);
 
-  // Disable scroll on home page for mobile only. /calculate, /results, and /tools can all scroll.
+  // Disable scroll on home, /calculate, and /roadmap for mobile. /results and /tools can scroll.
   useEffect(() => {
     if (window.innerWidth < 1024) {
-      if (currentPath === '/' || currentPath === '') {
-        // Home page only: disable scroll completely
+      const isScrollLocked = currentPath === '/' || currentPath === '' || 
+                             currentPath === '/calculate' || currentPath.startsWith('/calculate') ||
+                             currentPath === '/roadmap' || currentPath.startsWith('/roadmap');
+      if (isScrollLocked) {
+        // Lock scroll completely
         document.documentElement.style.overflow = 'hidden';
         document.documentElement.style.height = '100vh';
         document.body.style.overflow = 'hidden';
@@ -190,7 +202,7 @@ function MainApp() {
         document.body.style.position = 'fixed';
         document.body.style.width = '100%';
       } else {
-        // All other pages (/calculate, /results, /tools): enable scroll
+        // Other pages (/results, /tools): enable scroll
         document.documentElement.style.overflow = 'auto';
         document.documentElement.style.height = 'auto';
         document.body.style.overflow = 'auto';
@@ -439,6 +451,11 @@ function MainApp() {
       } else if (tab === 'calculate') {
           handleStart();
       } else if (tab === 'tools') {
+          // Mobile: Navigate to /tools route
+          if (window.innerWidth < 1024) {
+              window.history.pushState({}, '', '/tools');
+              setCurrentPath('/tools');
+          }
           setViewMode('tools');
           window.scrollTo({ top: 0, behavior: 'smooth' });
       } else if (tab === 'roadmap') {

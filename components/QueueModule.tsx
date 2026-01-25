@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Trash2, Plus, Calculator, ChevronDown, Check, ChevronUp, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Trash2, Plus, Calculator, ChevronDown, Check, ChevronUp, ArrowRight } from 'lucide-react';
 import { Expense, Frequency } from '../types';
 
 interface QueueModuleProps {
@@ -373,50 +373,27 @@ export const QueueModule: React.FC<QueueModuleProps> = ({
                 </div>
 
                 <div className="group flex flex-col gap-3 p-4 rounded-xl bg-[var(--bg-hover)] border border-[var(--border)] transition-all duration-200">
-                  {/* Top row: Trash on left, pagination info center, Next arrow on right */}
+                  {/* Top row: Trash on left (disabled for first expense), pagination info center, placeholder right */}
                   <div className="flex items-center justify-between mb-2">
-                    <button
-                      onClick={() => handleDeleteExpense(expenses[mobileExpenseIndex].id)}
-                      className="p-2 text-[var(--text-muted)] hover:text-red-400 transition-colors rounded-xl hover:bg-red-900/10 flex items-center justify-center active:scale-95"
-                      title="Remove decision"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+                    {/* Trash button - disabled/hidden for first expense (index 0) */}
+                    {mobileExpenseIndex === 0 ? (
+                      <div className="w-9 h-9" /> // Placeholder - can't delete first expense
+                    ) : (
+                      <button
+                        onClick={() => handleDeleteExpense(expenses[mobileExpenseIndex].id)}
+                        className="p-2 text-[var(--text-muted)] hover:text-red-400 transition-colors rounded-xl hover:bg-red-900/10 flex items-center justify-center active:scale-95"
+                        title="Remove decision"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    )}
                     
                     <span className="text-xs text-[var(--text-muted)] font-medium">
                       {mobileExpenseIndex + 1} of {expenses.length}
                     </span>
 
-                    {/* Navigation arrows - show both when in middle, or single when at ends */}
-                    <div className="flex items-center gap-1">
-                      {/* Left arrow - show when not at first expense */}
-                      {mobileExpenseIndex > 0 ? (
-                        <button
-                          onClick={goToPrevExpense}
-                          className="p-2 text-[var(--text-muted)] hover:text-[var(--primary)] transition-colors rounded-xl hover:bg-[var(--primary)]/10 flex items-center justify-center active:scale-95"
-                          title="Previous expense"
-                        >
-                          <ChevronLeft className="w-5 h-5" />
-                        </button>
-                      ) : expenses.length > 1 ? (
-                        <div className="w-9 h-9" /> // Placeholder for alignment when at first
-                      ) : null}
-                      
-                      {/* Right arrow - show when not at last expense */}
-                      {expenses.length > 1 && mobileExpenseIndex < expenses.length - 1 ? (
-                        <button
-                          onClick={goToNextExpense}
-                          className="p-2 text-[var(--primary)] hover:text-[var(--primary-hover)] transition-colors rounded-xl hover:bg-[var(--primary)]/10 flex items-center justify-center active:scale-95 animate-[subtleBounceSmall_2s_ease-in-out_infinite]"
-                          title="Next expense"
-                        >
-                          <ChevronRight className="w-5 h-5" />
-                        </button>
-                      ) : expenses.length > 1 ? (
-                        <div className="w-9 h-9" /> // Placeholder for alignment when at last
-                      ) : (
-                        <div className="w-9 h-9" /> // Single expense placeholder
-                      )}
-                    </div>
+                    {/* Placeholder for alignment */}
+                    <div className="w-9 h-9" />
                   </div>
 
                   {/* Expense Name */}

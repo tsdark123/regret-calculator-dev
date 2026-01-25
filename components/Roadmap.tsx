@@ -325,7 +325,7 @@ export const Roadmap: React.FC = () => {
               {/* MOVED PULSING ARROW HERE */}
               <button
                 onClick={scrollToNextSection}
-                className="ml-3 p-2 bg-[var(--bg-card)] border border-[var(--border)] rounded-full shadow-sm hover:border-[var(--primary)] transition-colors group cursor-pointer animate-sub-bounce"
+                className="ml-1 p-2 bg-[var(--bg-card)] border border-[var(--border)] rounded-full shadow-sm hover:border-[var(--primary)] transition-colors group cursor-pointer animate-sub-bounce"
                 title="Jump to latest"
               >
                 <ChevronDown className="w-4 h-4 text-[var(--text-muted)] group-hover:text-[var(--primary)]" />
