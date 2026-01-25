@@ -165,6 +165,7 @@ function MainApp() {
       // No results data - redirect to home
       window.history.replaceState({}, '', '/');
       setCurrentPath('/');
+      setActiveTab('home'); // Bug fix: sync nav icon to home
       setViewMode('input');
       setMobileStep(1);
     }
@@ -441,6 +442,11 @@ function MainApp() {
           setViewMode('tools');
           window.scrollTo({ top: 0, behavior: 'smooth' });
       } else if (tab === 'roadmap') {
+          // Mobile: Navigate to /roadmap route
+          if (window.innerWidth < 1024) {
+              window.history.pushState({}, '', '/roadmap');
+              setCurrentPath('/roadmap');
+          }
           setViewMode('roadmap'); 
           window.scrollTo({ top: 0, behavior: 'smooth' });
       }
@@ -449,7 +455,7 @@ function MainApp() {
   return (
     <>
       <AnalyticsTracker />
-      <div className={`flex flex-col theme-${theme} min-h-screen font-sans selection:bg-[var(--primary)] selection:text-white relative bg-[var(--bg-main)] text-[var(--text-main)] transition-colors duration-500`}>
+      <div className={`flex flex-col theme-${theme} min-h-screen font-sans selection:bg-[var(--primary)] selection:text-white relative bg-[var(--bg-main)] text-[var(--text-main)] transition-colors duration-500 ${(window.innerWidth < 1024 && (currentPath === '/calculate' || currentPath.startsWith('/calculate') || currentPath === '/roadmap' || currentPath.startsWith('/roadmap'))) ? 'overflow-hidden h-screen' : ''}`}>
         {/* Full-Viewport Particle Background - Outside all containers */}
         <ParticleBackground theme={theme} />
         

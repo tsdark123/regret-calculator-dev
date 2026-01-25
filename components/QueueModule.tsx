@@ -387,26 +387,36 @@ export const QueueModule: React.FC<QueueModuleProps> = ({
                       {mobileExpenseIndex + 1} of {expenses.length}
                     </span>
 
-                    {/* Right arrow - subtle bounce animation when there are more expenses */}
-                    {expenses.length > 1 && mobileExpenseIndex < expenses.length - 1 ? (
-                      <button
-                        onClick={goToNextExpense}
-                        className="p-2 mt-1 text-[var(--primary)] hover:text-[var(--primary-hover)] transition-colors rounded-xl hover:bg-[var(--primary)]/10 flex items-center justify-center active:scale-95 animate-[subtleBounceSmall_2s_ease-in-out_infinite]"
-                        title="Next expense"
-                      >
-                        <ChevronRight className="w-5 h-5" />
-                      </button>
-                    ) : mobileExpenseIndex > 0 ? (
-                      <button
-                        onClick={goToPrevExpense}
-                        className="p-2 text-[var(--text-muted)] hover:text-[var(--primary)] transition-colors rounded-xl hover:bg-[var(--primary)]/10 flex items-center justify-center active:scale-95"
-                        title="Previous expense"
-                      >
-                        <ChevronLeft className="w-5 h-5" />
-                      </button>
-                    ) : (
-                      <div className="w-9 h-9" /> // Placeholder for alignment
-                    )}
+                    {/* Navigation arrows - show both when in middle, or single when at ends */}
+                    <div className="flex items-center gap-1">
+                      {/* Left arrow - show when not at first expense */}
+                      {mobileExpenseIndex > 0 ? (
+                        <button
+                          onClick={goToPrevExpense}
+                          className="p-2 text-[var(--text-muted)] hover:text-[var(--primary)] transition-colors rounded-xl hover:bg-[var(--primary)]/10 flex items-center justify-center active:scale-95"
+                          title="Previous expense"
+                        >
+                          <ChevronLeft className="w-5 h-5" />
+                        </button>
+                      ) : expenses.length > 1 ? (
+                        <div className="w-9 h-9" /> // Placeholder for alignment when at first
+                      ) : null}
+                      
+                      {/* Right arrow - show when not at last expense */}
+                      {expenses.length > 1 && mobileExpenseIndex < expenses.length - 1 ? (
+                        <button
+                          onClick={goToNextExpense}
+                          className="p-2 text-[var(--primary)] hover:text-[var(--primary-hover)] transition-colors rounded-xl hover:bg-[var(--primary)]/10 flex items-center justify-center active:scale-95 animate-[subtleBounceSmall_2s_ease-in-out_infinite]"
+                          title="Next expense"
+                        >
+                          <ChevronRight className="w-5 h-5" />
+                        </button>
+                      ) : expenses.length > 1 ? (
+                        <div className="w-9 h-9" /> // Placeholder for alignment when at last
+                      ) : (
+                        <div className="w-9 h-9" /> // Single expense placeholder
+                      )}
+                    </div>
                   </div>
 
                   {/* Expense Name */}
