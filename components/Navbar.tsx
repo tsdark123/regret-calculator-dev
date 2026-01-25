@@ -9,7 +9,7 @@ interface NavbarProps {
     onThemeChange: (theme: Theme) => void;
 }
 
-const ThemeDropdown = ({ currentTheme, onThemeChange }: { currentTheme: Theme, onThemeChange: (t: Theme) => void }) => {
+const ThemeDropdownDesktop = ({ currentTheme, onThemeChange }: { currentTheme: Theme, onThemeChange: (t: Theme) => void }) => {
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -65,6 +65,60 @@ const ThemeDropdown = ({ currentTheme, onThemeChange }: { currentTheme: Theme, o
     );
 };
 
+const ThemeDropdownMobile = ({ currentTheme, onThemeChange }: { currentTheme: Theme, onThemeChange: (t: Theme) => void }) => {
+    const [isOpen, setIsOpen] = useState(false);
+    const dropdownRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                setIsOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    const themes: { id: Theme, name: string, color: string }[] = [
+        { id: 'purple', name: 'Original', color: '#a855f7' },
+        { id: 'green', name: 'Matrix', color: '#10b981' },
+        { id: 'blue', name: 'Ocean', color: '#3b82f6' },
+    ];
+
+    return (
+        <div className="relative" ref={dropdownRef}>
+            <button 
+                onClick={() => setIsOpen(!isOpen)}
+                className="flex items-center gap-2 bg-[var(--bg-card)]/80 backdrop-blur-md px-3 py-2 rounded-full border border-[var(--border)] shadow-lg hover:border-[var(--primary)] transition-all group"
+            >
+                <Settings className="w-4 h-4 text-[var(--text-muted)] group-hover:text-[var(--primary)] transition-colors" />
+            </button>
+
+            {isOpen && (
+                <div className="absolute right-0 top-full mt-2 bg-[var(--bg-card)] border border-[var(--border)] rounded-xl shadow-xl overflow-hidden animate-fade-in-down py-2 z-50 flex flex-col items-center gap-1 px-2">
+                    <Palette className="w-4 h-4 text-[var(--text-muted)] mb-1" />
+                    {themes.map((t) => (
+                        <button
+                            key={t.id}
+                            onClick={() => {
+                                onThemeChange(t.id);
+                                setIsOpen(false);
+                            }}
+                            className="w-5 h-5 rounded-full transition-all hover:scale-110 relative"
+                            style={{ backgroundColor: t.color }}
+                            title={t.name}
+                        >
+                            {currentTheme === t.id && (
+                                <div className="absolute inset-0 rounded-full border-2 border-white"></div>
+                            )}
+                        </button>
+                    ))}
+                </div>
+            )}
+        </div>
+    );
+};
+
 export const Navbar: React.FC<NavbarProps> = ({ activeTab, onNavigate, currentTheme, onThemeChange }) => {
   const [isVisible, setIsVisible] = useState(true);
 
@@ -97,56 +151,67 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, onNavigate, currentTh
       }`}
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between relative">
-        {/* Mobile: Combined black box with logo and nav */}
-        <div className="flex items-center justify-between w-full md:w-auto bg-black md:bg-transparent border-y border-black md:border-0 px-4 py-2.5 md:px-0 md:py-0 -mt-7 md:mt-0 z-20">
+        {/* Desktop Left: Logo + Settings */}
+        <div className="hidden md:flex items-center gap-3 z-20">
           <a 
             href="https://www.linkedin.com/in/sepehrz/"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 md:bg-[var(--bg-card)]/80 md:backdrop-blur-md md:px-4 md:py-2 md:rounded-full md:border md:border-[var(--border)] md:shadow-lg hover:md:border-[var(--primary)] transition-all"
+            className="flex items-center gap-2 bg-[var(--bg-card)]/80 backdrop-blur-md px-4 py-2 rounded-full border border-[var(--border)] shadow-lg hover:border-[var(--primary)] transition-all"
           >
             <div className="w-6 h-6 bg-[var(--primary)] rounded-lg flex items-center justify-center flex-shrink-0">
               <TrendingUp className="w-3.5 h-3.5 text-white" />
             </div>
-            <span className="font-bold text-[var(--text-main)] text-sm tracking-tight truncate max-w-[150px] md:max-w-none">Sepehr Zunoubi</span>
+            <span className="font-bold text-[var(--text-main)] text-sm tracking-tight">Sepehr Zunoubi</span>
+          </a>
+          <ThemeDropdownDesktop currentTheme={currentTheme} onThemeChange={onThemeChange} />
+        </div>
+
+        {/* Mobile: Combined black box with logo and nav */}
+        <div className="flex md:hidden items-center justify-between w-full bg-black border-y border-black px-4 py-2.5 -mt-7 z-20">
+          <a 
+            href="https://www.linkedin.com/in/sepehrz/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2"
+          >
+            <div className="w-6 h-6 bg-[var(--primary)] rounded-lg flex items-center justify-center flex-shrink-0">
+              <TrendingUp className="w-3.5 h-3.5 text-white" />
+            </div>
+            <span className="font-bold text-[var(--text-main)] text-sm tracking-tight truncate max-w-[150px]">Sepehr Zunoubi</span>
           </a>
 
           {/* Mobile Nav Icons + Settings */}
-          <div className="flex items-center gap-1.5 md:hidden">
-          <button 
-            onClick={() => onNavigate('home')}
-            className={`p-2 rounded-lg transition-colors ${activeTab === 'home' ? 'text-[var(--primary)] bg-[var(--primary)]/10' : 'text-[var(--text-muted)]'}`}
-          >
-            <Home className="w-5 h-5" />
-          </button>
-          <button 
-            onClick={() => onNavigate('calculate')}
-            className={`p-2 rounded-lg transition-colors ${activeTab === 'calculate' ? 'text-[var(--primary)] bg-[var(--primary)]/10' : 'text-[var(--text-muted)]'}`}
-          >
-            <Calculator className="w-5 h-5" />
-          </button>
-          <button 
-            onClick={() => onNavigate('tools')}
-            className={`p-2 rounded-lg transition-colors ${activeTab === 'tools' ? 'text-[var(--primary)] bg-[var(--primary)]/10' : 'text-[var(--text-muted)]'}`}
-          >
-            <Wrench className="w-5 h-5" />
-          </button>
-          <button 
-            onClick={() => onNavigate('roadmap')}
-            className={`p-2 rounded-lg transition-colors ${activeTab === 'roadmap' ? 'text-[var(--primary)] bg-[var(--primary)]/10' : 'text-[var(--text-muted)]'}`}
-          >
-            <MapPin className="w-5 h-5" />
-          </button>
-            <ThemeDropdown currentTheme={currentTheme} onThemeChange={onThemeChange} />
+          <div className="flex items-center gap-1.5">
+            <button 
+              onClick={() => onNavigate('home')}
+              className={`p-2 rounded-lg transition-colors ${activeTab === 'home' ? 'text-[var(--primary)] bg-[var(--primary)]/10' : 'text-[var(--text-muted)]'}`}
+            >
+              <Home className="w-5 h-5" />
+            </button>
+            <button 
+              onClick={() => onNavigate('calculate')}
+              className={`p-2 rounded-lg transition-colors ${activeTab === 'calculate' ? 'text-[var(--primary)] bg-[var(--primary)]/10' : 'text-[var(--text-muted)]'}`}
+            >
+              <Calculator className="w-5 h-5" />
+            </button>
+            <button 
+              onClick={() => onNavigate('tools')}
+              className={`p-2 rounded-lg transition-colors ${activeTab === 'tools' ? 'text-[var(--primary)] bg-[var(--primary)]/10' : 'text-[var(--text-muted)]'}`}
+            >
+              <Wrench className="w-5 h-5" />
+            </button>
+            <button 
+              onClick={() => onNavigate('roadmap')}
+              className={`p-2 rounded-lg transition-colors ${activeTab === 'roadmap' ? 'text-[var(--primary)] bg-[var(--primary)]/10' : 'text-[var(--text-muted)]'}`}
+            >
+              <MapPin className="w-5 h-5" />
+            </button>
+            <ThemeDropdownMobile currentTheme={currentTheme} onThemeChange={onThemeChange} />
           </div>
         </div>
 
-        {/* Desktop Settings */}
-        <div className="hidden md:block">
-          <ThemeDropdown currentTheme={currentTheme} onThemeChange={onThemeChange} />
-        </div>
-
-        {/* Center: Links (Absolute Centered) */}
+        {/* Desktop Center: Links (Absolute Centered) */}
         <div className="hidden md:flex items-center gap-1 bg-[var(--bg-card)]/80 backdrop-blur-md px-2 py-1.5 rounded-full border border-[var(--border)] shadow-lg absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
           <button onClick={() => onNavigate('home')} className={getButtonClass('home')}>Home</button>
           <button onClick={() => onNavigate('calculate')} className={getButtonClass('calculate')}>Calculate</button>
@@ -154,7 +219,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, onNavigate, currentTh
           <button onClick={() => onNavigate('roadmap')} className={getButtonClass('roadmap')}>Roadmap</button>
         </div>
 
-        {/* Right Side: Empty for balance if needed, or just nothing since links are absolute */}
+        {/* Desktop Right: Empty for balance */}
         <div className="hidden md:block w-1"></div>
       </div>
     </nav>
