@@ -350,10 +350,12 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({
   return (
     <div ref={dashboardRef} className="w-full pb-12 pt-2 lg:pt-0">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-6 lg:mb-8 gap-4 border-b border-[var(--border)] pb-4 lg:pb-6">
-        <div>
+        <div className="max-w-full pr-2">
            <h2 className="text-3xl font-bold text-[var(--text-main)] mb-2">Your Results</h2>
-           <p className="text-[var(--text-muted)] text-sm">
-             Projected over <span className="text-[var(--text-main)] font-semibold">{horizon} years</span> comparing against <span className={`font-semibold ${comparisonColor}`}>{comparisonName}</span>
+           <p className="text-[var(--text-muted)] text-sm break-words">
+             Projected over <span className="text-[var(--text-main)] font-semibold">{horizon} years</span>
+             <br className="sm:hidden" />
+             <span className="sm:inline"> comparing against </span><span className={`font-semibold ${comparisonColor}`}>{comparisonName}</span>
             </p>
         </div>
         
