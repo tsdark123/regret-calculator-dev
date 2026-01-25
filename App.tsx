@@ -276,9 +276,11 @@ function MainApp() {
               setShowCalculateContent(true);
             }, 100);
         } else {
-            // Desktop: Just scroll
+            // Desktop: Scroll with offset to perfectly frame the results dashboard
             if (inputSectionRef.current) {
-                inputSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                const scrollOffset = 100;
+                const top = inputSectionRef.current.getBoundingClientRect().top + window.scrollY - scrollOffset;
+                window.scrollTo({ top, behavior: 'smooth' });
             }
         }
     }, 2000);
@@ -555,11 +557,7 @@ function MainApp() {
                                   transform: (window.innerWidth < 1024 && (currentPath === '/calculate' || currentPath.startsWith('/calculate'))) ? (showCalculateContent ? 'translateY(0)' : 'translateY(20px)') : 'none',
                                   transition: 'opacity 0.6s ease-out, transform 0.6s ease-out'
                               }}>
-                                  <Suspense fallback={
-                                      <div className="w-full flex items-center justify-center py-20">
-                                          <div className="animate-pulse text-[var(--text-muted)]">Loading results...</div>
-                                      </div>
-                                  }>
+                                  <Suspense fallback={null}>
                                       <ResultsDashboard 
                                           results={results} 
                                           assumptions={assumptions}
@@ -569,7 +567,6 @@ function MainApp() {
                                           selectedStock={assumptions.selectedStock}
                                           theme={theme}
                                       />
-                                  </Suspense>
                                   
                                   {/* Expand Button for Pro Dashboard */}
                                   <div ref={expandButtonRef} className="flex justify-center -mt-4 mb-4">
@@ -640,6 +637,7 @@ function MainApp() {
                                       )}
                                     </AnimatePresence>
                                   </div>
+                                  </Suspense>
                               </div>
                           )}
                       </div>
