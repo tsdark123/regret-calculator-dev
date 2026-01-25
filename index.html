@@ -122,6 +122,19 @@
         -ms-user-select: none;
         user-select: none;
         cursor: default;
+        /* Prevent horizontal drag/scroll on mobile */
+        overscroll-behavior-x: none;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      /* Mobile-specific: Prevent horizontal scroll and overscroll */
+      @media (max-width: 1024px) {
+        html, body {
+          overflow-x: hidden;
+          overscroll-behavior-x: none;
+          position: relative;
+          width: 100%;
+        }
       }
       
       /* Re-enable text selection for inputs and textareas */

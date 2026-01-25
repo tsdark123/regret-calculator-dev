@@ -46,7 +46,9 @@ export const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ theme = 
     const colors = getThemeColors(theme);
 
     const initParticles = useCallback((width: number, height: number) => {
-        const particleCount = Math.floor((width * height) / 18000);
+        // Reduce particle count on mobile for better performance
+        const isMobile = width < 1024;
+        const particleCount = Math.floor((width * height) / (isMobile ? 30000 : 18000));
         const particles: Particle[] = [];
         
         for (let i = 0; i < particleCount; i++) {
@@ -78,7 +80,12 @@ export const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ theme = 
         resizeCanvas();
         window.addEventListener('resize', resizeCanvas);
 
+        // Detect if mobile device
+        const isMobile = window.innerWidth < 1024;
+
         const handleMouseMove = (e: MouseEvent) => {
+            // Disable mouse interaction on mobile for performance
+            if (isMobile) return;
             mouseRef.current = {
                 x: e.clientX,
                 y: e.clientY,
@@ -89,8 +96,11 @@ export const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ theme = 
             mouseRef.current = { x: -1000, y: -1000 };
         };
 
-        window.addEventListener('mousemove', handleMouseMove);
-        window.addEventListener('mouseleave', handleMouseLeave);
+        // Only add mouse listeners on desktop
+        if (!isMobile) {
+            window.addEventListener('mousemove', handleMouseMove);
+            window.addEventListener('mouseleave', handleMouseLeave);
+        }
 
         const linkDistance = 150;
         const grabDistance = 180;
