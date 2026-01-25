@@ -38,7 +38,17 @@ const NameInput = ({ value, onChange }: { value: string; onChange: (val: string)
     }, 150); // Short delay for name input
   };
 
-  // Cleanup on unmount
+  // Flush immediately on blur to commit value before navigation
+  const handleBlur = () => {
+    if (debounceTimer.current) {
+      clearTimeout(debounceTimer.current);
+    }
+    if (localValue !== value) {
+      onChange(localValue);
+    }
+  };
+
+  // Cleanup and flush on unmount
   useEffect(() => {
     return () => {
       if (debounceTimer.current) {
@@ -52,6 +62,7 @@ const NameInput = ({ value, onChange }: { value: string; onChange: (val: string)
       type="text"
       value={localValue}
       onChange={handleChange}
+      onBlur={handleBlur}
       placeholder="e.g. Netflix"
       className="w-full bg-[var(--bg-input)] text-[var(--text-main)] px-4 py-3 rounded-xl border border-[var(--border)] focus:border-[var(--primary)] focus:outline-none transition-colors placeholder:text-[var(--text-muted)] placeholder:opacity-50 text-sm font-medium"
     />
@@ -69,6 +80,16 @@ const AmountInput = ({ value, onChange }: { value: number; onChange: (val: numbe
     }
   }, [debouncedValue, onChange, value]);
 
+  // Flush value on unmount to prevent data loss when navigating steps
+  useEffect(() => {
+    return () => {
+      // On unmount, if there's a pending value different from parent, commit it
+      if (currentValue !== value) {
+        onChange(currentValue);
+      }
+    };
+  }, [currentValue, value, onChange]);
+
   const handleIncrement = (e: React.MouseEvent) => {
     e.preventDefault();
     const newValue = Number((currentValue + 1).toFixed(2));
@@ -79,6 +100,13 @@ const AmountInput = ({ value, onChange }: { value: number; onChange: (val: numbe
     e.preventDefault();
     const newValue = Number(Math.max(0, currentValue - 1).toFixed(2));
     setImmediateValue(newValue);
+  };
+
+  // Flush immediately on blur to commit value before navigation
+  const handleBlur = () => {
+    if (currentValue !== value) {
+      onChange(currentValue);
+    }
   };
 
   return (
@@ -93,6 +121,7 @@ const AmountInput = ({ value, onChange }: { value: number; onChange: (val: numbe
             const val = parseFloat(e.target.value);
             setImmediateValue(isNaN(val) ? 0 : val);
         }}
+        onBlur={handleBlur}
         placeholder="0"
         className="w-full bg-[var(--bg-input)] text-[var(--text-main)] pl-7 pr-8 py-3 rounded-xl border border-[var(--border)] focus:border-[var(--primary)] focus:outline-none transition-colors placeholder:text-[var(--text-muted)] placeholder:opacity-50 text-sm font-medium appearance-none"
       />
@@ -206,13 +235,11 @@ export const QueueModule: React.FC<QueueModuleProps> = ({
     }
   };
 
-  // Handle add with navigation to new expense
+  // Handle add with navigation to new expense - optimized for instant feedback
   const handleAddExpense = () => {
+    const newIndex = expenses.length; // Capture before state update
     onAdd();
-    // Navigate to the new expense after a brief delay
-    setTimeout(() => {
-      setMobileExpenseIndex(expenses.length); // Will be the new expense's index
-    }, 50);
+    setMobileExpenseIndex(newIndex); // Navigate immediately, no delay
   };
 
   // Handle delete with proper index adjustment
@@ -347,7 +374,7 @@ export const QueueModule: React.FC<QueueModuleProps> = ({
                     {expenses.length > 1 && mobileExpenseIndex < expenses.length - 1 ? (
                       <button
                         onClick={goToNextExpense}
-                        className="p-2 text-[var(--primary)] hover:text-[var(--primary-hover)] transition-colors rounded-xl hover:bg-[var(--primary)]/10 flex items-center justify-center active:scale-95 animate-[subtleBounce_1.5s_ease-in-out_infinite]"
+                        className="p-2 mt-1 text-[var(--primary)] hover:text-[var(--primary-hover)] transition-colors rounded-xl hover:bg-[var(--primary)]/10 flex items-center justify-center active:scale-95 animate-[subtleBounceSmall_2s_ease-in-out_infinite]"
                         title="Next expense"
                       >
                         <ChevronRight className="w-5 h-5" />

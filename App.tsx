@@ -490,7 +490,7 @@ function MainApp() {
                     </>
                   )}
                   
-                  <main className={`px-4 md:px-8 w-full min-h-[600px] relative ${(window.innerWidth < 1024 && (currentPath === '/calculate' || currentPath.startsWith('/calculate') || currentPath === '/results' || currentPath.startsWith('/results'))) ? 'pt-20 pb-24' : 'py-8'}`} ref={inputSectionRef}>
+                  <main className={`px-4 md:px-8 w-full min-h-[600px] relative ${(window.innerWidth < 1024 && (currentPath === '/calculate' || currentPath.startsWith('/calculate') || currentPath === '/results' || currentPath.startsWith('/results'))) ? 'pt-28 pb-24' : 'py-8'}`} ref={inputSectionRef}>
                       <AmbientBackground />
                       {/* Theme-aware backgrounds for /calculate on mobile only */}
                       {(currentPath === '/calculate' || currentPath.startsWith('/calculate')) && (
