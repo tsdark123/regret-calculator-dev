@@ -89,15 +89,16 @@ export const ResultsChart: React.FC<ChartProps> = ({ data, theme }) => {
           <XAxis 
             dataKey="year" 
             stroke="var(--text-muted)" 
-            tick={{ fill: 'var(--text-muted)', fontSize: 12 }} 
+            tick={{ fill: 'var(--text-muted)', fontSize: 10 }} 
             tickLine={false}
             axisLine={false}
-            minTickGap={30}
+            minTickGap={20}
             dy={10}
+            interval="preserveStartEnd"
           />
           <YAxis 
             stroke="var(--text-muted)" 
-            tick={{ fill: 'var(--text-muted)', fontSize: 12 }} 
+            tick={{ fill: 'var(--text-muted)', fontSize: 10 }} 
             tickFormatter={(val) => formatCurrencyShort(val)}
             tickLine={false}
             axisLine={false}

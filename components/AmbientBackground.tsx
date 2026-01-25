@@ -36,13 +36,12 @@ export const AmbientBackground: React.FC = () => {
       </div>
 
       {/* 2. Floating Bar Chart Right - Increased Opacity */}
-      <div className="absolute top-[25%] right-[-5%] md:right-[2%] w-48 h-48 text-slate-700/20 rotate-[12deg] animate-float-delayed">
+      <div className="fixed top-[35%] right-[0%] md:right-[5%] w-48 h-48 text-slate-700/20 rotate-[12deg] animate-float-delayed z-0">
          <MiniChart2 className="w-full h-full" />
       </div>
       
-      {/* 3. Center Abstract Donut */}
-      <div className="absolute top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 w-96 h-96 text-purple-900/5 blur-3xl rounded-full bg-purple-900/10" />
-      <div className="absolute bottom-[20%] left-[10%] w-24 h-24 text-slate-600/10 animate-spin-slow duration-[20s]">
+      {/* 3. Donut Chart Bottom Left */}
+      <div className="fixed bottom-[20%] left-[10%] w-24 h-24 text-slate-600/10 animate-spin-slow duration-[20s] z-0">
           <MiniChart3 className="w-full h-full" />
       </div>
 

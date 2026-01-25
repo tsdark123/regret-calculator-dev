@@ -81,16 +81,17 @@ interface FIRadialChartProps {
 }
 
 function FIRadialChart({ progress, yearsToFreedom, regretInjected }: FIRadialChartProps) {
-  const size = 200;
+  // Responsive size - smaller on mobile
+  const size = typeof window !== 'undefined' && window.innerWidth < 640 ? 160 : 200;
   const center = size / 2;
-  const strokeWidth = 16;
+  const strokeWidth = size < 200 ? 12 : 16;
   const radius = center - strokeWidth / 2 - 8;
   const circumference = 2 * Math.PI * radius;
   const progressClamped = Math.min(100, Math.max(0, progress));
   const strokeDashoffset = circumference * (1 - progressClamped / 100);
 
   return (
-    <div className="relative flex items-center justify-center py-4">
+    <div className="relative flex items-center justify-center py-2 md:py-4">
       <svg width={size} height={size} className="transform -rotate-90">
         {/* Background track */}
         <circle
@@ -134,12 +135,12 @@ function FIRadialChart({ progress, yearsToFreedom, regretInjected }: FIRadialCha
       
       {/* Center content */}
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className={`text-4xl font-bold transition-colors duration-300 ${
+        <span className={`text-3xl sm:text-4xl font-bold transition-colors duration-300 ${
           regretInjected ? 'text-emerald-400' : 'text-[var(--text-main)]'
         }`}>
           {yearsToFreedom === Infinity ? '∞' : yearsToFreedom.toFixed(1)}
         </span>
-        <span className="text-xs text-[var(--text-muted)] uppercase tracking-wider mt-1">
+        <span className="text-[10px] sm:text-xs text-[var(--text-muted)] uppercase tracking-wider mt-1">
           Years to Freedom
         </span>
       </div>
@@ -163,15 +164,15 @@ function SliderInput({ label, value, onChange, min, max, step = 1, unit = '', co
   const percentage = ((value - min) * 100) / (max - min);
   
   return (
-    <div className="flex items-center justify-between py-2 group">
+    <div className="flex flex-col sm:flex-row sm:items-center justify-between py-2 gap-2 sm:gap-0 group">
       <div className="flex items-center gap-3">
         <span 
-          className="w-3 h-3 rounded-[3px]"
+          className="w-3 h-3 rounded-[3px] flex-shrink-0"
           style={{ backgroundColor: color }}
         />
-        <span className="text-[15px] text-[var(--text-main)]">{label}</span>
+        <span className="text-sm sm:text-[15px] text-[var(--text-main)]">{label}</span>
       </div>
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3 sm:gap-4 pl-6 sm:pl-0">
         <input
           type="range"
           min={min}
@@ -179,12 +180,12 @@ function SliderInput({ label, value, onChange, min, max, step = 1, unit = '', co
           step={step}
           value={value}
           onChange={(e) => onChange(Number(e.target.value))}
-          className="w-24 h-1.5 rounded-lg appearance-none cursor-pointer"
+          className="flex-1 sm:w-24 h-2 sm:h-1.5 rounded-lg appearance-none cursor-pointer touch-pan-x"
           style={{
             background: `linear-gradient(to right, ${color} ${percentage}%, var(--bg-hover) ${percentage}%)`
           }}
         />
-        <span className="text-[var(--text-muted)] text-sm font-medium w-16 text-right">
+        <span className="text-[var(--text-muted)] text-sm font-medium w-16 text-right flex-shrink-0">
           {unit === '$' ? formatCurrency(value) : `${value}${unit}`}
         </span>
       </div>
@@ -242,14 +243,14 @@ export const FireProjection: React.FC<FireProjectionProps> = ({ results, theme }
   const yearsSaved = regretInjected ? baseYears - yearsToFreedom : 0;
 
   return (
-    <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl p-6 h-full flex flex-col">
+    <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl p-4 sm:p-6 h-full flex flex-col">
       {/* Header */}
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-3">
-          <div className="p-2 rounded-lg bg-[var(--primary)]/10">
-            <Flame className="w-5 h-5 text-[var(--primary)]" />
+      <div className="flex items-center justify-between mb-3 sm:mb-4">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <div className="p-1.5 sm:p-2 rounded-lg bg-[var(--primary)]/10">
+            <Flame className="w-4 h-4 sm:w-5 sm:h-5 text-[var(--primary)]" />
           </div>
-          <h3 className="text-xl font-bold text-[var(--text-main)] tracking-tight">
+          <h3 className="text-base sm:text-xl font-bold text-[var(--text-main)] tracking-tight">
             Retirement Freedom Bridge
           </h3>
           <div className="relative group">
@@ -266,26 +267,26 @@ export const FireProjection: React.FC<FireProjectionProps> = ({ results, theme }
       </div>
 
       {/* Primary Stat Display */}
-      <div className="flex gap-8 mb-2">
+      <div className="flex gap-6 sm:gap-8 mb-2">
         <div>
           <div className="flex items-baseline">
-            <span className={`text-5xl font-bold leading-none transition-colors duration-300 ${
+            <span className={`text-3xl sm:text-5xl font-bold leading-none transition-colors duration-300 ${
               regretInjected ? 'text-emerald-400' : 'text-[var(--text-main)]'
             }`}>
               {yearsToFreedom === Infinity ? '∞' : yearsToFreedom.toFixed(1)}
             </span>
-            <span className="text-xl text-[var(--text-muted)] ml-1">yrs</span>
+            <span className="text-base sm:text-xl text-[var(--text-muted)] ml-1">yrs</span>
           </div>
-          <p className="text-sm text-[var(--text-muted)] mt-1">Years to Freedom</p>
+          <p className="text-xs sm:text-sm text-[var(--text-muted)] mt-1">Years to Freedom</p>
         </div>
         <div>
           <div className="flex items-baseline">
-            <span className="text-5xl font-bold text-[var(--text-main)] leading-none">
+            <span className="text-3xl sm:text-5xl font-bold text-[var(--text-main)] leading-none">
               {fiProgress.toFixed(0)}
             </span>
-            <span className="text-xl text-[var(--text-muted)] ml-0.5">%</span>
+            <span className="text-base sm:text-xl text-[var(--text-muted)] ml-0.5">%</span>
           </div>
-          <p className="text-sm text-[var(--text-muted)] mt-1">FI Progress</p>
+          <p className="text-xs sm:text-sm text-[var(--text-muted)] mt-1">FI Progress</p>
         </div>
       </div>
 
@@ -299,7 +300,7 @@ export const FireProjection: React.FC<FireProjectionProps> = ({ results, theme }
       </div>
 
       {/* Input Sliders */}
-      <div className="space-y-1 border-t border-[var(--border)] pt-4">
+      <div className="space-y-1 sm:space-y-1 border-t border-[var(--border)] pt-3 sm:pt-4">
         <SliderInput
           label="Current Age"
           value={currentAge}
@@ -330,38 +331,38 @@ export const FireProjection: React.FC<FireProjectionProps> = ({ results, theme }
         />
       </div>
 
-      {/* Regret Injection Toggle */}
-      <div className="mt-4 pt-4 border-t border-[var(--border)]">
+      {/* Regret Injection Toggle - Prominent on mobile */}
+      <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-[var(--border)]">
         <button
           onClick={() => setRegretInjected(!regretInjected)}
-          className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-300 ${
+          className={`w-full flex items-center justify-between px-3 sm:px-4 py-3 sm:py-3 rounded-xl transition-all duration-300 active:scale-[0.98] ${
             regretInjected 
               ? 'bg-emerald-500/20 border border-emerald-500/40' 
               : 'bg-[var(--bg-input)] border border-[var(--border)] hover:border-[var(--primary)]/30'
           }`}
         >
-          <div className="flex items-center gap-3">
-            <Zap className={`w-5 h-5 transition-colors ${
+          <div className="flex items-center gap-2 sm:gap-3">
+            <Zap className={`w-5 h-5 flex-shrink-0 transition-colors ${
               regretInjected ? 'text-emerald-400' : 'text-[var(--text-muted)]'
             }`} />
-            <div className="text-left">
+            <div className="text-left min-w-0">
               <span className={`font-medium text-sm ${
                 regretInjected ? 'text-emerald-400' : 'text-[var(--text-main)]'
               }`}>
                 Regret Injection
               </span>
-              <p className="text-xs text-[var(--text-muted)]">
-                Add {formatCurrency(totalWasted)} to your starting principal
+              <p className="text-xs text-[var(--text-muted)] truncate">
+                Add {formatCurrency(totalWasted)} to principal
               </p>
             </div>
           </div>
           
-          {/* Toggle Switch */}
-          <div className={`relative w-12 h-6 rounded-full transition-colors duration-300 ${
+          {/* Toggle Switch - Larger touch target on mobile */}
+          <div className={`relative w-12 h-7 sm:h-6 rounded-full transition-colors duration-300 flex-shrink-0 ${
             regretInjected ? 'bg-emerald-500' : 'bg-[var(--bg-hover)]'
           }`}>
-            <div className={`absolute top-1 w-4 h-4 rounded-full bg-white shadow-md transition-transform duration-300 ${
-              regretInjected ? 'translate-x-7' : 'translate-x-1'
+            <div className={`absolute top-1 sm:top-1 w-5 sm:w-4 h-5 sm:h-4 rounded-full bg-white shadow-md transition-transform duration-300 ${
+              regretInjected ? 'translate-x-6 sm:translate-x-7' : 'translate-x-1'
             }`} />
           </div>
         </button>

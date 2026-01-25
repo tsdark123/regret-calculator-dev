@@ -13,10 +13,11 @@ import { ToolsDashboard } from './components/ToolsDashboard';
 import { Roadmap } from './components/Roadmap';
 import { LoadingScreen } from './components/LoadingScreen';
 import { ParticleBackground } from './components/ParticleBackground';
-import { MobileMaintenance } from './components/MobileMaintenance';
+// Mobile maintenance removed - full responsive support enabled
 import { AdminStats } from './components/AdminStats';
 import { AnalyticsTracker } from './components/AnalyticsTracker';
 import { ProDashboard } from './components/ProDashboard';
+import { ArrowRight, Calculator } from 'lucide-react';
 import { Expense, Assumptions, CalculationResult, StockOption, Theme } from './types';
 import { calculateResults } from './utils/financials';
 import { getStoredTheme, saveTheme } from './utils/theme';
@@ -70,21 +71,24 @@ function MainApp() {
   const [resultsKey, setResultsKey] = useState(0);
   const [isStockModalOpen, setIsStockModalOpen] = useState(false);
   const [isProDashboardExpanded, setIsProDashboardExpanded] = useState(false);
+  const [collapseHeight, setCollapseHeight] = useState<number | null>(null); // Preserve height during collapse
   const proDashboardRef = useRef<HTMLDivElement>(null);
+  const expandButtonRef = useRef<HTMLDivElement>(null);
   
   // View State: 'input' | 'results' | 'tools' | 'roadmap'
   const [viewMode, setViewMode] = useState<'input' | 'results' | 'tools' | 'roadmap'>('input');
   const [activeTab, setActiveTab] = useState<NavTab>('home');
   
+  // Mobile wizard step state (1: Decisions, 2: Assumptions, 3: Final Wisdom)
+  const [mobileStep, setMobileStep] = useState<1 | 2 | 3>(1);
+  
   // Loading State
   const [isLoading, setIsLoading] = useState(false);
 
-  // Mobile Detection State - catches phones in BOTH portrait AND landscape orientations
-  // Uses smaller dimension to prevent bypass by rotating phone
+  // Mobile detection for responsive adaptations (no longer blocks the app)
   const [isMobileView, setIsMobileView] = useState(() => {
     if (typeof window !== 'undefined') {
-       const smallerDimension = Math.min(window.innerWidth, window.innerHeight);
-       return smallerDimension < 768;
+       return window.innerWidth < 768;
     }
     return false;
   });
@@ -103,11 +107,10 @@ function MainApp() {
     document.documentElement.style.visibility = 'visible';
   }, []);
 
-  // Monitor Window Resize for Mobile Detection (checks smaller dimension for orientation bypass prevention)
+  // Monitor Window Resize for Mobile Detection
   useEffect(() => {
     const handleResize = () => {
-        const smallerDimension = Math.min(window.innerWidth, window.innerHeight);
-        setIsMobileView(smallerDimension < 768);
+        setIsMobileView(window.innerWidth < 768);
     };
 
     window.addEventListener('resize', handleResize);
@@ -210,22 +213,47 @@ function MainApp() {
       setViewMode('input');
   };
 
+
   const handleToggleProDashboard = useCallback(() => {
     if (!isProDashboardExpanded) {
+      // Capture current scroll position to prevent any jump
+      const currentScroll = window.pageYOffset;
+      
       setIsProDashboardExpanded(true);
-      // Wait for animation to complete, then scroll smoothly
+      
+      // Immediately restore scroll position after state change to prevent upward shift
+      requestAnimationFrame(() => {
+        window.scrollTo(0, currentScroll);
+      });
+      
+      // Start scroll slightly before animation completes for snappier feel
       setTimeout(() => {
         if (proDashboardRef.current) {
-          proDashboardRef.current.scrollIntoView({ 
-            behavior: 'smooth', 
-            block: 'start',
-            inline: 'nearest'
+          const element = proDashboardRef.current;
+          const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+          const offsetPosition = elementPosition - 180; // Larger offset to center content on viewport
+          
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
           });
         }
-      }, 400);
+      }, 330);
     } else {
-      // Collapse and scroll back to top of results page
-      setIsProDashboardExpanded(false);
+      // Collapse: Preserve container height FIRST to prevent any layout shift
+      if (proDashboardRef.current) {
+        const currentHeight = proDashboardRef.current.offsetHeight;
+        setCollapseHeight(currentHeight);
+        
+        // Wait a tick for height to be applied, then fade out content
+        requestAnimationFrame(() => {
+          setIsProDashboardExpanded(false);
+        });
+      } else {
+        setIsProDashboardExpanded(false);
+      }
+      
+      // After content fades out, scroll user back up
       setTimeout(() => {
         if (inputSectionRef.current) {
           inputSectionRef.current.scrollIntoView({ 
@@ -234,7 +262,12 @@ function MainApp() {
             inline: 'nearest'
           });
         }
-      }, 100);
+        
+        // After scroll completes, clean up the excess space
+        setTimeout(() => {
+          setCollapseHeight(null);
+        }, 600);
+      }, 400);
     }
   }, [isProDashboardExpanded]);
   const handleReset = () => {
@@ -259,11 +292,6 @@ function MainApp() {
           window.scrollTo({ top: 0, behavior: 'smooth' });
       }
   };
-
-  // Show maintenance screen on mobile
-  if (isMobileView) {
-    return <MobileMaintenance />;
-  }
 
   return (
     <>
@@ -303,6 +331,9 @@ function MainApp() {
             ) : (
               /* VIEW: CALCULATOR (HERO + MAIN) */
               <>
+                  {/* Purple Beam for Hero Section - Positioned absolutely at top level */}
+                  <div className="absolute top-[8%] left-[50%] -translate-x-1/2 w-[500px] h-[500px] bg-purple-900/5 blur-[100px] rounded-full pointer-events-none z-[5]" />
+                  
                   <Hero 
                       onStart={handleStart} 
                       onLoadPreset={handleLoadPreset} 
@@ -314,30 +345,126 @@ function MainApp() {
                       <div className="max-w-[96rem] mx-auto space-y-8 relative z-10">
                           
                           {viewMode === 'input' && (
-                              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch animate-fade-in-up">
-                                  {/* Left Block: Inputs */}
-                                  <div className="lg:col-span-7 xl:col-span-8">
-                                      <QueueModule
-                                          expenses={expenses}
-                                          onAdd={addExpense}
-                                          onRemove={removeExpense}
-                                          onUpdate={updateExpense}
-                                          onAnalyze={handleAnalyze}
-                                      />
-                                  </div>
-                                  
-                                  {/* Right Block: Assumptions + Fun Fact */}
-                                  <div className="lg:col-span-5 xl:col-span-4 flex flex-col gap-6">
-                                      <div className="flex-1">
-                                          <SettingsPanel 
-                                              assumptions={assumptions} 
-                                              onChange={updateAssumptions} 
-                                              onOpenStockSelector={() => setIsStockModalOpen(true)}
-                                          />
-                                      </div>
-                                      <FunFactGenerator />
-                                  </div>
-                              </div>
+                              <>
+                                {/* Desktop: Side-by-side layout */}
+                                <div className="hidden lg:grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch animate-fade-in-up">
+                                    {/* Left Block: Inputs */}
+                                    <div className="lg:col-span-7 xl:col-span-8">
+                                        <QueueModule
+                                            expenses={expenses}
+                                            onAdd={addExpense}
+                                            onRemove={removeExpense}
+                                            onUpdate={updateExpense}
+                                            onAnalyze={handleAnalyze}
+                                        />
+                                    </div>
+                                    
+                                    {/* Right Block: Assumptions + Fun Fact */}
+                                    <div className="lg:col-span-5 xl:col-span-4 flex flex-col gap-6">
+                                        <div className="flex-1">
+                                            <SettingsPanel 
+                                                assumptions={assumptions} 
+                                                onChange={updateAssumptions} 
+                                                onOpenStockSelector={() => setIsStockModalOpen(true)}
+                                            />
+                                        </div>
+                                        <FunFactGenerator />
+                                    </div>
+                                </div>
+
+                                {/* Mobile: 3-Step Wizard with Fade Transitions */}
+                                <div className="lg:hidden">
+                                    <AnimatePresence mode="wait">
+                                        {mobileStep === 1 && (
+                                            <motion.div
+                                                key="step-1"
+                                                initial={{ opacity: 0, y: 20 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                exit={{ opacity: 0, y: -20 }}
+                                                transition={{ duration: 0.3 }}
+                                            >
+                                                <QueueModule
+                                                    expenses={expenses}
+                                                    onAdd={addExpense}
+                                                    onRemove={removeExpense}
+                                                    onUpdate={updateExpense}
+                                                    onAnalyze={() => setMobileStep(2)}
+                                                />
+                                            </motion.div>
+                                        )}
+
+                                        {mobileStep === 2 && (
+                                            <motion.div
+                                                key="step-2"
+                                                initial={{ opacity: 0, y: 20 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                exit={{ opacity: 0, y: -20 }}
+                                                transition={{ duration: 0.3 }}
+                                                className="bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl md:rounded-3xl p-4 md:p-5 shadow-2xl backdrop-blur-sm"
+                                            >
+                                                <div className="flex items-center gap-3 mb-3 md:mb-4">
+                                                    <div className="w-6 h-6 rounded-full bg-[var(--primary)] bg-opacity-10 flex items-center justify-center text-[var(--primary)] font-bold text-xs ring-1 ring-[var(--primary)] ring-opacity-20">2</div>
+                                                    <h2 className="text-xs md:text-sm font-bold text-[var(--text-main)] uppercase tracking-wider">Assumptions</h2>
+                                                </div>
+                                                <SettingsPanel 
+                                                    assumptions={assumptions} 
+                                                    onChange={updateAssumptions} 
+                                                    onOpenStockSelector={() => setIsStockModalOpen(true)}
+                                                />
+                                                <div className="flex flex-col sm:flex-row gap-3 mt-4 pt-2">
+                                                    <button
+                                                        onClick={() => setMobileStep(3)}
+                                                        className="flex-1 py-2.5 bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-white rounded-xl font-bold shadow-lg shadow-[var(--primary)]/20 transition-all flex items-center justify-center gap-2 active:scale-[0.98] text-sm"
+                                                    >
+                                                        <ArrowRight className="w-4 h-4" />
+                                                        Next Step
+                                                    </button>
+                                                </div>
+                                            </motion.div>
+                                        )}
+
+                                        {mobileStep === 3 && (
+                                            <motion.div
+                                                key="step-3"
+                                                initial={{ opacity: 0, y: 20 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                exit={{ opacity: 0, y: -20 }}
+                                                transition={{ duration: 0.3 }}
+                                                className="bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl md:rounded-3xl p-4 md:p-5 shadow-2xl backdrop-blur-sm"
+                                            >
+                                                <div className="flex items-center gap-3 mb-3 md:mb-4">
+                                                    <div className="w-6 h-6 rounded-full bg-[var(--primary)] bg-opacity-10 flex items-center justify-center text-[var(--primary)] font-bold text-xs ring-1 ring-[var(--primary)] ring-opacity-20">3</div>
+                                                    <h2 className="text-xs md:text-sm font-bold text-[var(--text-main)] uppercase tracking-wider">Final Wisdom</h2>
+                                                </div>
+                                                <div className="space-y-3 text-[var(--text-muted)] text-sm mb-4">
+                                                    <p>You're about to see how <span className="text-[var(--text-main)] font-semibold">{expenses.length} decision{expenses.length !== 1 ? 's' : ''}</span> compound over <span className="text-[var(--text-main)] font-semibold">{assumptions.timeHorizonYears} years</span>.</p>
+                                                    <p>Remember: Every dollar spent today is a dollar that can't grow tomorrow.</p>
+                                                    <div className="bg-[var(--bg-hover)] p-4 rounded-xl border border-[var(--border)] mt-4">
+                                                        <p className="text-xs text-[var(--text-muted)] italic">
+                                                            "The best time to start investing was yesterday. The second best time is now."
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div className="flex flex-col gap-3 pt-2">
+                                                    <button
+                                                        onClick={handleAnalyze}
+                                                        className="w-full py-4 bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-white rounded-xl font-bold shadow-lg transition-all flex items-center justify-center gap-2 active:scale-[0.98] text-base"
+                                                    >
+                                                        <Calculator className="w-5 h-5" />
+                                                        Analyze My Regret
+                                                    </button>
+                                                    <button
+                                                        onClick={() => setMobileStep(1)}
+                                                        className="w-full py-2 text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors text-sm"
+                                                    >
+                                                        ← Back to Start
+                                                    </button>
+                                                </div>
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
+                                </div>
+                              </>
                           )}
 
                           {viewMode === 'results' && results && (
@@ -353,7 +480,7 @@ function MainApp() {
                                   />
                                   
                                   {/* Expand Button for Pro Dashboard */}
-                                  <div className="flex justify-center -mt-4 mb-12">
+                                  <div ref={expandButtonRef} className="flex justify-center -mt-4 mb-4">
                                     <motion.button
                                       onClick={handleToggleProDashboard}
                                       whileHover={{ scale: 1.02 }}
@@ -373,7 +500,10 @@ function MainApp() {
                                   </div>
 
                                   {/* Pro Dashboard - Animated with Framer Motion */}
-                                  <div ref={proDashboardRef}>
+                                  <div 
+                                    ref={proDashboardRef}
+                                    style={collapseHeight ? { minHeight: collapseHeight } : undefined}
+                                  >
                                     <AnimatePresence mode="popLayout">
                                       {isProDashboardExpanded && (
                                         <motion.div
@@ -416,7 +546,7 @@ function MainApp() {
                           )}
                       </div>
                   </main>
-                  <Footer />
+                  {!(viewMode === 'results' && !isProDashboardExpanded) && <Footer />}
               </>
             )}
         </div>

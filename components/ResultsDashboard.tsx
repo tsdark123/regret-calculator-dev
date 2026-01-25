@@ -148,12 +148,12 @@ const TimeCostSection = ({ totalInvested }: { totalInvested: number }) => {
     }
 
     return (
-        <div className="bg-[var(--bg-card)] border border-[var(--border)] p-5 rounded-2xl h-full flex flex-col">
-            <div className="flex items-center gap-2 mb-4">
+        <div className="bg-[var(--bg-card)] border border-[var(--border)] p-4 sm:p-5 rounded-2xl h-full flex flex-col">
+            <div className="flex items-center gap-2 mb-3 sm:mb-4">
                 <Clock className="w-4 h-4 text-blue-400" />
                 <h3 className="text-sm font-bold text-[var(--text-main)]">Time Cost</h3>
             </div>
-            <div className="flex items-center justify-between mb-4 bg-[var(--bg-hover)] p-2 rounded-lg border border-[var(--border)]">
+            <div className="flex items-center justify-between mb-3 sm:mb-4 bg-[var(--bg-hover)] p-2.5 sm:p-2 rounded-lg border border-[var(--border)]">
                 <span className="text-xs text-[var(--text-muted)] pl-1">Your Hourly Wage:</span>
                 <div className="flex items-center">
                     <span className="text-[var(--text-muted)] text-xs mr-1">$</span>
@@ -161,7 +161,7 @@ const TimeCostSection = ({ totalInvested }: { totalInvested: number }) => {
                         type="number" 
                         value={hourlyWage} 
                         onChange={(e) => setHourlyWage(Math.max(1, parseInt(e.target.value) || 0))}
-                        className="w-12 bg-transparent text-right text-[var(--text-main)] text-xs font-bold focus:outline-none border-b border-slate-700 focus:border-[var(--primary)]"
+                        className="w-14 sm:w-12 bg-transparent text-right text-[var(--text-main)] text-sm sm:text-xs font-bold focus:outline-none border-b border-slate-700 focus:border-[var(--primary)]"
                     />
                 </div>
             </div>
@@ -238,9 +238,7 @@ const ShareSection = ({ results, horizon, dashboardRef }: { results: Calculation
 
     return (
         <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl p-5 h-fit flex-none">
-            <h3 className="text-sm font-bold text-[var(--text-main)] mb-2 flex items-center gap-2">
-                <Share2 className="w-4 h-4 text-[var(--primary)]" /> Spread the Awareness
-            </h3>
+            <h3 className="text-sm font-bold text-[var(--text-main)] mb-2">Spread the Awareness</h3>
             <p className="text-xs text-[var(--text-muted)] mb-4">
                 Help friends realize the true cost of their habits.
             </p>
@@ -348,26 +346,26 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({
   const comparisonColor = selectedStock ? selectedStock.color.replace('bg-', 'text-') : 'text-[var(--primary)]';
 
   return (
-    <div ref={dashboardRef} className="w-full pb-12">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-8 gap-4 border-b border-[var(--border)] pb-6">
+    <div ref={dashboardRef} className="w-full pb-8 sm:pb-12">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-6 sm:mb-8 gap-4 border-b border-[var(--border)] pb-4 sm:pb-6">
         <div>
-           <h2 className="text-3xl font-bold text-[var(--text-main)] mb-2">Your Results</h2>
-           <p className="text-[var(--text-muted)] text-sm">
+           <h2 className="text-2xl sm:text-3xl font-bold text-[var(--text-main)] mb-1 sm:mb-2">Your Results</h2>
+           <p className="text-[var(--text-muted)] text-xs sm:text-sm">
              Projected over <span className="text-[var(--text-main)] font-semibold">{horizon} years</span> comparing against <span className={`font-semibold ${comparisonColor}`}>{comparisonName}</span>
             </p>
         </div>
         
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
             <button
             onClick={onEdit}
-            className="flex items-center gap-2 text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-all text-xs font-semibold px-4 py-2.5 border border-[var(--border)] rounded-xl"
+            className="flex-1 sm:flex-none flex items-center justify-center gap-2 text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-all text-xs font-semibold px-4 py-3 sm:py-2.5 border border-[var(--border)] rounded-xl active:scale-[0.98]"
             >
             <Pencil className="w-3.5 h-3.5" />
             Edit Inputs
             </button>
             <button
             onClick={onReset}
-            className="flex items-center gap-2 text-[var(--text-muted)] hover:text-red-400 hover:bg-red-500/10 transition-all text-xs font-semibold px-4 py-2.5 border border-transparent rounded-xl"
+            className="flex-1 sm:flex-none flex items-center justify-center gap-2 text-[var(--text-muted)] hover:text-red-400 hover:bg-red-500/10 transition-all text-xs font-semibold px-4 py-3 sm:py-2.5 border border-transparent rounded-xl active:scale-[0.98]"
             >
             <RefreshCcw className="w-3.5 h-3.5" />
             Start Over
@@ -376,80 +374,80 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <div className="bg-[var(--bg-card)] border border-[var(--border)] p-5 rounded-2xl relative overflow-hidden group hover:border-[var(--text-muted)] transition-colors">
-          <div className="flex justify-between items-start mb-2">
-             <p className="text-[var(--text-muted)] text-[10px] font-bold uppercase tracking-wider">Total Capital Wasted</p>
-             <DollarSign className="w-4 h-4 text-slate-700" />
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
+        <div className="bg-[var(--bg-card)] border border-[var(--border)] p-3 sm:p-5 rounded-xl sm:rounded-2xl relative overflow-hidden group hover:border-[var(--text-muted)] transition-colors">
+          <div className="flex justify-between items-start mb-1 sm:mb-2">
+             <p className="text-[var(--text-muted)] text-[9px] sm:text-[10px] font-bold uppercase tracking-wider">Total Capital Wasted</p>
+             <DollarSign className="w-3 h-3 sm:w-4 sm:h-4 text-slate-700" />
           </div>
-          <p className={`font-bold text-[var(--text-main)] tracking-tight ${getValueSizeClass(results.totalCapitalWasted)}`}>
+          <p className={`font-bold text-[var(--text-main)] tracking-tight text-lg sm:text-2xl lg:${getValueSizeClass(results.totalCapitalWasted)}`}>
             <AnimatedCounter value={results.totalCapitalWasted} />
           </p>
-          <p className="text-[10px] text-[var(--text-muted)] mt-1">Money spent linearly without growth</p>
+          <p className="text-[9px] sm:text-[10px] text-[var(--text-muted)] mt-1 hidden sm:block">Money spent linearly without growth</p>
         </div>
 
-        <div className="bg-[var(--bg-card)] border border-[var(--border)] p-5 rounded-2xl relative overflow-hidden group hover:border-[var(--primary)] transition-colors">
-           <div className="flex justify-between items-start mb-2">
-              <p className="text-[var(--primary)] text-[10px] font-bold uppercase tracking-wider">Potential Value Unlocked</p>
-              <TrendingUp className="w-4 h-4 text-[var(--primary)] opacity-40" />
+        <div className="bg-[var(--bg-card)] border border-[var(--border)] p-3 sm:p-5 rounded-xl sm:rounded-2xl relative overflow-hidden group hover:border-[var(--primary)] transition-colors">
+           <div className="flex justify-between items-start mb-1 sm:mb-2">
+              <p className="text-[var(--primary)] text-[9px] sm:text-[10px] font-bold uppercase tracking-wider">Potential Value</p>
+              <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4 text-[var(--primary)] opacity-40" />
            </div>
-          <p className={`font-bold text-[var(--primary)] tracking-tight ${getValueSizeClass(results.potentialValueUnlocked)}`}>
+          <p className={`font-bold text-[var(--primary)] tracking-tight text-lg sm:text-2xl lg:${getValueSizeClass(results.potentialValueUnlocked)}`}>
             <AnimatedCounter value={results.potentialValueUnlocked} />
           </p>
-           <p className="text-[10px] text-[var(--text-muted)] mt-1">What this money could become</p>
+           <p className="text-[9px] sm:text-[10px] text-[var(--text-muted)] mt-1 hidden sm:block">What this money could become</p>
         </div>
 
-        <div className="bg-[var(--bg-card)] border border-[var(--border)] p-5 rounded-2xl relative overflow-hidden group hover:border-[var(--text-muted)] transition-colors">
-           <div className="flex justify-between items-start mb-2">
-              <p className="text-[var(--text-muted)] text-[10px] font-bold uppercase tracking-wider">Total Profit Missed</p>
-              <TrendingDown className="w-4 h-4 text-slate-700" />
+        <div className="bg-[var(--bg-card)] border border-[var(--border)] p-3 sm:p-5 rounded-xl sm:rounded-2xl relative overflow-hidden group hover:border-[var(--text-muted)] transition-colors">
+           <div className="flex justify-between items-start mb-1 sm:mb-2">
+              <p className="text-[var(--text-muted)] text-[9px] sm:text-[10px] font-bold uppercase tracking-wider">Profit Missed</p>
+              <TrendingDown className="w-3 h-3 sm:w-4 sm:h-4 text-slate-700" />
            </div>
-          <p className={`font-bold text-[var(--text-main)] tracking-tight ${getValueSizeClass(results.totalProfitMissed)}`}>
+          <p className={`font-bold text-[var(--text-main)] tracking-tight text-lg sm:text-2xl lg:${getValueSizeClass(results.totalProfitMissed)}`}>
             <AnimatedCounter value={results.totalProfitMissed} />
           </p>
-           <p className="text-[10px] text-[var(--text-muted)] mt-1">The gap between spending and investing</p>
+           <p className="text-[9px] sm:text-[10px] text-[var(--text-muted)] mt-1 hidden sm:block">The gap between spending and investing</p>
         </div>
 
-        <div className="bg-[var(--bg-card)] border border-[var(--border)] p-5 rounded-2xl relative overflow-hidden group hover:border-[var(--primary)] transition-colors shadow-[0_0_20px_var(--chart-gradient-end)]">
-           <div className="flex justify-between items-start mb-2">
-              <p className="text-[var(--text-muted)] text-[10px] font-bold uppercase tracking-wider">Final Portfolio Value</p>
-              <TrendingUp className="w-4 h-4 text-[var(--primary)]" />
+        <div className="bg-[var(--bg-card)] border border-[var(--border)] p-3 sm:p-5 rounded-xl sm:rounded-2xl relative overflow-hidden group hover:border-[var(--primary)] transition-colors shadow-[0_0_20px_var(--chart-gradient-end)]">
+           <div className="flex justify-between items-start mb-1 sm:mb-2">
+              <p className="text-[var(--text-muted)] text-[9px] sm:text-[10px] font-bold uppercase tracking-wider">Final Portfolio</p>
+              <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4 text-[var(--primary)]" />
            </div>
-          <p className={`font-bold text-[var(--primary)] tracking-tight ${getValueSizeClass(results.potentialValueUnlocked)}`}>
+          <p className={`font-bold text-[var(--primary)] tracking-tight text-lg sm:text-2xl lg:${getValueSizeClass(results.potentialValueUnlocked)}`}>
             <AnimatedCounter value={results.potentialValueUnlocked} />
           </p>
-           <p className="text-[10px] text-[var(--text-muted)] mt-1">Compound growth result</p>
+           <p className="text-[9px] sm:text-[10px] text-[var(--text-muted)] mt-1 hidden sm:block">Compound growth result</p>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-8 mb-6 sm:mb-8">
         {/* Chart Section */}
-        <div className="lg:col-span-2 bg-[var(--bg-card)] border border-[var(--border)] p-4 rounded-2xl">
-          <div className="mb-4 pl-2">
-            <h3 className="text-xs font-bold text-[var(--text-main)] uppercase tracking-wider">Compound Loss vs Linear Spend</h3>
+        <div className="lg:col-span-2 bg-[var(--bg-card)] border border-[var(--border)] p-3 sm:p-4 rounded-xl sm:rounded-2xl">
+          <div className="mb-3 sm:mb-4 pl-1 sm:pl-2">
+            <h3 className="text-[10px] sm:text-xs font-bold text-[var(--text-main)] uppercase tracking-wider">Compound Loss vs Linear Spend</h3>
           </div>
           <ResultsChart data={results.chartData} theme={theme} />
         </div>
 
         {/* Narrative / Sage Section */}
         <div className="lg:col-span-1 flex flex-col gap-4">
-          <div className="bg-[var(--bg-card)] border border-[var(--border)] p-5 rounded-2xl flex-1">
-             <div className="flex items-center gap-2 mb-3">
+          <div className="bg-[var(--bg-card)] border border-[var(--border)] p-4 sm:p-5 rounded-xl sm:rounded-2xl flex-1">
+             <div className="flex items-center gap-2 mb-2 sm:mb-3">
               <Lightbulb className="w-4 h-4 text-[var(--primary)]" />
               <h3 className="text-sm font-bold text-[var(--text-main)]">Reality Check</h3>
             </div>
             
-            <div className="text-[var(--text-muted)] text-sm leading-relaxed space-y-3">
+            <div className="text-[var(--text-muted)] text-xs sm:text-sm leading-relaxed space-y-2 sm:space-y-3">
                <p>
                   You're currently spending <span className="text-[var(--text-main)] font-bold">{formatCurrency(results.totalMonthlyContribution)}/mo</span> on <span className="text-[var(--text-main)] italic">{results.expenseSummary}</span>.
                </p>
                <p>
-                 If you invested that in <span className={`font-bold ${comparisonColor}`}>{comparisonName}</span> instead, you'd have an extra <span className="text-[var(--primary)] font-bold text-base"><AnimatedCounter value={results.totalProfitMissed} /></span> in your pocket after {horizon} years.
+                 If you invested that in <span className={`font-bold ${comparisonColor}`}>{comparisonName}</span> instead, you'd have an extra <span className="text-[var(--primary)] font-bold text-sm sm:text-base"><AnimatedCounter value={results.totalProfitMissed} /></span> in your pocket after {horizon} years.
                </p>
             </div>
 
-            <div className="mt-4 pt-3 border-t border-[var(--border)]">
-                <p className="text-[10px] text-[var(--text-muted)] italic">
+            <div className="mt-3 sm:mt-4 pt-2 sm:pt-3 border-t border-[var(--border)]">
+                <p className="text-[9px] sm:text-[10px] text-[var(--text-muted)] italic">
                 "The best time to plant a tree was 20 years ago. The second best time is now."
               </p>
             </div>
@@ -463,7 +461,7 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({
       </div>
 
       {/* Alternative Visualizations + Methodology */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-8 items-stretch">
          {/* Left Column: Variable height based on content */}
          <OpportunityCostSection totalValue={results.potentialValueUnlocked} />
          

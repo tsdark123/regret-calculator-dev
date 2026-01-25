@@ -11,20 +11,13 @@ interface ProDashboardProps {
 
 export const ProDashboard: React.FC<ProDashboardProps> = ({ results, assumptions, theme }) => {
   return (
-    <div className="w-full pb-12">
-      {/* Mobile Restriction Message */}
-      <div className="md:hidden text-center py-8">
-        <p className="text-[var(--text-muted)] text-sm">
-          Pro Dashboard is available on desktop only.
-        </p>
-      </div>
-      
-      {/* Desktop Layout - Equal 50/50 Split Centered */}
-      <div className="hidden md:flex justify-center gap-6 max-w-7xl mx-auto">
-        <div className="w-full max-w-[500px]">
+    <div className="w-full pb-8 md:pb-12">
+      {/* Responsive Layout - Vertical stack on mobile, horizontal on desktop */}
+      <div className="flex flex-col md:flex-row justify-center gap-4 md:gap-6 max-w-7xl mx-auto px-0 md:px-0">
+        <div className="w-full md:max-w-[500px]">
           <FireProjection results={results} theme={theme} />
         </div>
-        <div className="w-full max-w-[500px]">
+        <div className="w-full md:max-w-[500px]">
           <ComparisonBattle results={results} assumptions={assumptions} theme={theme} />
         </div>
       </div>
