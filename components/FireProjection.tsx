@@ -1,7 +1,26 @@
 import React, { useState, useMemo } from 'react';
-import { Flame, HelpCircle, Zap } from 'lucide-react';
+import { Flame, HelpCircle, Zap, ChevronDown } from 'lucide-react';
 import { CalculationResult, Theme } from '../types';
 import { formatCurrency } from '../utils/financials';
+
+// Format currency with k/M abbreviations for compact display
+const formatCompactCurrency = (value: number): string => {
+  if (value >= 1000000) {
+    return `$${(value / 1000000).toFixed(2).replace(/\.?0+$/, '')}M`;
+  } else if (value >= 1000) {
+    return `$${(value / 1000).toFixed(0)}k`;
+  }
+  return `$${value.toFixed(0)}`;
+};
+
+// 2026 Investment Strategy Options with Real Return Values
+const INVESTMENT_STRATEGIES = [
+  { id: 'roth', name: 'Aggressive Roth IRA', realReturn: 7.4, color: '#10b981' },
+  { id: 'sp500', name: 'S&P 500 Index', realReturn: 5.5, color: '#6366f1' },
+  { id: '401k', name: 'Standard 401(k)', realReturn: 4.2, color: '#8b5cf6' },
+  { id: 'tiaa', name: 'TIAA-CREF / Pension', realReturn: 3.5, color: '#f59e0b' },
+  { id: 'hysa', name: 'High-Yield Savings', realReturn: 1.2, color: '#64748b' },
+];
 
 interface FireProjectionProps {
   results: CalculationResult;
@@ -76,11 +95,13 @@ const calculateFIProgress = (params: FIParams, fiTarget: number): number => {
 // Radial FI Progress Chart
 interface FIRadialChartProps {
   progress: number;
-  yearsToFreedom: number;
+  calculatedYears: number;
+  isUnreachable: boolean;
   regretInjected: boolean;
+  strategyColor: string;
 }
 
-function FIRadialChart({ progress, yearsToFreedom, regretInjected }: FIRadialChartProps) {
+function FIRadialChart({ progress, calculatedYears, isUnreachable, regretInjected, strategyColor }: FIRadialChartProps) {
   const size = 200;
   const center = size / 2;
   const strokeWidth = 16;
@@ -88,6 +109,11 @@ function FIRadialChart({ progress, yearsToFreedom, regretInjected }: FIRadialCha
   const circumference = 2 * Math.PI * radius;
   const progressClamped = Math.min(100, Math.max(0, progress));
   const strokeDashoffset = circumference * (1 - progressClamped / 100);
+
+  // Format the display value
+  const displayValue = isUnreachable 
+    ? '99+' 
+    : calculatedYears.toFixed(1);
 
   return (
     <div className="relative flex items-center justify-center py-4">
@@ -108,7 +134,7 @@ function FIRadialChart({ progress, yearsToFreedom, regretInjected }: FIRadialCha
           cy={center}
           r={radius}
           fill="none"
-          stroke={regretInjected ? '#10b981' : 'var(--primary)'}
+          stroke={regretInjected ? '#10b981' : strategyColor}
           strokeWidth={strokeWidth}
           strokeLinecap="round"
           strokeDasharray={circumference}
@@ -135,12 +161,12 @@ function FIRadialChart({ progress, yearsToFreedom, regretInjected }: FIRadialCha
       {/* Center content */}
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         <span className={`text-4xl font-bold transition-colors duration-300 ${
-          regretInjected ? 'text-emerald-400' : 'text-[var(--text-main)]'
+          regretInjected ? 'text-emerald-400' : isUnreachable ? 'text-amber-400' : 'text-[var(--text-main)]'
         }`}>
-          {yearsToFreedom === Infinity ? '∞' : yearsToFreedom.toFixed(1)}
+          {displayValue}
         </span>
-        <span className="text-xs text-[var(--text-muted)] uppercase tracking-wider mt-1">
-          Years to Freedom
+        <span className="text-xs text-[var(--text-muted)] uppercase tracking-wider mt-1 text-center px-4">
+          {isUnreachable ? 'Increase Savings' : 'Years to hit $1M'}
         </span>
       </div>
     </div>
@@ -198,13 +224,16 @@ export const FireProjection: React.FC<FireProjectionProps> = ({ results, theme }
   const [targetAge, setTargetAge] = useState(55);
   const [monthlyContribution, setMonthlyContribution] = useState(500);
   
+  // Investment strategy state
+  const [selectedStrategy, setSelectedStrategy] = useState(INVESTMENT_STRATEGIES[1]); // Default to S&P 500
+  const [isStrategyOpen, setIsStrategyOpen] = useState(false);
+  
   // Regret injection toggle
   const [regretInjected, setRegretInjected] = useState(false);
   
-  // Constants for FI calculation
-  const annualReturn = 10; // 10% nominal
-  const inflationRate = 3; // 3% inflation
-  const fiTarget = 1000000; // $1M FI target (25x $40k annual spend)
+  // Constants for FI calculation - using selected strategy's real return
+  const realReturn = selectedStrategy.realReturn; // Already inflation-adjusted
+  const fiTarget = 1000000; // $1M FI target
   
   // Get the regret value from results (totalWasted = potentialValueUnlocked)
   const totalWasted = results.potentialValueUnlocked;
@@ -212,89 +241,230 @@ export const FireProjection: React.FC<FireProjectionProps> = ({ results, theme }
   // Calculate principal: base is 0, add regret if injected
   const currentPrincipal = regretInjected ? totalWasted : 0;
   
-  // FI Parameters
-  const fiParams: FIParams = useMemo(() => ({
-    currentAge,
-    targetAge,
-    monthlyContribution,
-    currentPrincipal,
-    annualReturn,
-    inflationRate,
-  }), [currentAge, targetAge, monthlyContribution, currentPrincipal]);
+  // Desired years (user's target timeline)
+  const desiredYears = useMemo(() => {
+    return Math.max(0, targetAge - currentAge);
+  }, [targetAge, currentAge]);
+
+  // Calculate TIME TO REACH $1M using the formula:
+  // n = log((FV * r / PMT) + 1) / log(1 + r)
+  // This solves for the number of periods needed to reach FV given PMT and r
+  const calculatedYearsTo1M = useMemo(() => {
+    // Monthly rate from annual real return
+    const monthlyRate = Math.pow(1 + realReturn / 100, 1 / 12) - 1;
+    
+    // If we have starting principal, we need to adjust the formula
+    // FV = PV(1+r)^n + PMT * ((1+r)^n - 1) / r
+    // This is more complex, so we use iterative approach for accuracy
+    
+    if (monthlyRate <= 0) {
+      // If no growth, simple division
+      if (monthlyContribution <= 0) return Infinity;
+      const monthsNeeded = (fiTarget - currentPrincipal) / monthlyContribution;
+      return monthsNeeded > 0 ? monthsNeeded / 12 : 0;
+    }
+    
+    if (monthlyContribution <= 0 && currentPrincipal <= 0) {
+      return Infinity;
+    }
+    
+    // For pure PMT (no principal), use closed-form formula:
+    // n = log((FV * r / PMT) + 1) / log(1 + r)
+    if (currentPrincipal === 0) {
+      const n = Math.log((fiTarget * monthlyRate / monthlyContribution) + 1) / Math.log(1 + monthlyRate);
+      return n / 12; // Convert months to years
+    }
+    
+    // With principal, iterate to find months needed
+    let months = 0;
+    let balance = currentPrincipal;
+    const maxMonths = 100 * 12; // Cap at 100 years
+    
+    while (balance < fiTarget && months < maxMonths) {
+      balance = balance * (1 + monthlyRate) + monthlyContribution;
+      months++;
+    }
+    
+    return months >= maxMonths ? Infinity : months / 12;
+  }, [monthlyContribution, realReturn, currentPrincipal, fiTarget]);
+
+  // Safety check: is the goal unreachable (>100 years)?
+  const isUnreachable = calculatedYearsTo1M === Infinity || calculatedYearsTo1M > 99;
+
+  // Calculate projected portfolio value at TARGET AGE (desired timeline)
+  // This shows what they'll actually have at their desired retirement age
+  const projectedPortfolio = useMemo(() => {
+    const monthlyRate = Math.pow(1 + realReturn / 100, 1 / 12) - 1;
+    const months = desiredYears * 12;
+    
+    if (monthlyRate <= 0 || months === 0) return currentPrincipal;
+    
+    // Future value of monthly contributions
+    const fvContributions = monthlyContribution * ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate);
+    // Future value of current principal
+    const fvPrincipal = currentPrincipal * Math.pow(1 + monthlyRate, months);
+    
+    return fvContributions + fvPrincipal;
+  }, [monthlyContribution, realReturn, desiredYears, currentPrincipal]);
+
+  // Progress ring: Desired Years / Calculated Years to $1M
+  // 100% = on track or ahead, <100% = behind schedule
+  const timelineProgress = useMemo(() => {
+    if (isUnreachable) return 0;
+    if (calculatedYearsTo1M <= 0) return 100;
+    // If calculated time <= desired time, they're on track (100%)
+    // If calculated time > desired time, show the ratio
+    const ratio = (desiredYears / calculatedYearsTo1M) * 100;
+    return Math.min(100, Math.max(0, ratio));
+  }, [desiredYears, calculatedYearsTo1M, isUnreachable]);
   
-  // Calculate years to freedom and progress
-  const yearsToFreedom = useMemo(() => 
-    calculateYearsToFI(fiParams, fiTarget), 
-    [fiParams]
-  );
+  // Calculate the boost from regret injection
+  const calculatedYearsWithoutRegret = useMemo(() => {
+    const monthlyRate = Math.pow(1 + realReturn / 100, 1 / 12) - 1;
+    if (monthlyRate <= 0 || monthlyContribution <= 0) return Infinity;
+    const n = Math.log((fiTarget * monthlyRate / monthlyContribution) + 1) / Math.log(1 + monthlyRate);
+    return n / 12;
+  }, [monthlyContribution, realReturn, fiTarget]);
   
-  const fiProgress = useMemo(() => 
-    calculateFIProgress(fiParams, fiTarget), 
-    [fiParams]
-  );
-  
-  // Calculate the "saved" years when regret is injected
-  const baseYears = useMemo(() => {
-    const baseParams = { ...fiParams, currentPrincipal: 0 };
-    return calculateYearsToFI(baseParams, fiTarget);
-  }, [fiParams]);
-  
-  const yearsSaved = regretInjected ? baseYears - yearsToFreedom : 0;
+  const yearsSaved = regretInjected && !isUnreachable 
+    ? Math.max(0, calculatedYearsWithoutRegret - calculatedYearsTo1M) 
+    : 0;
 
   return (
     <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl p-6 h-full flex flex-col">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
+          {/* Info tooltip - Mobile: before title */}
+          <div className="relative group sm:hidden">
+            <HelpCircle className="w-4 h-4 text-[var(--text-muted)] cursor-help opacity-60 hover:opacity-100 transition-opacity" />
+            <div className="absolute left-0 top-full mt-2 px-3 py-3 
+                          bg-[var(--bg-card)] border border-[var(--border)] rounded-lg
+                          text-xs text-[var(--text-muted)] w-[200px] leading-relaxed
+                          opacity-0 pointer-events-none group-hover:opacity-100 
+                          transition-opacity duration-200 z-50 shadow-xl">
+              This calculator shows how redirecting your regretful spending into investments could accelerate your path to financial independence.
+            </div>
+          </div>
           <div className="p-2 rounded-lg bg-[var(--primary)]/10">
             <Flame className="w-5 h-5 text-[var(--primary)]" />
           </div>
           <h3 className="text-xl font-bold text-[var(--text-main)] tracking-tight">
             Retirement Freedom Bridge
           </h3>
-          <div className="relative group">
+          {/* Info tooltip - Desktop: after title */}
+          <div className="relative group hidden sm:block">
             <HelpCircle className="w-4 h-4 text-[var(--text-muted)] cursor-help opacity-60 hover:opacity-100 transition-opacity" />
-            <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-3 py-2 
+            <div className="absolute left-0 top-full mt-2 px-3 py-3 
                           bg-[var(--bg-card)] border border-[var(--border)] rounded-lg
-                          text-xs text-[var(--text-muted)] whitespace-nowrap
+                          text-xs text-[var(--text-muted)] w-[320px] leading-relaxed
                           opacity-0 pointer-events-none group-hover:opacity-100 
-                          transition-opacity duration-200 z-50 shadow-lg">
-              See how recycling your regretful spending accelerates financial freedom.
+                          transition-opacity duration-200 z-50 shadow-xl">
+              This calculator shows how redirecting your regretful spending into investments could accelerate your path to financial independence.
             </div>
           </div>
         </div>
       </div>
 
-      {/* Primary Stat Display */}
-      <div className="flex gap-8 mb-2">
+      {/* Portfolio Target & Strategy Row */}
+      <div className="flex items-start justify-between gap-4 mb-4">
+        {/* Portfolio Target - Left */}
         <div>
-          <div className="flex items-baseline">
-            <span className={`text-5xl font-bold leading-none transition-colors duration-300 ${
-              regretInjected ? 'text-emerald-400' : 'text-[var(--text-main)]'
+          <p className="text-xs text-[var(--text-muted)] uppercase tracking-wider mb-1">Portfolio Target</p>
+          <div className="flex items-baseline gap-1">
+            <span className={`text-xl sm:text-2xl font-bold transition-colors duration-300 ${
+              regretInjected ? 'text-emerald-400' : 'text-[var(--primary)]'
             }`}>
-              {yearsToFreedom === Infinity ? '∞' : yearsToFreedom.toFixed(1)}
+              {formatCompactCurrency(projectedPortfolio)}
             </span>
-            <span className="text-xl text-[var(--text-muted)] ml-1">yrs</span>
+            <span className="text-sm text-[var(--text-muted)]">/</span>
+            <span className="text-xl sm:text-2xl font-bold text-[var(--text-main)]">
+              {formatCompactCurrency(fiTarget)}
+            </span>
           </div>
-          <p className="text-sm text-[var(--text-muted)] mt-1">Years to Freedom</p>
         </div>
-        <div>
-          <div className="flex items-baseline">
-            <span className="text-5xl font-bold text-[var(--text-main)] leading-none">
-              {fiProgress.toFixed(0)}
+
+        {/* Investment Strategy Dropdown - Right */}
+        <div className="relative">
+          <p className="text-xs text-[var(--text-muted)] uppercase tracking-wider mb-1 flex items-center gap-1">
+            Strategy
+            <div className="relative group">
+              <HelpCircle className="w-3 h-3 text-[var(--text-muted)] cursor-help opacity-60 hover:opacity-100" />
+              <div className="absolute right-0 top-full mt-1 px-2 py-2 
+                            bg-[var(--bg-card)] border border-[var(--border)] rounded-lg
+                            text-xs text-[var(--text-muted)] w-[180px] sm:w-[220px] leading-relaxed
+                            opacity-0 pointer-events-none group-hover:opacity-100 
+                            transition-opacity duration-200 z-50 shadow-xl">
+                We use 2026 Capital Markets forecasts to ensure your target maintains today's buying power.
+              </div>
+            </div>
+          </p>
+          <button
+            onClick={() => setIsStrategyOpen(!isStrategyOpen)}
+            className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-[var(--bg-input)] border border-[var(--border)] hover:border-[var(--primary)]/30 transition-colors"
+          >
+            <span 
+              className="w-2 h-2 rounded-full"
+              style={{ backgroundColor: selectedStrategy.color }}
+            />
+            <span className="text-xs font-medium text-[var(--text-main)] max-w-[80px] sm:max-w-none truncate">
+              {selectedStrategy.name}
             </span>
-            <span className="text-xl text-[var(--text-muted)] ml-0.5">%</span>
+            <ChevronDown className={`w-3 h-3 text-[var(--text-muted)] transition-transform ${
+              isStrategyOpen ? 'rotate-180' : ''
+            }`} />
+          </button>
+          
+          {/* Strategy Dropdown Menu - Smooth Animation */}
+          <div 
+            className={`absolute right-0 top-full mt-1 z-50 min-w-[160px] 
+                       bg-[var(--bg-card)] border border-[var(--border)] rounded-xl shadow-2xl overflow-hidden
+                       transition-all duration-200 origin-top
+                       ${isStrategyOpen 
+                         ? 'opacity-100 scale-y-100 translate-y-0' 
+                         : 'opacity-0 scale-y-95 -translate-y-1 pointer-events-none'
+                       }`}
+          >
+            <div className="p-1">
+              {INVESTMENT_STRATEGIES.map((strategy) => (
+                <button
+                  key={strategy.id}
+                  onClick={() => {
+                    setSelectedStrategy(strategy);
+                    setIsStrategyOpen(false);
+                  }}
+                  className={`w-full flex items-center gap-2 px-3 py-2 text-left rounded-lg transition-colors duration-150 ${
+                    selectedStrategy.id === strategy.id ? 'bg-[var(--primary)]/10' : 'hover:bg-[var(--bg-hover)]'
+                  }`}
+                >
+                  <span 
+                    className="w-2 h-2 rounded-full"
+                    style={{ backgroundColor: strategy.color }}
+                  />
+                  <div className="flex-1">
+                    <span className="text-xs font-medium text-[var(--text-main)] block">{strategy.name}</span>
+                    <span className="text-[10px] text-[var(--text-muted)]">{strategy.realReturn}% real</span>
+                  </div>
+                </button>
+              ))}
+            </div>
           </div>
-          <p className="text-sm text-[var(--text-muted)] mt-1">FI Progress</p>
         </div>
       </div>
+
+      {/* Inflation Assumption Note */}
+      <p className="text-[10px] text-[var(--text-muted)] mb-2 italic">
+        Assumed inflation: 3.0% (Real return = Nominal − Inflation)
+      </p>
 
       {/* Radial Chart */}
       <div className="flex justify-center mb-2">
         <FIRadialChart 
-          progress={fiProgress} 
-          yearsToFreedom={yearsToFreedom}
+          progress={timelineProgress} 
+          calculatedYears={calculatedYearsTo1M}
+          isUnreachable={isUnreachable}
           regretInjected={regretInjected}
+          strategyColor={selectedStrategy.color}
         />
       </div>
 

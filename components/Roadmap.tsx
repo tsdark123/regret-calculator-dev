@@ -31,6 +31,17 @@ const CustomStyles = () => (
     .animate-sub-bounce {
       animation: sub-bounce 1.5s infinite;
     }
+    @keyframes gentle-bounce {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(3px);
+      }
+    }
+    .animate-gentle-bounce {
+      animation: gentle-bounce 2s ease-in-out infinite;
+    }
     @keyframes typing-dot {
       0%, 60%, 100% {
         transform: translateY(0);
@@ -326,15 +337,22 @@ export const Roadmap: React.FC = () => {
 
           {/* Right Icons */}
           <div className="flex items-center gap-2 lg:gap-5 text-[var(--text-muted)]">
-            {/* Mobile: Fixed down arrow button, Desktop: Search icon */}
-            <div className="lg:hidden">
+            {/* Down arrow button - visible on both mobile and desktop */}
+            <div className="relative group">
               <button
                 onClick={scrollToNextSection}
-                className="p-2 bg-[var(--bg-card)] border border-[var(--border)] rounded-full shadow-sm hover:border-[var(--primary)] transition-colors group cursor-pointer animate-[flashRing_1.5s_ease-in-out_infinite]"
-                title="Jump to latest"
+                className="p-2 bg-[var(--bg-card)] border border-[var(--border)] rounded-full shadow-sm hover:border-[var(--primary)] transition-colors cursor-pointer animate-[flashRing_1.5s_ease-in-out_infinite] lg:animate-gentle-bounce"
               >
-                <ChevronDown className="w-4 h-4 text-[var(--text-muted)] group-hover:text-[var(--primary)]" />
+                <ChevronDown className="w-4 h-4 lg:w-5 lg:h-5 text-[var(--text-muted)] group-hover:text-[var(--primary)]" />
               </button>
+              {/* Custom Tooltip */}
+              <div className="absolute right-0 top-full mt-2 px-3 py-2 
+                            bg-[var(--bg-card)] border border-[var(--border)] rounded-lg
+                            text-xs text-[var(--text-muted)] whitespace-nowrap
+                            opacity-0 pointer-events-none group-hover:opacity-100 
+                            transition-opacity duration-200 z-50 shadow-xl">
+                Jump to latest
+              </div>
             </div>
             <Search className="hidden lg:block w-6 h-6 cursor-pointer hover:text-[var(--text-main)] transition-colors" />
             <MoreVertical className="w-6 h-6 cursor-pointer hover:text-[var(--text-main)] transition-colors" />

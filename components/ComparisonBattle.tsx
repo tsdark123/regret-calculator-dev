@@ -176,21 +176,32 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
       {/* Header - Matching Reference Style */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
+          {/* Info tooltip - Mobile: before title */}
+          <div className="relative group sm:hidden">
+            <HelpCircle className="w-4 h-4 text-[var(--text-muted)] cursor-help opacity-60 hover:opacity-100 transition-opacity" />
+            <div className="absolute left-0 top-full mt-2 px-3 py-3 
+                          bg-[var(--bg-card)] border border-[var(--border)] rounded-lg
+                          text-xs text-[var(--text-muted)] w-[200px] leading-relaxed
+                          opacity-0 pointer-events-none group-hover:opacity-100 
+                          transition-opacity duration-200 z-50 shadow-xl">
+              This chart shows "opportunity cost." It compares how much money you would have in {assumptions.timeHorizonYears} years if you invested the cost of these habits into the market instead of spending it.
+            </div>
+          </div>
           <div className="p-2 rounded-lg bg-[var(--primary)]/10">
             <Swords className="w-5 h-5 text-[var(--primary)]" />
           </div>
           <h3 className="text-xl font-bold text-[var(--text-main)] tracking-tight">
             Head-to-Head Battle
           </h3>
-          {/* Info tooltip */}
-          <div className="relative group">
+          {/* Info tooltip - Desktop: after title */}
+          <div className="relative group hidden sm:block">
             <HelpCircle className="w-4 h-4 text-[var(--text-muted)] cursor-help opacity-60 hover:opacity-100 transition-opacity" />
-            <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-3 py-2 
+            <div className="absolute left-0 top-full mt-2 px-3 py-3 
                           bg-[var(--bg-card)] border border-[var(--border)] rounded-lg
-                          text-xs text-[var(--text-muted)] whitespace-nowrap
+                          text-xs text-[var(--text-muted)] w-[320px] leading-relaxed
                           opacity-0 pointer-events-none group-hover:opacity-100 
-                          transition-opacity duration-200 z-50 shadow-lg">
-              Compare your regrets against another habit to see which costs more over time.
+                          transition-opacity duration-200 z-50 shadow-xl">
+              This chart shows "opportunity cost." It compares how much money you would have in {assumptions.timeHorizonYears} years if you invested the cost of these habits into the market instead of spending it.
             </div>
           </div>
         </div>
@@ -199,12 +210,9 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
       {/* Status Badge */}
       <div className="flex items-center gap-3 mb-4">
         <span 
-          className="px-3 py-1 rounded-full text-xs font-medium bg-transparent border border-[var(--border)]"
-          style={{ 
-            color: originalIsDeadlier ? 'var(--primary)' : selectedChallenger.color
-          }}
+          className="px-3 py-1 rounded-full text-xs font-medium bg-transparent border border-[var(--border)] text-[var(--text-muted)]"
         >
-          {deadlierName} {originalIsDeadlier ? 'is' : (selectedChallenger.isPlural ? 'are' : 'is')} the deadlier habit
+          Compare the future wealth lost by choosing one habit over another
         </span>
       </div>
 
@@ -236,7 +244,7 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
               style={{ color: originalIsDeadlier ? 'var(--primary)' : selectedChallenger.color }}
             >{regretMultiplier}x</span>
             <span className="text-xs text-[var(--text-muted)]">
-              {parseFloat(regretMultiplier as string) >= 1 ? 'more expensive' : 'as expensive'}
+              {parseFloat(regretMultiplier as string) >= 1 ? 'greater future loss' : 'future loss'}
             </span>
           </div>
         </div>

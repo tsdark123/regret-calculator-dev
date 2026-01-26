@@ -260,6 +260,13 @@ function MainApp() {
       return;
     }
 
+    // Desktop: If on /tools or /roadmap, redirect to home
+    if (currentPath === '/tools' || currentPath.startsWith('/tools') || 
+        currentPath === '/roadmap' || currentPath.startsWith('/roadmap')) {
+        window.location.href = '/';
+        return;
+    }
+
     // Desktop: Scroll to input section
     setActiveTab('calculate');
     const scrollOffset = 180;
@@ -431,6 +438,12 @@ function MainApp() {
   const handleNavigate = (tab: NavTab) => {
       setActiveTab(tab);
       if (tab === 'home') {
+          // Desktop: If on /tools or /roadmap, redirect to home
+          if (window.innerWidth >= 1024 && (currentPath === '/tools' || currentPath.startsWith('/tools') || 
+              currentPath === '/roadmap' || currentPath.startsWith('/roadmap'))) {
+              window.location.href = '/';
+              return;
+          }
           // Mobile: Navigate back to home route
           if (window.innerWidth < 1024) {
               window.history.pushState({}, '', '/');
@@ -446,19 +459,25 @@ function MainApp() {
       } else if (tab === 'calculate') {
           handleStart();
       } else if (tab === 'tools') {
-          // Mobile: Navigate to /tools route
-          if (window.innerWidth < 1024) {
-              window.history.pushState({}, '', '/tools');
-              setCurrentPath('/tools');
+          // Desktop: Full page redirect for performance
+          if (window.innerWidth >= 1024) {
+              window.location.href = '/tools';
+              return;
           }
+          // Mobile: Navigate to /tools route
+          window.history.pushState({}, '', '/tools');
+          setCurrentPath('/tools');
           setViewMode('tools');
           window.scrollTo({ top: 0, behavior: 'smooth' });
       } else if (tab === 'roadmap') {
-          // Mobile: Navigate to /roadmap route
-          if (window.innerWidth < 1024) {
-              window.history.pushState({}, '', '/roadmap');
-              setCurrentPath('/roadmap');
+          // Desktop: Full page redirect for performance
+          if (window.innerWidth >= 1024) {
+              window.location.href = '/roadmap';
+              return;
           }
+          // Mobile: Navigate to /roadmap route
+          window.history.pushState({}, '', '/roadmap');
+          setCurrentPath('/roadmap');
           setViewMode('roadmap'); 
           window.scrollTo({ top: 0, behavior: 'smooth' });
       }
