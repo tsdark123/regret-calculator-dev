@@ -13,6 +13,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Info,
+  Smartphone,
+  X,
 } from "lucide-react";
 
 // --- Custom Styles for Subtle Bounce & Typing Dots ---
@@ -148,6 +150,19 @@ const DatePill = ({ date }: { date: string }) => (
 // --- Version Data ---
 
 const versionData = {
+  "v2.0.0": {
+    version: "v2.0.0",
+    title: "Mobile & Retirement Update",
+    description: "Full mobile support, retirement planning tools, and polished interactions.",
+    details: [
+      "Retirement Freedom Bridge (Time-to-$1M Calculator)",
+      "Full Mobile Navigation & 3-Step Wizard",
+      "Sovereign Snow Particle Effect",
+      "Simplified Theme System & Smooth Animations",
+      "Head-to-Head Battle UI Polish",
+      "Investment Strategy Selector with Real Returns",
+    ],
+  },
   "v1.2.0": {
     version: "v1.2.0",
     title: "Genesis Update - V1.2.0",
@@ -158,13 +173,14 @@ const versionData = {
       "Opportunity Cost Methodology Model",
       "Interactive Theme Persistence (Local Storage)",
       "Enhanced UI Tooltips & Dynamic Arrows",
+      "Responsive Design Optimization",
     ],
   },
   "v1.0.0": {
     version: "v1.0.0",
     title: "Genesis Update",
     description: "The foundation is set. Calculate compound regret with real-time market data.",
-    details: ["V1 Regret Algorithm", "Market Data Hooks", "Compound Engine", "Latency -40%", "Dark Mode"],
+    details: ["V1 Regret Algorithm", "Market Data Hooks", "Compound Engine", "Latency -40%", "Dark Mode", "Real-Time Analytics"],
   },
 };
 
@@ -181,6 +197,22 @@ interface UpdateCardProps {
   showForwardArrow: boolean;
 }
 
+// Get icon and gradient based on version
+const getVersionStyle = (version: string) => {
+  if (version === "v2.0.0") {
+    return {
+      icon: <Smartphone className="w-10 h-10 text-white" />,
+      gradient: "from-emerald-600 via-teal-700 to-[var(--bg-card)]",
+      accent: "bg-[radial-gradient(circle_at_50%_120%,#10b981,transparent)]",
+    };
+  }
+  return {
+    icon: <Zap className="w-10 h-10 text-white" />,
+    gradient: "from-indigo-900 to-[var(--bg-card)]",
+    accent: "bg-[radial-gradient(circle_at_50%_120%,var(--primary),transparent)]",
+  };
+};
+
 const UpdateCard = ({
   versionInfo,
   onViewNotes,
@@ -188,13 +220,16 @@ const UpdateCard = ({
   onNavigateForward,
   showBackArrow,
   showForwardArrow,
-}: UpdateCardProps) => (
+}: UpdateCardProps) => {
+  const style = getVersionStyle(versionInfo.version);
+  
+  return (
   <div className="bg-[var(--bg-input)] rounded-[24px] border border-[var(--border)] overflow-hidden w-full sm:w-[360px] h-[380px] select-none shadow-lg flex-none flex flex-col hover:border-[var(--primary)] transition-all duration-300 group relative z-10">
     {/* Top Image Area */}
-    <div className="h-52 bg-gradient-to-br from-indigo-900 to-[var(--bg-card)] relative flex items-center justify-center overflow-hidden">
-      <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_50%_120%,var(--primary),transparent)]"></div>
+    <div className={`h-52 bg-gradient-to-br ${style.gradient} relative flex items-center justify-center overflow-hidden`}>
+      <div className={`absolute inset-0 opacity-30 ${style.accent}`}></div>
       <div className="w-20 h-20 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 shadow-xl z-10 group-hover:scale-110 transition-transform duration-500">
-        <Zap className="w-10 h-10 text-white" />
+        {style.icon}
       </div>
       {/* Version Tag */}
       <div className="absolute top-5 right-5 px-2.5 py-1.5 bg-black/50 backdrop-blur-sm rounded-lg text-xs font-mono text-white border border-white/10">
@@ -205,24 +240,28 @@ const UpdateCard = ({
     {/* Content Body */}
     <div className="p-6 bg-[var(--bg-card)] flex-1 flex flex-col justify-between">
       <div>
-        <h4 className="font-bold text-[var(--text-main)] text-xl mb-2 flex items-center gap-2">
-          {showBackArrow && (
+        <h4 className="font-bold text-[var(--text-main)] text-xl mb-2 flex items-center justify-between">
+          <span>{versionInfo.title}</span>
+          <div className="flex items-center gap-1">
             <button
               onClick={onNavigateBack}
-              className="p-1 -ml-1 hover:bg-[var(--bg-hover)] rounded-full transition-colors"
+              disabled={!showBackArrow}
+              className={`p-1 hover:bg-[var(--bg-hover)] rounded-full transition-colors ${
+                !showBackArrow ? 'opacity-30 cursor-not-allowed' : ''
+              }`}
             >
               <ChevronLeft className="w-5 h-5 text-[var(--text-muted)] hover:text-[var(--primary)]" />
             </button>
-          )}
-          {versionInfo.title}
-          {showForwardArrow && (
             <button
               onClick={onNavigateForward}
-              className="p-1 hover:bg-[var(--bg-hover)] rounded-full transition-colors"
+              disabled={!showForwardArrow}
+              className={`p-1 hover:bg-[var(--bg-hover)] rounded-full transition-colors ${
+                !showForwardArrow ? 'opacity-30 cursor-not-allowed' : ''
+              }`}
             >
               <ChevronRight className="w-5 h-5 text-[var(--text-muted)] hover:text-[var(--primary)]" />
             </button>
-          )}
+          </div>
         </h4>
         <p className="text-sm text-[var(--text-muted)] leading-relaxed">{versionInfo.description}</p>
       </div>
@@ -235,19 +274,31 @@ const UpdateCard = ({
       </button>
     </div>
   </div>
-);
+  );
+};
 
 interface ReleaseNotesDetailsProps {
   details: string[];
+  onClose?: () => void;
+  showCloseButton?: boolean;
+  versionTitle?: string;
 }
 
-const ReleaseNotesDetails = ({ details }: ReleaseNotesDetailsProps) => (
+const ReleaseNotesDetails = ({ details, onClose, showCloseButton, versionTitle }: ReleaseNotesDetailsProps) => (
   <div className="w-full h-full bg-[var(--bg-input)] rounded-[24px] border border-[var(--border)] p-6 shadow-lg flex flex-col">
     <h4 className="font-bold text-[var(--text-main)] mb-5 flex items-center gap-2 text-base border-b border-[var(--border)] pb-3">
       <Info className="w-5 h-5 text-[var(--primary)]" />
-      Details
+      <span className="flex-1">{versionTitle ? versionTitle : "Details"}</span>
+      {showCloseButton && onClose && (
+        <button
+          onClick={onClose}
+          className="p-1.5 hover:bg-[var(--bg-hover)] rounded-full transition-colors"
+        >
+          <X className="w-5 h-5 text-[var(--text-muted)] hover:text-[var(--primary)]" />
+        </button>
+      )}
     </h4>
-    <ul className="space-y-4">
+    <ul className="space-y-4 flex-1 overflow-y-auto">
       {details.map((item, i) => (
         <li key={i} className="flex items-center gap-3 text-sm text-[var(--text-muted)]">
           <CheckCheck className="w-4 h-4 text-[var(--primary)] flex-none" />
@@ -266,8 +317,9 @@ const ReleaseNotesDetails = ({ details }: ReleaseNotesDetailsProps) => (
 export const Roadmap: React.FC = () => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [showReleaseNotes, setShowReleaseNotes] = useState(false);
+  const [showMobileReleaseNotes, setShowMobileReleaseNotes] = useState(false);
   const [isTyping, setIsTyping] = useState(true);
-  const [currentVersion, setCurrentVersion] = useState<VersionKey>("v1.2.0");
+  const [currentVersion, setCurrentVersion] = useState<VersionKey>("v2.0.0");
 
   // Lock body scroll & typing indicator logic
   useEffect(() => {
@@ -387,26 +439,70 @@ export const Roadmap: React.FC = () => {
             timestamp="09:41"
             content={
               <div className="flex items-start">
-                {/* Primary Update Card - Scaled */}
-                <UpdateCard
-                  versionInfo={versionData[currentVersion]}
-                  onViewNotes={() => setShowReleaseNotes(!showReleaseNotes)}
-                  onNavigateBack={() => setCurrentVersion("v1.0.0")}
-                  onNavigateForward={() => setCurrentVersion("v1.2.0")}
-                  showBackArrow={currentVersion === "v1.2.0"}
-                  showForwardArrow={currentVersion === "v1.0.0"}
-                />
+                {/* Mobile: Show either UpdateCard or ReleaseNotes with animation */}
+                <div className="lg:hidden w-full">
+                  {!showMobileReleaseNotes ? (
+                    <div key="update-card" className="animate-fade-in-up" style={{ animationDuration: '0.4s' }}>
+                      <UpdateCard
+                        versionInfo={versionData[currentVersion]}
+                        onViewNotes={() => setShowMobileReleaseNotes(true)}
+                        onNavigateBack={() => {
+                          setShowMobileReleaseNotes(false);
+                          if (currentVersion === "v2.0.0") setCurrentVersion("v1.2.0");
+                          else if (currentVersion === "v1.2.0") setCurrentVersion("v1.0.0");
+                        }}
+                        onNavigateForward={() => {
+                          setShowMobileReleaseNotes(false);
+                          if (currentVersion === "v1.0.0") setCurrentVersion("v1.2.0");
+                          else if (currentVersion === "v1.2.0") setCurrentVersion("v2.0.0");
+                        }}
+                        showBackArrow={currentVersion !== "v1.0.0"}
+                        showForwardArrow={currentVersion !== "v2.0.0"}
+                      />
+                    </div>
+                  ) : (
+                    <div 
+                      key="release-notes" 
+                      className="w-full max-w-[360px] h-[380px] animate-fade-in-up" 
+                      style={{ animationDuration: '0.4s' }}
+                    >
+                      <ReleaseNotesDetails 
+                        details={versionData[currentVersion].details} 
+                        onClose={() => setShowMobileReleaseNotes(false)}
+                        showCloseButton={true}
+                        versionTitle={versionData[currentVersion].title}
+                      />
+                    </div>
+                  )}
+                </div>
 
-                {/* Animated Details Panel - Scaled */}
-                <div
-                  className={`
-                                hidden lg:block overflow-hidden transition-all duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] h-[380px]
-                                ${showReleaseNotes ? "w-[300px] opacity-100 ml-6" : "w-0 opacity-0 ml-0"}
-                            `}
-                >
-                  {/* Fixed width inner container to prevent squashing during transition */}
-                  <div className="w-[300px] h-full">
-                    <ReleaseNotesDetails details={versionData[currentVersion].details} />
+                {/* Desktop: Show UpdateCard with side panel */}
+                <div className="hidden lg:flex items-start">
+                  <UpdateCard
+                    versionInfo={versionData[currentVersion]}
+                    onViewNotes={() => setShowReleaseNotes(!showReleaseNotes)}
+                    onNavigateBack={() => {
+                      if (currentVersion === "v2.0.0") setCurrentVersion("v1.2.0");
+                      else if (currentVersion === "v1.2.0") setCurrentVersion("v1.0.0");
+                    }}
+                    onNavigateForward={() => {
+                      if (currentVersion === "v1.0.0") setCurrentVersion("v1.2.0");
+                      else if (currentVersion === "v1.2.0") setCurrentVersion("v2.0.0");
+                    }}
+                    showBackArrow={currentVersion !== "v1.0.0"}
+                    showForwardArrow={currentVersion !== "v2.0.0"}
+                  />
+
+                  {/* Animated Details Panel - Desktop only */}
+                  <div
+                    className={`
+                      overflow-hidden transition-all duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] h-[380px]
+                      ${showReleaseNotes ? "w-[300px] opacity-100 ml-6" : "w-0 opacity-0 ml-0"}
+                    `}
+                  >
+                    <div className="w-[300px] h-full">
+                      <ReleaseNotesDetails details={versionData[currentVersion].details} />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -438,13 +534,13 @@ export const Roadmap: React.FC = () => {
             <ChatBubble
               isSender={false}
               isLocked
-              content="Update 2.0: The Social Compound. Leaderboards, user profiles, and regret sharing."
+              content="Update 3.0: The Social Compound. Leaderboards, user profiles, and regret sharing."
             />
 
             <ChatBubble
               isSender={false}
               isLocked
-              content="Update 3.0: Automated Reality. Bank integration, AI suggestions, Mobile App."
+              content="Update 4.0: Automated Reality. Bank integration, AI suggestions, Mobile App."
             />
           </div>
         </div>
