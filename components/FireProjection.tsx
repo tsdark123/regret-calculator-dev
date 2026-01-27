@@ -468,6 +468,26 @@ export const FireProjection: React.FC<FireProjectionProps> = ({ results, theme }
         />
       </div>
 
+      {/* Trajectory Clarity Text */}
+      <div className="text-center mb-4 px-2">
+        {isUnreachable ? (
+          <p className="text-sm text-amber-500 font-medium">
+            At ${monthlyContribution.toLocaleString()}/mo, reaching $1M isn't feasible within your lifetime. 
+            <span className="text-[var(--text-muted)] font-normal"> Consider increasing your monthly contribution.</span>
+          </p>
+        ) : calculatedYearsTo1M <= desiredYears ? (
+          <p className="text-sm text-emerald-500 font-medium">
+            You're on track to hit $1M by age {targetAge}! 
+            <span className="text-[var(--text-muted)] font-normal"> You may even reach it {(desiredYears - calculatedYearsTo1M).toFixed(1)} years early.</span>
+          </p>
+        ) : (
+          <p className="text-sm text-[var(--text-muted)]">
+            At your current pace, you'll reach $1M <span className="text-amber-500 font-medium">{(calculatedYearsTo1M - desiredYears).toFixed(1)} years after</span> your target age of {targetAge}. 
+            <span className="opacity-80"> Increase contributions or adjust your timeline.</span>
+          </p>
+        )}
+      </div>
+
       {/* Input Sliders */}
       <div className="space-y-1 border-t border-[var(--border)] pt-4">
         <SliderInput
