@@ -284,8 +284,9 @@ interface ReleaseNotesDetailsProps {
   versionTitle?: string;
 }
 
-const ReleaseNotesDetails = ({ details, onClose, showCloseButton, versionTitle }: ReleaseNotesDetailsProps) => (
-  <div className="w-full h-full bg-[var(--bg-input)] rounded-[24px] border border-[var(--border)] p-6 shadow-lg flex flex-col">
+// Mobile version - fixed width to match update cards
+const MobileReleaseNotesDetails = ({ details, onClose, showCloseButton, versionTitle }: ReleaseNotesDetailsProps) => (
+  <div className="w-full min-w-full h-full bg-[var(--bg-input)] rounded-[24px] border border-[var(--border)] p-6 shadow-lg flex flex-col">
     <h4 className="font-bold text-[var(--text-main)] mb-5 flex items-center gap-2 text-base border-b border-[var(--border)] pb-3">
       <Info className="w-5 h-5 text-[var(--primary)]" />
       <span className="flex-1">{versionTitle ? versionTitle : "Details"}</span>
@@ -297,6 +298,27 @@ const ReleaseNotesDetails = ({ details, onClose, showCloseButton, versionTitle }
           <X className="w-5 h-5 text-[var(--text-muted)] hover:text-[var(--primary)]" />
         </button>
       )}
+    </h4>
+    <ul className="space-y-4 flex-1 overflow-y-auto">
+      {details.map((item, i) => (
+        <li key={i} className="flex items-center gap-3 text-sm text-[var(--text-muted)]">
+          <CheckCheck className="w-4 h-4 text-[var(--primary)] flex-none" />
+          {item}
+        </li>
+      ))}
+    </ul>
+    <div className="mt-auto pt-4 text-xs text-[var(--text-muted)] opacity-60 text-center font-medium">
+      Deployed successfully
+    </div>
+  </div>
+);
+
+// Desktop version - flexible width for side panel
+const DesktopReleaseNotesDetails = ({ details }: ReleaseNotesDetailsProps) => (
+  <div className="w-full h-full bg-[var(--bg-input)] rounded-[24px] border border-[var(--border)] p-6 shadow-lg flex flex-col">
+    <h4 className="font-bold text-[var(--text-main)] mb-5 flex items-center gap-2 text-base border-b border-[var(--border)] pb-3">
+      <Info className="w-5 h-5 text-[var(--primary)]" />
+      Details
     </h4>
     <ul className="space-y-4 flex-1 overflow-y-auto">
       {details.map((item, i) => (
@@ -463,10 +485,10 @@ export const Roadmap: React.FC = () => {
                   ) : (
                     <div 
                       key="release-notes" 
-                      className="w-full max-w-[360px] h-[380px] animate-fade-in-up" 
+                      className="w-full sm:w-[360px] h-[380px] animate-fade-in-up" 
                       style={{ animationDuration: '0.4s' }}
                     >
-                      <ReleaseNotesDetails 
+                      <MobileReleaseNotesDetails 
                         details={versionData[currentVersion].details} 
                         onClose={() => setShowMobileReleaseNotes(false)}
                         showCloseButton={true}
@@ -501,7 +523,7 @@ export const Roadmap: React.FC = () => {
                     `}
                   >
                     <div className="w-[300px] h-full">
-                      <ReleaseNotesDetails details={versionData[currentVersion].details} />
+                      <DesktopReleaseNotesDetails details={versionData[currentVersion].details} />
                     </div>
                   </div>
                 </div>
