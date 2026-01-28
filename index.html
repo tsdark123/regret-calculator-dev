@@ -103,10 +103,6 @@
         --chart-gradient-end: rgba(37, 99, 235, 0.05);
         --nav-active-bg: #0f172a; /* Dark background for active tab in light mode */
         --nav-active-text: #ffffff;
-        
-        /* Ocean Theme Footer Gradient */
-        --bg-footer: linear-gradient(to bottom, #f0f9ff, #dbeafe);
-        --bg-faq: #ffffff;
       }
 
       body {
@@ -115,6 +111,7 @@
         color: var(--text-main);
         overflow-x: hidden;
         min-height: 100vh;
+        min-height: 100dvh;
         transition: background-color 0.5s ease, color 0.5s ease;
         /* Disable text selection globally */
         -webkit-user-select: none;
@@ -122,6 +119,19 @@
         -ms-user-select: none;
         user-select: none;
         cursor: default;
+      }
+      
+      /* Mobile scroll lock helper - applied via JS */
+      @media (max-width: 1023px) {
+        html.scroll-locked,
+        html.scroll-locked body {
+          overflow: hidden !important;
+          position: fixed !important;
+          width: 100% !important;
+          height: 100% !important;
+          touch-action: none !important;
+          overscroll-behavior: none !important;
+        }
       }
       
       /* Re-enable text selection for inputs and textareas */

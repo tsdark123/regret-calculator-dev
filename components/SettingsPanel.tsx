@@ -145,7 +145,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
 
   return (
     <div className="w-full h-full">
-      <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-3xl p-6 shadow-2xl backdrop-blur-sm h-full flex flex-col">
+      <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl md:rounded-3xl p-[clamp(16px,_4vw,_24px)] shadow-2xl backdrop-blur-sm h-full flex flex-col">
         <div className="flex items-center gap-3 mb-6">
           {showStepNumber ? (
             <div className="w-6 h-6 rounded-full bg-[var(--primary)] bg-opacity-10 flex items-center justify-center text-[var(--primary)] font-bold text-xs ring-1 ring-[var(--primary)] ring-opacity-20">{showStepNumber}</div>
@@ -159,7 +159,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
           
           {/* Stock Selector Button */}
           <div>
-            <label className="text-sm font-medium text-[var(--text-muted)] mb-2 block">Compare Against</label>
+            <label className="text-[clamp(0.75rem,_3vw,_0.875rem)] font-medium text-[var(--text-muted)] mb-2 block">Compare Against</label>
             <button 
               onClick={onOpenStockSelector}
               className="w-full flex items-center justify-between bg-[var(--bg-hover)] border border-[var(--border)] p-3 rounded-xl hover:border-[var(--primary)] transition-all group"
@@ -185,7 +185,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
           <div>
             <div className="flex justify-between items-center mb-3">
               <div className="flex items-center gap-1.5">
-                <span className="text-sm font-medium text-[var(--text-muted)]">Expected Annual Return</span>
+                <span className="text-[clamp(0.75rem,_3vw,_0.875rem)] font-medium text-[var(--text-muted)]">Expected Annual Return</span>
                 <div className="group relative">
                   <Info className="w-3.5 h-3.5 text-[var(--text-muted)] cursor-help" />
                   <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-[var(--bg-card)] border border-[var(--border)] rounded text-xs text-[var(--text-main)] hidden group-hover:block z-10 shadow-xl">
@@ -221,7 +221,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
           <div>
             <div className="flex justify-between items-center mb-3">
               <div className="flex items-center gap-1.5">
-                <span className="text-sm font-medium text-[var(--text-muted)]">Investing Years</span>
+                <span className="text-[clamp(0.75rem,_3vw,_0.875rem)] font-medium text-[var(--text-muted)]">Investing Years</span>
                 <div className="group relative">
                   <Info className="w-3.5 h-3.5 text-[var(--text-muted)] cursor-help" />
                   <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-[var(--bg-card)] border border-[var(--border)] rounded text-xs text-[var(--text-main)] hidden group-hover:block z-10 shadow-xl">

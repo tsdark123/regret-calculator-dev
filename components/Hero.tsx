@@ -201,7 +201,7 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
   const [showTheory, setShowTheory] = useState(false);
 
   return (
-    <section className="min-h-[85vh] md:min-h-[90vh] flex flex-col items-center justify-center text-center px-4 relative overflow-hidden pt-8 md:pt-32 select-none">
+    <section className="min-h-dvh md:min-h-[90vh] flex flex-col items-center justify-center text-center px-4 relative overflow-hidden pt-8 md:pt-32 select-none">
       
       {/* --- Background Elements - Desktop only for performance --- */}
       <div className="hidden md:block">
@@ -262,69 +262,69 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
         <span className="text-[12px] text-[var(--text-muted)]">Best experience on desktop. Mobile is in beta.</span>
       </div>
 
-      <h1 className="text-[3.754rem] sm:text-8xl md:text-8xl font-bold tracking-tighter mb-4 md:mb-8 text-[var(--text-main)] drop-shadow-2xl leading-[1.1] animate-fade-in-down z-10 max-w-4xl mt-20 md:mt-0">
+      <h1 className="text-[clamp(2.5rem,_12.6vw,_3.754rem)] sm:text-8xl md:text-8xl font-bold tracking-tighter mb-4 md:mb-8 text-[var(--text-main)] drop-shadow-2xl leading-[1.1] animate-fade-in-down z-10 max-w-4xl mt-20 md:mt-0">
         Calculated Growth.<br />
         <span className="text-[var(--primary)]">Zero Regret.</span>
       </h1>
       
-      <p className="text-[1.1rem] sm:text-2xl md:text-2xl text-[var(--text-muted)] max-w-3xl mb-6 md:mb-12 leading-relaxed font-light animate-fade-in-up delay-100 opacity-0 z-10 px-4">
+      <p className="text-[clamp(0.9rem,_3.7vw,_1.1rem)] sm:text-2xl md:text-2xl text-[var(--text-muted)] max-w-3xl mb-6 md:mb-12 leading-relaxed font-light animate-fade-in-up delay-100 opacity-0 z-10 px-4">
         See how the price of inaction grows over time. <br className="hidden md:block"/>
         Input your habits to see what waiting is <span className="text-[var(--text-main)] font-medium">really</span> costing you.
       </p>
 
 
       {/* Button Cluster - Vertical list on mobile, horizontal on desktop */}
-      <div className="flex flex-col md:flex-row items-stretch md:items-center gap-3 md:gap-4 animate-fade-in-up delay-200 opacity-0 w-full max-w-md md:max-w-none justify-center mb-6 md:mb-16 z-20 px-6">
+      <div className="flex flex-col md:flex-row items-stretch md:items-center gap-3 md:gap-4 animate-fade-in-up delay-200 opacity-0 w-full max-w-[clamp(280px,_90vw,_448px)] md:max-w-none justify-center mb-6 md:mb-16 z-20 px-[clamp(12px,_4vw,_24px)] md:px-6">
          
         {/* Mobile: Vertical list of wide buttons (Learn → Calculate → Presets) */}
         <div className="flex flex-col md:hidden gap-3 w-full">
           {/* 1. Learn - How it Works */}
           <button 
             onClick={() => setShowTheory(true)}
-            className="w-full flex items-center justify-center gap-3 px-5 py-3.5 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)]/60 text-[var(--text-main)] font-semibold text-[0.95rem] hover:bg-[var(--bg-hover)] transition-all backdrop-blur-sm active:scale-[0.98] shadow-lg"
+            className="w-full flex items-center justify-center gap-3 px-[clamp(12px,_4vw,_20px)] py-[clamp(10px,_3vw,_14px)] rounded-2xl border border-[var(--border)] bg-[var(--bg-card)]/60 text-[var(--text-main)] font-semibold text-[clamp(0.8rem,_3.2vw,_0.95rem)] hover:bg-[var(--bg-hover)] transition-all backdrop-blur-sm active:scale-[0.98] shadow-lg"
           >
-            <BookOpen className="w-[1.1rem] h-[1.1rem] text-blue-400" />
+            <BookOpen className="w-[clamp(0.9rem,_3.5vw,_1.1rem)] h-[clamp(0.9rem,_3.5vw,_1.1rem)] text-blue-400" />
             <span>How it Works</span>
           </button>
 
           {/* 2. Calculate - Main CTA */}
           <button
             onClick={onStart}
-            className="group w-full flex items-center justify-center gap-3 px-5 py-3.5 font-bold text-white transition-all duration-300 bg-[var(--primary)] rounded-2xl hover:bg-[var(--primary-hover)] active:scale-[0.98] shadow-xl shadow-[var(--primary)]/25 text-[0.95rem]"
+            className="group w-full flex items-center justify-center gap-3 px-[clamp(12px,_4vw,_20px)] py-[clamp(10px,_3vw,_14px)] font-bold text-white transition-all duration-300 bg-[var(--primary)] rounded-2xl hover:bg-[var(--primary-hover)] active:scale-[0.98] shadow-xl shadow-[var(--primary)]/25 text-[clamp(0.8rem,_3.2vw,_0.95rem)]"
           >
             <span>Calculate Your Regret</span>
-            <ArrowDown className="w-[1.1rem] h-[1.1rem] group-hover:translate-y-1 transition-transform duration-300" />
+            <ArrowDown className="w-[clamp(0.9rem,_3.5vw,_1.1rem)] h-[clamp(0.9rem,_3.5vw,_1.1rem)] group-hover:translate-y-1 transition-transform duration-300" />
           </button>
 
           {/* 3. Presets - Quick Load */}
           <button 
             onClick={() => setShowPreset(true)}
-            className="w-full flex items-center justify-center gap-3 px-5 py-3.5 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)]/60 text-[var(--text-main)] font-semibold text-[0.95rem] hover:bg-[var(--bg-hover)] transition-all backdrop-blur-sm active:scale-[0.98] shadow-lg"
+            className="w-full flex items-center justify-center gap-3 px-[clamp(12px,_4vw,_20px)] py-[clamp(10px,_3vw,_14px)] rounded-2xl border border-[var(--border)] bg-[var(--bg-card)]/60 text-[var(--text-main)] font-semibold text-[clamp(0.8rem,_3.2vw,_0.95rem)] hover:bg-[var(--bg-hover)] transition-all backdrop-blur-sm active:scale-[0.98] shadow-lg"
           >
-            <Zap className="w-[1.1rem] h-[1.1rem] text-yellow-400" />
+            <Zap className="w-[clamp(0.9rem,_3.5vw,_1.1rem)] h-[clamp(0.9rem,_3.5vw,_1.1rem)] text-yellow-400" />
             <span>Quick Load Presets</span>
           </button>
 
           {/* Mobile Stats Bar */}
-          <div className="w-full mt-4 bg-[var(--bg-card)]/50 backdrop-blur-md border border-[var(--border)] rounded-2xl py-4 px-3 shadow-xl">
+          <div className="w-full mt-4 bg-[var(--bg-card)]/50 backdrop-blur-md border border-[var(--border)] rounded-2xl py-[clamp(12px,_3vw,_16px)] px-[clamp(8px,_2.5vw,_12px)] shadow-xl">
             <div className="grid grid-cols-3 gap-3">
               <div className="flex flex-col items-center justify-center">
-                <span className="text-xl font-bold text-[var(--text-main)] tracking-tight mb-1">
+                <span className="text-[clamp(1rem,_4.5vw,_1.25rem)] font-bold text-[var(--text-main)] tracking-tight mb-1">
                   <StatCounter value={decisionCount} suffix="+" />
                 </span>
-                <span className="text-[8px] text-[var(--text-muted)] font-semibold uppercase tracking-wider text-center leading-tight">Decisions Analyzed</span>
+                <span className="text-[clamp(6px,_2vw,_8px)] text-[var(--text-muted)] font-semibold uppercase tracking-wider text-center leading-tight">Decisions Analyzed</span>
               </div>
               <div className="flex flex-col items-center justify-center border-x border-white/5">
-                <span className="text-xl font-bold text-[var(--text-main)] tracking-tight mb-1">
+                <span className="text-[clamp(1rem,_4.5vw,_1.25rem)] font-bold text-[var(--text-main)] tracking-tight mb-1">
                   <StatCounter value={960} suffix="M+" />
                 </span>
-                <span className="text-[8px] text-[var(--text-muted)] font-semibold uppercase tracking-wider text-center leading-tight">Total Capital Wasted</span>
+                <span className="text-[clamp(6px,_2vw,_8px)] text-[var(--text-muted)] font-semibold uppercase tracking-wider text-center leading-tight">Total Capital Wasted</span>
               </div>
               <div className="flex flex-col items-center justify-center">
-                <span className="text-xl font-bold text-[var(--text-main)] tracking-tight mb-1">
+                <span className="text-[clamp(1rem,_4.5vw,_1.25rem)] font-bold text-[var(--text-main)] tracking-tight mb-1">
                   <StatCounter value={667} suffix="%+" />
                 </span>
-                <span className="text-[8px] text-[var(--text-muted)] font-semibold uppercase tracking-wider text-center leading-tight">Avg. Annual Yield Missed</span>
+                <span className="text-[clamp(6px,_2vw,_8px)] text-[var(--text-muted)] font-semibold uppercase tracking-wider text-center leading-tight">Avg. Annual Yield Missed</span>
               </div>
             </div>
           </div>

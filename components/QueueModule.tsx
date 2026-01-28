@@ -279,7 +279,7 @@ export const QueueModule: React.FC<QueueModuleProps> = ({
 
   return (
     <div id="queue-module" className="w-full h-full">
-      <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl md:rounded-3xl p-4 md:p-5 shadow-2xl backdrop-blur-sm relative overflow-visible h-full flex flex-col">
+      <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl md:rounded-3xl p-[clamp(12px,_3.5vw,_16px)] md:p-5 shadow-2xl backdrop-blur-sm relative overflow-visible h-full flex flex-col">
         
         {/* Header - More Compact */}
         <div className="flex items-center gap-3 mb-3 md:mb-4">
@@ -372,7 +372,7 @@ export const QueueModule: React.FC<QueueModuleProps> = ({
                   ))}
                 </div>
 
-                <div className="group flex flex-col gap-3 p-4 rounded-xl bg-[var(--bg-hover)] border border-[var(--border)] transition-all duration-200">
+                <div className="group flex flex-col gap-3 p-[clamp(12px,_3.5vw,_16px)] rounded-xl bg-[var(--bg-hover)] border border-[var(--border)] transition-all duration-200">
                   {/* Top row: Trash on left (disabled for first expense), pagination info center, placeholder right */}
                   <div className="flex items-center justify-between mb-2">
                     {/* Trash button - disabled/hidden for first expense (index 0) */}

@@ -378,7 +378,7 @@ export const Roadmap: React.FC = () => {
   };
 
   return (
-    <div className="w-full h-full flex items-center justify-center px-4 py-10 md:py-14">
+    <div className="w-full h-full flex items-center justify-center px-[clamp(8px,_3vw,_16px)] py-10 md:py-14">
       <RoadmapBackground />
       <CustomStyles />
 
@@ -387,23 +387,23 @@ export const Roadmap: React.FC = () => {
       */}
       <div className="w-full max-w-5xl h-full bg-[var(--bg-card)] border border-[var(--border)] rounded-[40px] shadow-2xl overflow-hidden flex flex-col animate-fade-in-up relative">
         {/* Header - Scaled Up */}
-        <div className="h-24 bg-[var(--bg-card)] border-b border-[var(--border)] flex items-center justify-between px-8 shrink-0 z-20 relative">
-          <div className="flex items-center gap-5">
+        <div className="h-24 bg-[var(--bg-card)] border-b border-[var(--border)] flex items-center justify-between px-[clamp(16px,_5vw,_32px)] shrink-0 z-20 relative">
+          <div className="flex items-center gap-[clamp(12px,_3vw,_20px)]">
             {/* Back Button Integrated */}
             <div className="p-2.5 -ml-2 hover:bg-[var(--bg-hover)] rounded-full cursor-pointer transition-colors text-[var(--text-muted)] hover:text-[var(--text-main)]">
               <ArrowLeft className="w-6 h-6" />
             </div>
 
             {/* Profile Pic & Info */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-[clamp(10px,_3vw,_16px)]">
               <div className="relative">
-                <div className="w-14 h-14 rounded-full bg-gradient-to-tr from-[var(--primary)] to-purple-800 flex items-center justify-center text-sm font-bold text-white shadow-lg border-2 border-[var(--bg-card)]">
+                <div className="w-[clamp(40px,_10vw,_56px)] h-[clamp(40px,_10vw,_56px)] rounded-full bg-gradient-to-tr from-[var(--primary)] to-purple-800 flex items-center justify-center text-sm font-bold text-white shadow-lg border-2 border-[var(--bg-card)]">
                   RC
                 </div>
                 <div className="absolute bottom-0 right-0 w-4 h-4 bg-green-500 rounded-full border-2 border-[var(--bg-card)]"></div>
               </div>
               <div className="flex flex-col gap-0.5">
-                <span className="text-lg font-bold text-[var(--text-main)] leading-tight">Regret Calculator</span>
+                <span className="text-[clamp(0.875rem,_4vw,_1.125rem)] font-bold text-[var(--text-main)] leading-tight">Regret Calculator</span>
                 <span className="text-xs text-[var(--primary)] font-semibold tracking-wide">Official Updates</span>
               </div>
             </div>
@@ -436,7 +436,7 @@ export const Roadmap: React.FC = () => {
         {/* Scrollable Chat Area */}
         <div
           ref={scrollContainerRef}
-          className="flex-1 overflow-y-auto px-8 py-4 pb-12 custom-scrollbar scroll-smooth bg-[var(--bg-main)]/30"
+          className="flex-1 overflow-y-auto px-[clamp(16px,_5vw,_32px)] py-4 pb-12 custom-scrollbar scroll-smooth bg-[var(--bg-main)]/30"
         >
           {/* Start Content Higher Up (Reduced top spacing) */}
           <DatePill date="Tuesday, 9:41 AM" />

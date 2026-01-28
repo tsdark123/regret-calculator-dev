@@ -189,39 +189,64 @@ function MainApp() {
                              currentPath === '/calculate' || currentPath.startsWith('/calculate') ||
                              currentPath === '/roadmap' || currentPath.startsWith('/roadmap');
       if (isScrollLocked) {
-        // Lock scroll completely
+        // Lock scroll completely - Safari-compatible fix
+        document.documentElement.classList.add('scroll-locked');
         document.documentElement.style.overflow = 'hidden';
-        document.documentElement.style.height = '100vh';
+        document.documentElement.style.height = '100%';
         document.body.style.overflow = 'hidden';
-        document.body.style.height = '100vh';
+        document.body.style.height = '100%';
         document.body.style.position = 'fixed';
         document.body.style.width = '100%';
+        document.body.style.top = '0';
+        document.body.style.left = '0';
+        // Safari-specific: prevent touch scrolling and overscroll bounce
+        document.body.style.touchAction = 'none';
+        document.body.style.overscrollBehavior = 'none';
+        document.documentElement.style.overscrollBehavior = 'none';
       } else {
         // Other pages (/results, /tools): enable scroll
+        document.documentElement.classList.remove('scroll-locked');
         document.documentElement.style.overflow = 'auto';
         document.documentElement.style.height = 'auto';
         document.body.style.overflow = 'auto';
         document.body.style.height = 'auto';
         document.body.style.position = 'static';
         document.body.style.width = 'auto';
+        document.body.style.top = '';
+        document.body.style.left = '';
+        document.body.style.touchAction = '';
+        document.body.style.overscrollBehavior = '';
+        document.documentElement.style.overscrollBehavior = '';
       }
     } else {
       // Desktop: always enable scroll
+      document.documentElement.classList.remove('scroll-locked');
       document.documentElement.style.overflow = 'auto';
       document.documentElement.style.height = 'auto';
       document.body.style.overflow = 'auto';
       document.body.style.height = 'auto';
       document.body.style.position = 'static';
       document.body.style.width = 'auto';
+      document.body.style.top = '';
+      document.body.style.left = '';
+      document.body.style.touchAction = '';
+      document.body.style.overscrollBehavior = '';
+      document.documentElement.style.overscrollBehavior = '';
     }
 
     return () => {
+      document.documentElement.classList.remove('scroll-locked');
       document.documentElement.style.overflow = 'auto';
       document.documentElement.style.height = 'auto';
       document.body.style.overflow = 'auto';
       document.body.style.height = 'auto';
       document.body.style.position = 'static';
       document.body.style.width = 'auto';
+      document.body.style.top = '';
+      document.body.style.left = '';
+      document.body.style.touchAction = '';
+      document.body.style.overscrollBehavior = '';
+      document.documentElement.style.overscrollBehavior = '';
     };
   }, [currentPath]);
 

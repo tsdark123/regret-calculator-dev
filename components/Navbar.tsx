@@ -146,7 +146,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, onNavigate, currentTh
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out px-0 md:px-6 py-4 select-none ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out px-0 md:px-6 pt-6 md:pt-4 pb-4 select-none ${
         isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-full pointer-events-none'
       }`}
     >
@@ -168,7 +168,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, onNavigate, currentTh
         </div>
 
         {/* Mobile: Combined theme-aware box with logo and nav */}
-        <div className="flex md:hidden items-center justify-between w-full bg-[var(--bg-card)] border-y border-[var(--border)] px-4 py-2.5 -mt-7 z-20">
+        <div className="flex md:hidden items-center justify-between w-full bg-[var(--bg-card)] border-y border-[var(--border)] px-[clamp(8px,3vw,16px)] py-2.5 -mt-7 z-20">
           <a 
             href="https://www.linkedin.com/in/sepehrz/"
             target="_blank"
@@ -178,34 +178,34 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, onNavigate, currentTh
             <div className="w-6 h-6 bg-[var(--primary)] rounded-lg flex items-center justify-center flex-shrink-0">
               <TrendingUp className="w-3.5 h-3.5 text-white" />
             </div>
-            <span className="font-bold text-[var(--text-main)] text-sm tracking-tight truncate max-w-[150px]">Sepehr Zunoubi</span>
+            <span className="font-bold text-[var(--text-main)] text-[clamp(0.75rem,_3vw,_0.875rem)] tracking-tight truncate max-w-[clamp(100px,_30vw,_150px)]">Sepehr Zunoubi</span>
           </a>
 
           {/* Mobile Nav Icons + Settings */}
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-[clamp(2px,_1vw,_6px)]">
             <button 
               onClick={() => onNavigate('home')}
-              className={`p-2 rounded-lg transition-colors ${activeTab === 'home' ? 'text-[var(--primary)] bg-[var(--primary)]/10' : 'text-[var(--text-muted)]'}`}
+              className={`p-[clamp(6px,_2vw,_8px)] rounded-lg transition-colors ${activeTab === 'home' ? 'text-[var(--primary)] bg-[var(--primary)]/10' : 'text-[var(--text-muted)]'}`}
             >
-              <Home className="w-5 h-5" />
+              <Home className="w-[clamp(18px,_5vw,_20px)] h-[clamp(18px,_5vw,_20px)]" />
             </button>
             <button 
               onClick={() => onNavigate('calculate')}
-              className={`p-2 rounded-lg transition-colors ${activeTab === 'calculate' ? 'text-[var(--primary)] bg-[var(--primary)]/10' : 'text-[var(--text-muted)]'}`}
+              className={`p-[clamp(6px,_2vw,_8px)] rounded-lg transition-colors ${activeTab === 'calculate' ? 'text-[var(--primary)] bg-[var(--primary)]/10' : 'text-[var(--text-muted)]'}`}
             >
-              <Calculator className="w-5 h-5" />
+              <Calculator className="w-[clamp(18px,_5vw,_20px)] h-[clamp(18px,_5vw,_20px)]" />
             </button>
             <button 
               onClick={() => onNavigate('tools')}
-              className={`p-2 rounded-lg transition-colors ${activeTab === 'tools' ? 'text-[var(--primary)] bg-[var(--primary)]/10' : 'text-[var(--text-muted)]'}`}
+              className={`p-[clamp(6px,_2vw,_8px)] rounded-lg transition-colors ${activeTab === 'tools' ? 'text-[var(--primary)] bg-[var(--primary)]/10' : 'text-[var(--text-muted)]'}`}
             >
-              <Wrench className="w-5 h-5" />
+              <Wrench className="w-[clamp(18px,_5vw,_20px)] h-[clamp(18px,_5vw,_20px)]" />
             </button>
             <button 
               onClick={() => onNavigate('roadmap')}
-              className={`p-2 rounded-lg transition-colors ${activeTab === 'roadmap' ? 'text-[var(--primary)] bg-[var(--primary)]/10' : 'text-[var(--text-muted)]'}`}
+              className={`p-[clamp(6px,_2vw,_8px)] rounded-lg transition-colors ${activeTab === 'roadmap' ? 'text-[var(--primary)] bg-[var(--primary)]/10' : 'text-[var(--text-muted)]'}`}
             >
-              <MapPin className="w-5 h-5" />
+              <MapPin className="w-[clamp(18px,_5vw,_20px)] h-[clamp(18px,_5vw,_20px)]" />
             </button>
             <ThemeDropdownMobile currentTheme={currentTheme} onThemeChange={onThemeChange} />
           </div>
