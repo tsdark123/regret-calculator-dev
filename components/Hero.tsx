@@ -204,10 +204,10 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
   // Theme-aware glow color
   const getGlowColor = () => {
     switch(theme) {
-      case 'green': return 'bg-green-900/20';
-      case 'blue': return 'bg-blue-900/20';
-      case 'purple': return 'bg-purple-900/20';
-      default: return 'bg-purple-900/20';
+      case 'green': return 'rgba(20, 83, 45, 0.2)';
+      case 'blue': return 'rgba(30, 58, 138, 0.2)';
+      case 'purple': return 'rgba(88, 28, 135, 0.2)';
+      default: return 'rgba(88, 28, 135, 0.2)';
     }
   };
 
@@ -264,7 +264,7 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
       </div>
 
 
-      {/* --- Main Content --- */
+      {/* --- Main Content --- */}
 
       {/* Beta Notice - Mobile Only - Absolutely positioned */}
       <div className="md:hidden absolute top-16 left-0 right-0 flex items-center justify-center gap-2 px-4 py-3 bg-[var(--bg-card)]/40 backdrop-blur-sm z-20">
@@ -280,7 +280,12 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
       
       <div className="relative">
         {/* Theme-aware Glow Effect - Relocated from AmbientBackground */}
-        <div className={`hidden md:block absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 blur-3xl rounded-full ${getGlowColor()} pointer-events-none z-0`} />
+        <div 
+          className="hidden md:block absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 blur-3xl rounded-full pointer-events-none z-0"
+          style={{
+            backgroundColor: getGlowColor()
+          }}
+        />
         
         <p className="text-[clamp(0.9rem,_3.7vw,_1.1rem)] sm:text-2xl md:text-2xl text-[var(--text-muted)] max-w-3xl mb-6 md:mb-12 leading-relaxed font-light animate-fade-in-up delay-100 opacity-0 z-10 px-4">
           See how the price of inaction grows over time. <br className="hidden md:block"/>
