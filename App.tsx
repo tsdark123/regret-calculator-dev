@@ -436,8 +436,11 @@ function MainApp() {
         setIsProDashboardExpanded(false);
       }
       
-      // After content fades out, scroll user back up
+      // After content fades out, scroll user back up and immediately clear height
       setTimeout(() => {
+        // Clear the collapse height BEFORE scrolling to prevent overscroll glitch
+        setCollapseHeight(null);
+        
         if (inputSectionRef.current) {
           inputSectionRef.current.scrollIntoView({ 
             behavior: 'smooth', 
@@ -445,12 +448,7 @@ function MainApp() {
             inline: 'nearest'
           });
         }
-        
-        // After scroll completes, clean up the excess space
-        setTimeout(() => {
-          setCollapseHeight(null);
-        }, 600);
-      }, 400);
+      }, 350);
     }
   }, [isProDashboardExpanded]);
   const handleReset = () => {

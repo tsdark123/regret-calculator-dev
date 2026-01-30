@@ -226,7 +226,7 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
       <div className="hidden md:block absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_70%_70%_at_50%_50%,black,transparent)] -z-20 pointer-events-none" />
 
       {/* 3. Left Side: Bar Graph Decoration - Desktop only */}
-      <div className="absolute left-[5%] lg:left-[8%] top-1/2 -translate-y-1/2 hidden xl:flex flex-col gap-4 opacity-60 -z-10 pointer-events-none select-none transition-opacity duration-700 hover:opacity-80">
+      <div className="absolute left-[5%] lg:left-[8%] top-[45vh] -translate-y-1/2 hidden xl:flex flex-col gap-4 opacity-60 -z-10 pointer-events-none select-none transition-opacity duration-700 hover:opacity-80">
         <div className="w-56 p-5 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)]/80 backdrop-blur-sm transform -rotate-6 shadow-2xl">
             <div className="flex items-end gap-3 h-32 mb-3 px-2 border-b border-[var(--border)] pb-2">
                 <div className="w-1/4 bg-slate-800 rounded-t-sm h-[30%] animate-pulse"></div>
@@ -242,7 +242,7 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
       </div>
 
       {/* 4. Right Side: Abstract Radial UI - Desktop only */}
-      <div className="absolute right-[5%] lg:right-[8%] top-1/2 -translate-y-1/2 hidden xl:flex flex-col opacity-60 -z-10 pointer-events-none select-none transition-opacity duration-700 hover:opacity-80">
+      <div className="absolute right-[5%] lg:right-[8%] top-[45vh] -translate-y-1/2 hidden xl:flex flex-col opacity-60 -z-10 pointer-events-none select-none transition-opacity duration-700 hover:opacity-80">
         <div className="relative w-64 h-64 flex items-center justify-center transform rotate-12">
             {/* Outer Ring */}
             <div className="absolute inset-0 rounded-full border border-dashed border-[var(--border)] animate-[spin_20s_linear_infinite]"></div>
