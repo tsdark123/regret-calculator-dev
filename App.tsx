@@ -552,13 +552,14 @@ function MainApp() {
                   {/* Hero Section - Hidden on /calculate and /results routes for mobile */}
                   {(window.innerWidth >= 1024 || (currentPath === '/' || currentPath === '')) && !(window.innerWidth < 1024 && (currentPath === '/results' || currentPath.startsWith('/results'))) && (
                     <>
-                      {/* Purple Beam for Hero Section - Fixed positioning so it stays with hero text */}
-                      <div className="fixed top-[20vh] left-[50%] -translate-x-1/2 w-[500px] h-[500px] bg-purple-900/5 blur-[100px] rounded-full pointer-events-none z-[5]" />
+                      {/* Theme-aware Beam for Hero Section - Fixed positioning so it stays with hero text */}
+                      <div className={`fixed top-[20vh] left-[50%] -translate-x-1/2 w-[500px] h-[500px] ${theme === 'green' ? 'bg-green-900/5' : theme === 'blue' ? 'bg-blue-900/5' : 'bg-purple-900/5'} blur-[100px] rounded-full pointer-events-none z-[5]`} />
                       
                       <Hero 
                           onStart={handleStart} 
                           onLoadPreset={handleLoadPreset} 
-                          decisionCount={decisionCount} 
+                          decisionCount={decisionCount}
+                          theme={theme}
                       />
                     </>
                   )}

@@ -1,12 +1,13 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { ArrowDown, Zap, BookOpen, X, ChevronRight, Check } from 'lucide-react';
 import { BackgroundGraph } from './BackgroundGraph';
-import { Expense } from '../types';
+import { Expense, Theme } from '../types';
 
 interface HeroProps {
   onStart: () => void;
   onLoadPreset: (expense: Expense) => void;
   decisionCount: number;
+  theme: Theme;
 }
 
 const StatCounter = ({ value, suffix = '', duration = 2000 }: { value: number, suffix?: string, duration?: number }) => {
@@ -196,9 +197,19 @@ const TheoryModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void
     );
 };
 
-export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount }) => {
+export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount, theme }) => {
   const [showPreset, setShowPreset] = useState(false);
   const [showTheory, setShowTheory] = useState(false);
+  
+  // Theme-aware glow color
+  const getGlowColor = () => {
+    switch(theme) {
+      case 'green': return 'bg-green-900/20';
+      case 'blue': return 'bg-blue-900/20';
+      case 'purple': return 'bg-purple-900/20';
+      default: return 'bg-purple-900/20';
+    }
+  };
 
   return (
     <section className="min-h-dvh md:min-h-[90vh] flex flex-col items-center justify-center text-center px-4 relative overflow-hidden pt-8 md:pt-32 select-none">
@@ -253,7 +264,7 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
       </div>
 
 
-      {/* --- Main Content --- */}
+      {/* --- Main Content --- */
 
       {/* Beta Notice - Mobile Only - Absolutely positioned */}
       <div className="md:hidden absolute top-16 left-0 right-0 flex items-center justify-center gap-2 px-4 py-3 bg-[var(--bg-card)]/40 backdrop-blur-sm z-20">
@@ -268,8 +279,8 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
       </h1>
       
       <div className="relative">
-        {/* Purple Glow Effect - Relocated from AmbientBackground */}
-        <div className="hidden md:block absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 blur-3xl rounded-full bg-purple-900/20 pointer-events-none z-0" />
+        {/* Theme-aware Glow Effect - Relocated from AmbientBackground */}
+        <div className={`hidden md:block absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 blur-3xl rounded-full ${getGlowColor()} pointer-events-none z-0`} />
         
         <p className="text-[clamp(0.9rem,_3.7vw,_1.1rem)] sm:text-2xl md:text-2xl text-[var(--text-muted)] max-w-3xl mb-6 md:mb-12 leading-relaxed font-light animate-fade-in-up delay-100 opacity-0 z-10 px-4">
           See how the price of inaction grows over time. <br className="hidden md:block"/>
