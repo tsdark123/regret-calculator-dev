@@ -556,7 +556,7 @@ function MainApp() {
                       <div 
                         className="fixed top-[20vh] left-[50%] -translate-x-1/2 w-[500px] h-[500px] blur-[100px] rounded-full pointer-events-none z-[5]"
                         style={{
-                          backgroundColor: theme === 'green' ? 'rgba(20, 83, 45, 0.05)' : theme === 'blue' ? 'rgba(30, 58, 138, 0.05)' : 'rgba(88, 28, 135, 0.05)'
+                          backgroundColor: theme === 'green' ? 'rgba(20, 83, 45, 0.05)' : theme === 'blue' ? 'transparent' : 'rgba(88, 28, 135, 0.05)'
                         }}
                       />
                       

@@ -205,7 +205,7 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
   const getGlowColor = () => {
     switch(theme) {
       case 'green': return 'rgba(20, 83, 45, 0.2)';
-      case 'blue': return 'rgba(30, 58, 138, 0.2)';
+      case 'blue': return 'transparent';
       case 'purple': return 'rgba(88, 28, 135, 0.2)';
       default: return 'rgba(88, 28, 135, 0.2)';
     }
