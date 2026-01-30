@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
-import { DollarSign, Clock, Target } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { DollarSign, Clock, Target, Home, TrendingUp, Wrench } from 'lucide-react';
 import { formatCurrency, formatCurrencyShort } from '../utils/financials';
+import { CalculationResult, Assumptions, Theme } from '../types';
+import { FireProjection } from './FireProjection';
+import { ComparisonBattle } from './ComparisonBattle';
 
 // Helper for slider background matching SettingsPanel
 const getBackgroundStyle = (value: number, min: number, max: number) => {
@@ -241,25 +244,178 @@ const ReverseGoalTool = () => {
         </div>
     );
 };
+
+// --- Segmented Control Component ---
+type ToolsView = 'projections' | 'utilities';
+
+const SegmentedControl = ({ 
+    activeView, 
+    onViewChange 
+}: { 
+    activeView: ToolsView; 
+    onViewChange: (view: ToolsView) => void;
+}) => {
+    return (
+        <div className="relative inline-flex bg-[var(--bg-input)] border border-[var(--border)] rounded-2xl p-1.5 shadow-lg">
+            {/* Sliding Background */}
+            <div 
+                className="absolute top-1.5 bottom-1.5 w-[calc(50%-3px)] bg-[var(--primary)] rounded-xl shadow-lg transition-all duration-300 ease-out"
+                style={{
+                    left: activeView === 'projections' ? '6px' : 'calc(50% + 0px)',
+                }}
+            />
+            
+            {/* Projections Button */}
+            <button
+                onClick={() => onViewChange('projections')}
+                className={`relative z-10 flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm transition-colors duration-200 min-w-[130px] justify-center ${
+                    activeView === 'projections' 
+                        ? 'text-white' 
+                        : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
+                }`}
+            >
+                <TrendingUp className="w-4 h-4" />
+                Projections
+            </button>
+            
+            {/* Utilities Button */}
+            <button
+                onClick={() => onViewChange('utilities')}
+                className={`relative z-10 flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm transition-colors duration-200 min-w-[130px] justify-center ${
+                    activeView === 'utilities' 
+                        ? 'text-white' 
+                        : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
+                }`}
+            >
+                <Wrench className="w-4 h-4" />
+                Utilities
+            </button>
+        </div>
+    );
+};
+
+// --- Projections View (No Data State) ---
+const ProjectionsEmptyState = ({ onNavigateHome }: { onNavigateHome: () => void }) => {
+    return (
+        <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
+            <div className="w-20 h-20 rounded-full bg-[var(--bg-hover)] border border-[var(--border)] flex items-center justify-center mb-6">
+                <TrendingUp className="w-10 h-10 text-[var(--text-muted)]" />
+            </div>
+            <h3 className="text-2xl font-bold text-[var(--text-main)] mb-3">No Projection Data Yet</h3>
+            <p className="text-[var(--text-muted)] max-w-md mb-8 leading-relaxed">
+                Run a calculation on the home page first to see your personalized retirement projections and investment comparisons.
+            </p>
+            <button
+                onClick={onNavigateHome}
+                className="flex items-center gap-2 px-6 py-3 bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-white rounded-xl font-bold text-sm shadow-lg shadow-[var(--primary)]/25 transition-all"
+            >
+                <Home className="w-4 h-4" />
+                Go to Calculator
+            </button>
+        </div>
+    );
+};
+
 interface ToolsDashboardProps {
-    theme?: 'purple' | 'green' | 'blue';
+    theme?: Theme;
+    results?: CalculationResult | null;
+    assumptions?: Assumptions;
+    onNavigateHome?: () => void;
 }
 
-export const ToolsDashboard: React.FC<ToolsDashboardProps> = ({ theme = 'purple' }) => {
+export const ToolsDashboard: React.FC<ToolsDashboardProps> = ({ 
+    theme = 'purple', 
+    results = null,
+    assumptions,
+    onNavigateHome = () => {}
+}) => {
+    // Initialize view from URL query param if present
+    const [activeView, setActiveView] = useState<ToolsView>(() => {
+        if (typeof window !== 'undefined') {
+            const params = new URLSearchParams(window.location.search);
+            const view = params.get('view');
+            if (view === 'projections' || view === 'utilities') {
+                return view;
+            }
+        }
+        return 'projections'; // Default to projections
+    });
+
+    // Update URL when view changes
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const url = new URL(window.location.href);
+            url.searchParams.set('view', activeView);
+            window.history.replaceState({}, '', url.toString());
+        }
+    }, [activeView]);
+
     return (
         <div className="w-full animate-fade-in-up pb-12 relative overflow-y-auto" style={{ background: 'transparent' }}>
-                <div className="text-center mb-12 pt-4 relative z-10">
-                    <h2 className="text-6xl md:text-7xl font-bold text-[var(--text-main)] mb-4 tracking-tight">Financial Toolbox</h2>
-                    <div className="flex flex-col gap-1 text-[var(--text-muted)] max-w-3xl mx-auto text-base md:text-lg font-light">
-                        <p>Calculators to help you plan your future</p>
-                        <p>and understand the math behind your money.</p>
-                    </div>
-                </div>
+            {/* Header */}
+            <div className="text-center mb-8 pt-4 relative z-10">
+                <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-[var(--text-main)] mb-4 tracking-tight">Financial Toolbox</h2>
+                <p className="text-[var(--text-muted)] max-w-2xl mx-auto text-sm sm:text-base md:text-lg font-light px-4">
+                    Advanced projections and calculators to help you plan your financial future.
+                </p>
+            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 max-w-7xl mx-auto px-4 lg:px-0 relative z-10">
-                <InflationTool />
-                <RuleOf72Tool />
-                <ReverseGoalTool />
+            {/* Segmented Control */}
+            <div className="flex justify-center mb-10 px-4">
+                <SegmentedControl activeView={activeView} onViewChange={setActiveView} />
+            </div>
+
+            {/* Content Views */}
+            <div className="relative z-10 max-w-7xl mx-auto px-4 lg:px-0">
+                {activeView === 'projections' ? (
+                    /* Projections View */
+                    results && assumptions ? (
+                        <div className="w-full pb-4 md:pb-12">
+                            {/* Mobile Layout - Vertically Stacked */}
+                            <div className="flex flex-col lg:hidden gap-6 max-w-[430px] mx-auto">
+                                <div className="w-full">
+                                    <FireProjection results={results} theme={theme} />
+                                </div>
+                                <div className="w-full">
+                                    <ComparisonBattle results={results} assumptions={assumptions} theme={theme} />
+                                </div>
+                            </div>
+                            
+                            {/* Desktop Layout - Side by Side */}
+                            <div className="hidden lg:grid lg:grid-cols-2 gap-6 justify-center">
+                                <div className="w-full max-w-[500px] justify-self-end">
+                                    <FireProjection results={results} theme={theme} />
+                                </div>
+                                <div className="w-full max-w-[500px] justify-self-start">
+                                    <ComparisonBattle results={results} assumptions={assumptions} theme={theme} />
+                                </div>
+                            </div>
+                        </div>
+                    ) : (
+                        <ProjectionsEmptyState onNavigateHome={onNavigateHome} />
+                    )
+                ) : (
+                    /* Utilities View */
+                    <div className="space-y-10">
+                        {/* Utilities Grid */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-10">
+                            <InflationTool />
+                            <RuleOf72Tool />
+                            <ReverseGoalTool />
+                        </div>
+                        
+                        {/* Back to Home Link */}
+                        <div className="flex justify-center pt-4">
+                            <button
+                                onClick={onNavigateHome}
+                                className="flex items-center gap-2 px-5 py-2.5 text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] border border-[var(--border)] rounded-xl font-medium text-sm transition-all"
+                            >
+                                <Home className="w-4 h-4" />
+                                Back to Home
+                            </button>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );

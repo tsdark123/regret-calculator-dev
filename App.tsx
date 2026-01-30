@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback, lazy, Suspense } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Hero } from './components/Hero';
 import { Navbar } from './components/Navbar';
@@ -21,8 +21,6 @@ import { MobileBottomNav } from './components/MobileBottomNav';
 import { ArrowRight, Calculator, RefreshCw } from 'lucide-react';
 
 import { ResultsDashboard } from './components/ResultsDashboard';
-// Lazy load ProDashboard only (optional content) for better mobile performance
-const ProDashboard = lazy(() => import('./components/ProDashboard').then(module => ({ default: module.ProDashboard })));
 import { Expense, Assumptions, CalculationResult, StockOption, Theme } from './types';
 import { calculateResults } from './utils/financials';
 import { getStoredTheme, saveTheme } from './utils/theme';
@@ -75,10 +73,6 @@ function MainApp() {
   const [results, setResults] = useState<CalculationResult | null>(null);
   const [resultsKey, setResultsKey] = useState(0);
   const [isStockModalOpen, setIsStockModalOpen] = useState(false);
-  const [isProDashboardExpanded, setIsProDashboardExpanded] = useState(false);
-  const [collapseHeight, setCollapseHeight] = useState<number | null>(null); // Preserve height during collapse
-  const proDashboardRef = useRef<HTMLDivElement>(null);
-  const expandButtonRef = useRef<HTMLDivElement>(null);
   
   // View State: 'input' | 'results' | 'tools' | 'roadmap'
   // Initialize based on current path for proper refresh behavior
@@ -274,6 +268,22 @@ function MainApp() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // Prevent horizontal scrolling with arrow keys
+  useEffect(() => {
+    const preventHorizontalArrowScroll = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+        // Only prevent if not in an input/textarea
+        const target = e.target as HTMLElement;
+        if (target.tagName !== 'INPUT' && target.tagName !== 'TEXTAREA') {
+          e.preventDefault();
+        }
+      }
+    };
+
+    window.addEventListener('keydown', preventHorizontalArrowScroll);
+    return () => window.removeEventListener('keydown', preventHorizontalArrowScroll);
+  }, []);
+
   const handleStart = () => {
     // Mobile: Navigate to /calculate route
     if (window.innerWidth < 1024) {
@@ -397,60 +407,14 @@ function MainApp() {
   };
 
 
-  const handleToggleProDashboard = useCallback(() => {
-    if (!isProDashboardExpanded) {
-      // Capture current scroll position to prevent any jump
-      const currentScroll = window.pageYOffset;
-      
-      setIsProDashboardExpanded(true);
-      
-      // Immediately restore scroll position after state change to prevent upward shift
-      requestAnimationFrame(() => {
-        window.scrollTo(0, currentScroll);
-      });
-      
-      // Start scroll slightly before animation completes for snappier feel
-      setTimeout(() => {
-        if (proDashboardRef.current) {
-          const element = proDashboardRef.current;
-          const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
-          const offsetPosition = elementPosition - 180; // Larger offset to center content on viewport
-          
-          window.scrollTo({
-            top: offsetPosition,
-            behavior: 'smooth'
-          });
-        }
-      }, 330);
-    } else {
-      // Collapse: Preserve container height FIRST to prevent any layout shift
-      if (proDashboardRef.current) {
-        const currentHeight = proDashboardRef.current.offsetHeight;
-        setCollapseHeight(currentHeight);
-        
-        // Wait a tick for height to be applied, then fade out content
-        requestAnimationFrame(() => {
-          setIsProDashboardExpanded(false);
-        });
-      } else {
-        setIsProDashboardExpanded(false);
-      }
-      
-      // After content fades out, scroll user back up and immediately clear height
-      setTimeout(() => {
-        // Clear the collapse height BEFORE scrolling to prevent overscroll glitch
-        setCollapseHeight(null);
-        
-        if (inputSectionRef.current) {
-          inputSectionRef.current.scrollIntoView({ 
-            behavior: 'smooth', 
-            block: 'start',
-            inline: 'nearest'
-          });
-        }
-      }, 350);
-    }
-  }, [isProDashboardExpanded]);
+  // Navigate to tools page with projections view (client-side to preserve state)
+  const handleGoToProjections = useCallback(() => {
+    window.history.pushState({}, '', '/tools?view=projections');
+    setCurrentPath('/tools');
+    setActiveTab('tools');
+    setViewMode('tools');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
   const handleReset = () => {
     setExpenses([{ id: '1', name: 'Subscription', amount: 15, frequency: 'Monthly', isWant: true }]);
     setResults(null);
@@ -482,12 +446,7 @@ function MainApp() {
       } else if (tab === 'calculate') {
           handleStart();
       } else if (tab === 'tools') {
-          // Desktop: Full page redirect for performance
-          if (window.innerWidth >= 1024) {
-              window.location.href = '/tools';
-              return;
-          }
-          // Mobile: Navigate to /tools route
+          // Client-side navigation to preserve state (results/assumptions)
           window.history.pushState({}, '', '/tools');
           setCurrentPath('/tools');
           setViewMode('tools');
@@ -537,7 +496,12 @@ function MainApp() {
         <div className="flex-grow">
             {viewMode === 'tools' ? (
               <div className="pt-24 px-4 pb-12 w-full max-w-[96rem] mx-auto animate-fade-in-up">
-                <ToolsDashboard theme={theme} />
+                <ToolsDashboard 
+                  theme={theme} 
+                  results={results}
+                  assumptions={assumptions}
+                  onNavigateHome={() => handleNavigate('home')}
+                />
               </div>
             ) : viewMode === 'roadmap' ? (
               /* Roadmap now takes full control of positioning to center itself */
@@ -745,80 +709,25 @@ function MainApp() {
                                       theme={theme}
                                   />
                                   
-                                  {/* Expand Button for Pro Dashboard */}
-                                  <div ref={expandButtonRef} className="flex justify-center -mt-4 mb-4">
+                                  {/* CTA Button to Tools - Advanced Projections */}
+                                  <div className="flex justify-center -mt-4 mb-4">
                                     <motion.button
-                                      onClick={handleToggleProDashboard}
+                                      onClick={handleGoToProjections}
                                       whileHover={{ scale: 1.02 }}
                                       whileTap={{ scale: 0.98 }}
                                       className="flex items-center gap-2 px-6 py-3 border border-[var(--border)] 
                                                  rounded-xl text-[var(--text-muted)] hover:text-[var(--text-main)] 
                                                  hover:border-[var(--text-muted)] transition-colors text-sm font-medium"
                                     >
-                                      <motion.span
-                                        animate={{ rotate: isProDashboardExpanded ? 180 : 0 }}
-                                        transition={{ duration: 0.3, ease: "easeInOut" }}
-                                      >
-                                        ↓
-                                      </motion.span>
-                                      {isProDashboardExpanded ? 'Collapse' : 'Expand Advanced Analysis & Projections'}
+                                      <span>Analyze Projections in Toolbox</span>
+                                      <span>→</span>
                                     </motion.button>
-                                  </div>
-
-                                  {/* Pro Dashboard - Animated with Framer Motion */}
-                                  <div 
-                                    ref={proDashboardRef}
-                                    style={collapseHeight ? { minHeight: collapseHeight } : undefined}
-                                  >
-                                    <AnimatePresence mode="popLayout">
-                                      {isProDashboardExpanded && (
-                                        <motion.div
-                                          initial={{ opacity: 0, scaleY: 0.95, y: -20 }}
-                                          animate={{ 
-                                            opacity: 1, 
-                                            scaleY: 1, 
-                                            y: 0,
-                                            transition: {
-                                              duration: 0.35,
-                                              ease: [0.25, 0.46, 0.45, 0.94],
-                                              opacity: { duration: 0.3 },
-                                              scaleY: { duration: 0.35 },
-                                              y: { duration: 0.35 }
-                                            }
-                                          }}
-                                          exit={{ 
-                                            opacity: 0,
-                                            scaleY: 0.98,
-                                            transition: {
-                                              duration: 0.25,
-                                              ease: "easeOut",
-                                              opacity: { duration: 0.25 },
-                                              scaleY: { duration: 0.25 }
-                                            }
-                                          }}
-                                          style={{ originY: 0 }}
-                                          className="will-change-transform overflow-hidden"
-                                        >
-                                          <Suspense fallback={
-                                              <div className="w-full flex items-center justify-center py-20">
-                                                  <div className="animate-pulse text-[var(--text-muted)]">Loading advanced analysis...</div>
-                                              </div>
-                                          }>
-                                              <ProDashboard 
-                                                results={results} 
-                                                assumptions={assumptions} 
-                                                theme={theme}
-                                              />
-                                          </Suspense>
-                                        </motion.div>
-                                      )}
-                                    </AnimatePresence>
                                   </div>
                               </div>
                           )}
                       </div>
                   </main>
-                  {!(viewMode === 'results' && !isProDashboardExpanded) && <Footer />}
+                  {viewMode !== 'results' && <Footer />}
               </>
             )}
         </div>
