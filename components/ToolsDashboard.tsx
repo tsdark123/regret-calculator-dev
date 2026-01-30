@@ -350,6 +350,27 @@ export const ToolsDashboard: React.FC<ToolsDashboardProps> = ({
         }
     }, [activeView]);
 
+    // Mobile-only: Lock scroll when on Projections tab with no data
+    useEffect(() => {
+        // Only apply on mobile (< 1024px)
+        if (typeof window !== 'undefined' && window.innerWidth < 1024) {
+            const shouldLockScroll = activeView === 'projections' && !results;
+            
+            if (shouldLockScroll) {
+                // Lock scroll
+                document.documentElement.classList.add('scroll-locked');
+            } else {
+                // Unlock scroll
+                document.documentElement.classList.remove('scroll-locked');
+            }
+            
+            // Cleanup on unmount
+            return () => {
+                document.documentElement.classList.remove('scroll-locked');
+            };
+        }
+    }, [activeView, results]);
+
     return (
         <div className="w-full animate-fade-in-up pb-12 relative overflow-y-auto" style={{ background: 'transparent' }}>
             {/* Header */}
