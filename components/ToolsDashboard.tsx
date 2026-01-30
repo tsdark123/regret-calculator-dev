@@ -357,18 +357,21 @@ export const ToolsDashboard: React.FC<ToolsDashboardProps> = ({
             const shouldLockScroll = activeView === 'projections' && !results;
             
             if (shouldLockScroll) {
-                // Lock scroll
+                // Lock scroll immediately
                 document.documentElement.classList.add('scroll-locked');
+                document.body.classList.add('scroll-locked');
             } else {
                 // Unlock scroll
                 document.documentElement.classList.remove('scroll-locked');
+                document.body.classList.remove('scroll-locked');
             }
-            
-            // Cleanup on unmount
-            return () => {
-                document.documentElement.classList.remove('scroll-locked');
-            };
         }
+        
+        // Cleanup on unmount
+        return () => {
+            document.documentElement.classList.remove('scroll-locked');
+            document.body.classList.remove('scroll-locked');
+        };
     }, [activeView, results]);
 
     return (
