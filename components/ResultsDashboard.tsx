@@ -412,7 +412,7 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({
            <p className="text-[10px] text-[var(--text-muted)] mt-1">The gap between spending and investing</p>
         </div>
 
-        <div className="bg-[var(--bg-card)] border border-[var(--border)] p-5 rounded-2xl relative overflow-hidden group hover:border-[var(--primary)] transition-colors shadow-[0_0_20px_var(--chart-gradient-end)]">
+        <div className="bg-[var(--bg-card)] border border-[var(--border)] p-5 rounded-2xl relative overflow-hidden group hover:border-[var(--primary)] transition-colors">
            <div className="flex justify-between items-start mb-2">
               <p className="text-[var(--text-muted)] text-[10px] font-bold uppercase tracking-wider">Final Portfolio Value</p>
               <TrendingUp className="w-4 h-4 text-[var(--primary)]" />

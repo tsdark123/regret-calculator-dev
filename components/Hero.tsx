@@ -267,11 +267,15 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
         <span className="text-[var(--primary)]">Zero Regret.</span>
       </h1>
       
-      <p className="text-[clamp(0.9rem,_3.7vw,_1.1rem)] sm:text-2xl md:text-2xl text-[var(--text-muted)] max-w-3xl mb-6 md:mb-12 leading-relaxed font-light animate-fade-in-up delay-100 opacity-0 z-10 px-4">
-        See how the price of inaction grows over time. <br className="hidden md:block"/>
-        Input your habits to see what waiting is <span className="text-[var(--text-main)] font-medium">really</span> costing you.
-      </p>
-
+      <div className="relative">
+        {/* Purple Glow Effect - Relocated from AmbientBackground */}
+        <div className="hidden md:block absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 blur-3xl rounded-full bg-purple-900/20 pointer-events-none z-0" />
+        
+        <p className="text-[clamp(0.9rem,_3.7vw,_1.1rem)] sm:text-2xl md:text-2xl text-[var(--text-muted)] max-w-3xl mb-6 md:mb-12 leading-relaxed font-light animate-fade-in-up delay-100 opacity-0 z-10 px-4">
+          See how the price of inaction grows over time. <br className="hidden md:block"/>
+          Input your habits to see what waiting is <span className="text-[var(--text-main)] font-medium">really</span> costing you.
+        </p>
+      </div>
 
       {/* Button Cluster - Vertical list on mobile, horizontal on desktop */}
       <div className="flex flex-col md:flex-row items-stretch md:items-center gap-3 md:gap-4 animate-fade-in-up delay-200 opacity-0 w-full max-w-[clamp(280px,_90vw,_448px)] md:max-w-none justify-center mb-6 md:mb-16 z-20 px-[clamp(12px,_4vw,_24px)] md:px-6">

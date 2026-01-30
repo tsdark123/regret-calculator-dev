@@ -41,7 +41,6 @@ export const AmbientBackground: React.FC = () => {
       </div>
       
       {/* 3. Center Abstract Donut - Desktop only */}
-      <div className="hidden md:block absolute top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 w-96 h-96 text-purple-900/5 blur-3xl rounded-full bg-purple-900/10" />
       <div className="hidden md:block absolute bottom-[20%] left-[10%] w-24 h-24 text-slate-600/10 animate-spin-slow duration-[20s]">
           <MiniChart3 className="w-full h-full" />
       </div>
