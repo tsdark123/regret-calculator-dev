@@ -370,7 +370,7 @@ export const ToolsDashboard: React.FC<ToolsDashboardProps> = ({
                 {activeView === 'projections' ? (
                     /* Projections View */
                     results && assumptions ? (
-                        <div className="w-full pb-4 md:pb-12">
+                        <div className="w-full pb-4 md:pb-12 space-y-10">
                             {/* Mobile Layout - Vertically Stacked */}
                             <div className="flex flex-col lg:hidden gap-6 max-w-[430px] mx-auto">
                                 <div className="w-full">
@@ -389,6 +389,17 @@ export const ToolsDashboard: React.FC<ToolsDashboardProps> = ({
                                 <div className="w-full max-w-[500px] justify-self-start">
                                     <ComparisonBattle results={results} assumptions={assumptions} theme={theme} />
                                 </div>
+                            </div>
+                            
+                            {/* Back to Home Link */}
+                            <div className="flex justify-center pt-4">
+                                <button
+                                    onClick={onNavigateHome}
+                                    className="flex items-center gap-2 px-5 py-2.5 text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] border border-[var(--border)] rounded-xl font-medium text-sm transition-all"
+                                >
+                                    <Home className="w-4 h-4" />
+                                    Back to Home
+                                </button>
                             </div>
                         </div>
                     ) : (
