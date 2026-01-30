@@ -413,7 +413,11 @@ function MainApp() {
     setCurrentPath('/tools');
     setActiveTab('tools');
     setViewMode('tools');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    // Ensure scroll happens after DOM updates
+    requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    });
   }, []);
   const handleReset = () => {
     setExpenses([{ id: '1', name: 'Subscription', amount: 15, frequency: 'Monthly', isWant: true }]);
