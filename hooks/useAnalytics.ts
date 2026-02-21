@@ -7,12 +7,22 @@ interface ActivityEventData {
 }
 
 export const useAnalytics = () => {
-  const [decisionCount, setDecisionCount] = useState(543);
+  const [decisionCount, setDecisionCount] = useState(() => {
+    // Pick up the latest Firebase count if it arrived before React mounted
+    if (typeof window !== 'undefined' && (window as any).latestDecisionCount) {
+      return (window as any).latestDecisionCount;
+    }
+    return 543;
+  });
 
   // Register the local state setter function globally so index.html can use it
   useEffect(() => {
     if (typeof window !== 'undefined') {
       window.setGlobalDecisionCount = setDecisionCount;
+      // Also sync if Firebase data arrived before this effect ran
+      if ((window as any).latestDecisionCount) {
+        setDecisionCount((window as any).latestDecisionCount);
+      }
     }
   }, []);
 

@@ -4,6 +4,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Calculated Growth, Zero Regret</title>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Sepehr Zunoubi",
+      "sameAs": ["https://www.linkedin.com/in/sepehrzunoubi"],
+      "image": "https://media.licdn.com/dms/image/v2/D4E0BAQEqIg8NavbtRQ/company-logo_100_100/B4EZvvDNjKKoAU-/0/1769242156222?e=1773273600&v=beta&t=v8lf-R8dZvMD_i4AQPJJvk9msHrEIJxnRFVCDhUDSeg",
+      "jobTitle": "Incoming NYU Stern | Founder @ Compound Labs",
+      "worksFor": {"@type": "Organization", "name": "Compound Labs"},
+      "alumniOf": {"@type": "CollegeOrUniversity", "name": "NYU Stern School of Business"}
+    }
+    </script>
     <!-- Prevent flash of default theme by reading localStorage synchronously -->
     <script>
       (function() {
@@ -423,17 +435,25 @@
   window.firebaseOnAuthStateChanged = onAuthStateChanged;
 
   // 1. Function to update the counter display in real-time
+  console.log('[Firebase] Setting up onValue listener for decisionsAnalyzed...');
   onValue(counterRef, (snapshot) => {
     let count = snapshot.val();
+    console.log('[Firebase] onValue fired. Raw count from DB:', count);
     // Enforce minimum floor of 3564 even if DB has lower (e.g. 546)
     if (!count || count < 3564) {
         count = 3564;
     }
     
+    // Always store latest count on window so React can pick it up on mount
+    window.latestDecisionCount = count;
+    console.log('[Firebase] latestDecisionCount set to:', count, '| setGlobalDecisionCount available:', !!window.setGlobalDecisionCount);
+    
     // Update the React state via the global setter if available
     if (window.setGlobalDecisionCount) {
         window.setGlobalDecisionCount(count);
     }
+  }, (error) => {
+    console.error('[Firebase] onValue ERROR - this is why the counter is stuck:', error.message);
   });
 
   // 2. Make the increment function globally accessible for App.tsx to call

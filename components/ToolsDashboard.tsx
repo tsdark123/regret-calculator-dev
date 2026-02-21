@@ -4,6 +4,7 @@ import { formatCurrency, formatCurrencyShort } from '../utils/financials';
 import { CalculationResult, Assumptions, Theme } from '../types';
 import { FireProjection } from './FireProjection';
 import { ComparisonBattle } from './ComparisonBattle';
+import { SovereignMilestones } from './SovereignMilestones';
 
 // Helper for slider background matching SettingsPanel
 const getBackgroundStyle = (value: number, min: number, max: number) => {
@@ -372,22 +373,52 @@ export const ToolsDashboard: React.FC<ToolsDashboardProps> = ({
                     results && assumptions ? (
                         <div className="w-full pb-4 md:pb-12 space-y-10">
                             {/* Mobile Layout - Vertically Stacked */}
-                            <div className="flex flex-col lg:hidden gap-6 max-w-[430px] mx-auto">
+                            <div className="flex flex-col md:hidden gap-6 max-w-[430px] mx-auto">
                                 <div className="w-full">
                                     <FireProjection results={results} theme={theme} />
                                 </div>
                                 <div className="w-full">
                                     <ComparisonBattle results={results} assumptions={assumptions} theme={theme} />
+                                </div>
+                                <div className="w-full">
+                                    <SovereignMilestones
+                                        monthlyContribution={results.totalMonthlyContribution}
+                                        investingYears={assumptions.timeHorizonYears}
+                                        annualReturn={assumptions.inflationAdjusted 
+                                            ? ((1 + assumptions.annualReturn / 100) / (1 + assumptions.inflationRate / 100) - 1)
+                                            : assumptions.annualReturn / 100
+                                        }
+                                        totalCapitalWasted={results.totalCapitalWasted}
+                                        habitName={results.expenseSummary || 'your habits'}
+                                        investmentName={assumptions.selectedStock?.name || 'S&P 500'}
+                                    />
                                 </div>
                             </div>
                             
-                            {/* Desktop Layout - Side by Side */}
-                            <div className="hidden lg:grid lg:grid-cols-2 gap-6 justify-center">
-                                <div className="w-full max-w-[500px] justify-self-end">
-                                    <FireProjection results={results} theme={theme} />
+                            {/* Desktop Layout - 2-Up, 1-Down Architecture */}
+                            <div className="hidden md:flex md:flex-col gap-6 max-w-5xl mx-auto">
+                                {/* Row 1: Two cards side-by-side */}
+                                <div className="grid grid-cols-2 gap-6">
+                                    <div className="w-full">
+                                        <FireProjection results={results} theme={theme} />
+                                    </div>
+                                    <div className="w-full">
+                                        <ComparisonBattle results={results} assumptions={assumptions} theme={theme} />
+                                    </div>
                                 </div>
-                                <div className="w-full max-w-[500px] justify-self-start">
-                                    <ComparisonBattle results={results} assumptions={assumptions} theme={theme} />
+                                {/* Row 2: Full-width Sovereign Milestones */}
+                                <div className="w-full">
+                                    <SovereignMilestones
+                                        monthlyContribution={results.totalMonthlyContribution}
+                                        investingYears={assumptions.timeHorizonYears}
+                                        annualReturn={assumptions.inflationAdjusted 
+                                            ? ((1 + assumptions.annualReturn / 100) / (1 + assumptions.inflationRate / 100) - 1)
+                                            : assumptions.annualReturn / 100
+                                        }
+                                        totalCapitalWasted={results.totalCapitalWasted}
+                                        habitName={results.expenseSummary || 'your habits'}
+                                        investmentName={assumptions.selectedStock?.name || 'S&P 500'}
+                                    />
                                 </div>
                             </div>
                             

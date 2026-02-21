@@ -30,6 +30,7 @@ import { useAnalytics } from './hooks/useAnalytics';
 declare global {
   interface Window {
     setGlobalDecisionCount?: React.Dispatch<React.SetStateAction<number>>;
+    latestDecisionCount?: number;
     incrementCounter?: () => void;
     logActivityEvent?: (data: { city: string; regretAmount: number; expenseName: string }) => void;
     userCity?: string;
