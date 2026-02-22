@@ -113,6 +113,40 @@ function MainApp() {
   // Loading State
   const [isLoading, setIsLoading] = useState(false);
 
+  // Scroll to top on page reload for desktop users
+  useEffect(() => {
+    // Disable browser's automatic scroll restoration
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+    }
+    
+    // Check if this is a page reload (not initial load)
+    const isReload = window.performance && (
+      window.performance.navigation.type === 1 || // TYPE_RELOAD
+      (window.performance.getEntriesByType && 
+       (window.performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming)?.type === 'reload')
+    );
+    
+    if (isReload) {
+      // Page was reloaded - force scroll to top multiple times
+      window.scrollTo({ top: 0, behavior: 'instant' });
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      
+      // Additional scroll after a short delay to override browser restoration
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: 'instant' });
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+      }, 100);
+      
+      // Final scroll after React renders
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: 'instant' });
+      }, 500);
+    }
+  }, []);
+
   // Financial wisdom quotes
   const financialWisdoms = [
     "The best time to start investing was yesterday. The second best time is now.",
