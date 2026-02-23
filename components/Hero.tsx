@@ -171,12 +171,51 @@ const TheoryModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void
                         This tool isn't just about saving money; it's about <strong className="text-[var(--text-main)]">opportunity cost</strong>. Every dollar spent on a fleeting "want" is a dollar that isn't working for you in the market.
                     </p>
                     
-                    <div className="bg-[var(--bg-hover)] p-6 rounded-2xl border border-[var(--border)]">
+                    <div className="bg-[var(--bg-hover)] p-6 rounded-2xl">
                         <h3 className="text-[var(--text-main)] font-bold mb-4 text-xs uppercase tracking-wider">The Formula</h3>
-                        <div className="font-mono text-lg text-[var(--primary)] mb-2">FV = P × [((1 + r)^n - 1) / r]</div>
-                        <p className="text-[10px] text-[var(--text-muted)] italic">
-                            Where <span className="text-[var(--text-main)]">FV</span> is Future Value, <span className="text-[var(--text-main)]">P</span> is your monthly contribution, <span className="text-[var(--text-main)]">r</span> is the monthly interest rate, and <span className="text-[var(--text-main)]">n</span> is the total number of months.
-                        </p>
+                        
+                        {/* Clean formula display */}
+                        <div className="mb-4">
+                            <div className="flex items-center justify-center space-x-2">
+                                {/* Main formula line */}
+                                <div className="text-xl font-mono text-[var(--primary)] font-semibold">
+                                    FV = P × 
+                                </div>
+                                
+                                {/* Fraction part */}
+                                <div className="flex flex-col items-center">
+                                    {/* Numerator */}
+                                    <div className="font-mono text-[var(--primary)] px-2 py-1 border-b border-[var(--primary)] mx-auto">
+                                        (1 + r)<span className="text-sm align-super">n</span> - 1
+                                    </div>
+                                    
+                                    {/* Denominator */}
+                                    <div className="font-mono text-[var(--primary)] px-2">
+                                        r
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        {/* Variables explanation */}
+                        <div className="grid grid-cols-2 gap-3 text-xs">
+                            <div className="flex items-center gap-2">
+                                <span className="font-mono font-bold text-[var(--primary)]">FV</span>
+                                <span className="text-[var(--text-muted)]">Future Value</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <span className="font-mono font-bold text-[var(--primary)]">P</span>
+                                <span className="text-[var(--text-muted)]">Monthly Contribution</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <span className="font-mono font-bold text-[var(--primary)]">r</span>
+                                <span className="text-[var(--text-muted)]">Monthly Interest Rate</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <span className="font-mono font-bold text-[var(--primary)]">n</span>
+                                <span className="text-[var(--text-muted)]">Total Months</span>
+                            </div>
+                        </div>
                     </div>
 
                     <div>
