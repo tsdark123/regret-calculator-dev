@@ -52,13 +52,30 @@ export const Footer: React.FC = () => {
           />
         </div>
 
-        <div className="text-center space-y-2">
-            <p className="text-xs text-[var(--text-muted)]">
-                Regret Calculator, Sepehr Zunoubi &copy; 2026
-            </p>
-            <p className="text-[10px] text-[var(--text-muted)] uppercase tracking-widest opacity-70">
-                Past performance does not guarantee future results.
-            </p>
+        <div className="text-center space-y-4">
+            <div className="flex justify-center items-center gap-6 text-xs">
+                <a 
+                    href="/privacy" 
+                    className="text-[var(--text-muted)] hover:text-[var(--primary)] transition-colors"
+                >
+                    Privacy Policy
+                </a>
+                <span className="text-[var(--text-muted)] opacity-30">•</span>
+                <a 
+                    href="/tos" 
+                    className="text-[var(--text-muted)] hover:text-[var(--primary)] transition-colors"
+                >
+                    Terms of Service
+                </a>
+            </div>
+            <div className="space-y-2">
+                <p className="text-xs text-[var(--text-muted)]">
+                    Regret Calculator, Sepehr Zunoubi &copy; 2026
+                </p>
+                <p className="text-[10px] text-[var(--text-muted)] uppercase tracking-widest opacity-70">
+                    Past performance does not guarantee future results.
+                </p>
+            </div>
         </div>
       </div>
     </footer>

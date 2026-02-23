@@ -11,6 +11,8 @@ import { FunFactGenerator } from './components/FunFactGenerator';
 import { ToolsDashboard } from './components/ToolsDashboard';
 import { Roadmap } from './components/Roadmap';
 import { LoadingScreen } from './components/LoadingScreen';
+import { PrivacyPolicy } from './components/PrivacyPolicy';
+import { TermsOfService } from './components/TermsOfService';
 import { ParticleBackground } from './components/ParticleBackground';
 import { ThemeBackground } from './components/ThemeBackground';
 import { SnowBackground } from './components/SnowBackground';
@@ -790,6 +792,16 @@ function App() {
   // Render admin page if on /admin-stats route
   if (currentPath === '/admin-stats') {
     return <AdminStats />;
+  }
+
+  // Render privacy policy page if on /privacy route
+  if (currentPath === '/privacy') {
+    return <PrivacyPolicy />;
+  }
+
+  // Render terms of service page if on /tos route
+  if (currentPath === '/tos') {
+    return <TermsOfService />;
   }
 
   return <MainApp />;
