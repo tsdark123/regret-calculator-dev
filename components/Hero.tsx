@@ -387,6 +387,22 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
               </div>
             </div>
           </div>
+
+          {/* Mobile Legal Links */}
+          <div className="flex gap-3 justify-center">
+            <a
+              href="/privacy"
+              className="opacity-60 hover:opacity-100 px-5 py-1.5 rounded-xl border border-[var(--border)] bg-[var(--bg-card)]/60 text-[var(--text-muted)] font-semibold text-[11px] hover:bg-[var(--bg-hover)] transition-all backdrop-blur-sm active:scale-[0.98]"
+            >
+              Privacy
+            </a>
+            <a
+              href="/tos"
+              className="opacity-60 hover:opacity-100 px-5 py-1.5 rounded-xl border border-[var(--border)] bg-[var(--bg-card)]/60 text-[var(--text-muted)] font-semibold text-[11px] hover:bg-[var(--bg-hover)] transition-all backdrop-blur-sm active:scale-[0.98]"
+            >
+              TOS
+            </a>
+          </div>
         </div>
 
         {/* Desktop: Horizontal layout */}
