@@ -57,7 +57,6 @@ const STEPS: PlanStep[] = [
     status: "success",
     duration: "Jun 2025",
     icon: <TerminalSquare className="w-3.5 h-3.5" />,
-    defaultExpanded: true,
     content: (
       <div className="space-y-3 font-mono text-[14px] mt-2">
         <div className="flex items-center gap-2">
@@ -237,8 +236,8 @@ export const Roadmap: React.FC<{ cardClassName?: string }> = ({ cardClassName })
 
   const [expandedSteps, setExpandedSteps] = useState<Record<string, boolean>>(
     STEPS.reduce((acc, step) => {
-      // On mobile, don't expand by default. On desktop, use defaultExpanded
-      acc[step.id] = isMobile ? false : (step.defaultExpanded || false);
+      // On both mobile and desktop, use defaultExpanded
+      acc[step.id] = step.defaultExpanded || false;
       return acc;
     }, {} as Record<string, boolean>)
   );
@@ -247,7 +246,7 @@ export const Roadmap: React.FC<{ cardClassName?: string }> = ({ cardClassName })
   useEffect(() => {
     setExpandedSteps(
       STEPS.reduce((acc, step) => {
-        acc[step.id] = isMobile ? false : (step.defaultExpanded || false);
+        acc[step.id] = step.defaultExpanded || false;
         return acc;
       }, {} as Record<string, boolean>)
     );

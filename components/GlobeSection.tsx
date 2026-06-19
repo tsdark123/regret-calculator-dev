@@ -109,7 +109,7 @@ export const GlobeSection: React.FC<GlobeSectionProps> = ({ theme }) => {
   });
 
   return (
-    <section className="hidden md:flex w-full py-20 flex-col items-center justify-center select-none border-t border-b relative flex-shrink-0" style={{ borderColor: 'rgba(107, 114, 128, 0.2)' }}>
+    <section className="hidden md:flex w-full py-12 flex-col items-center justify-center select-none border-t border-b relative flex-shrink-0" style={{ borderColor: 'rgba(107, 114, 128, 0.2)' }}>
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none opacity-100" />
       <div style={{ ...beamStyle(false, '0s'), top: -1 }} />
       <div style={{ ...beamStyle(true, '-2s'), top: -1 }} />

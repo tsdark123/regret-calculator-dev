@@ -28,6 +28,21 @@ const statusItems = [
 export const StatusPanel: React.FC = () => {
   return (
     <div className="w-full h-full flex flex-col select-none">
+      <style>{`
+        .status-panel-scroll::-webkit-scrollbar {
+          width: 4px;
+        }
+        .status-panel-scroll::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .status-panel-scroll::-webkit-scrollbar-thumb {
+          background: rgba(107, 114, 128, 0.3);
+          border-radius: 2px;
+        }
+        .status-panel-scroll::-webkit-scrollbar-thumb:hover {
+          background: rgba(107, 114, 128, 0.5);
+        }
+      `}</style>
       <div className="bg-[var(--bg-card)] border border-[var(--border)] shadow-sm rounded-xl overflow-hidden transition-all duration-300 flex flex-col h-full select-none">
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-3.5 select-none bg-[var(--bg-hover)]/30 border-b border-gray-500/10 flex-shrink-0">
@@ -48,7 +63,7 @@ export const StatusPanel: React.FC = () => {
         </div>
 
         {/* Table */}
-        <div className="p-4 flex-1 flex flex-col">
+        <div className="p-4 flex-1 flex flex-col overflow-y-auto status-panel-scroll">
           <Table>
             <TableHeader>
               <TableRow className="border-[var(--border)]">

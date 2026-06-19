@@ -63,12 +63,18 @@ type NavTab = 'home' | 'calculate' | 'tools' | 'roadmap';
 
 function RoadmapLayout() {
   const roadmapColRef = useRef<HTMLDivElement>(null);
-  const [roadmapHeight, setRoadmapHeight] = useState<number | null>(null);
+  const [roadmapHeight, setRoadmapHeight] = useState<number | null>(450); // Default height for 1 expanded item
 
   useEffect(() => {
     const el = roadmapColRef.current;
     if (!el) return;
     let cardObs: ResizeObserver | null = null;
+
+    // Immediately measure initial height to prevent flash
+    const card = el.querySelector('.roadmap-card') as HTMLElement | null;
+    if (card) {
+      setRoadmapHeight(card.offsetHeight);
+    }
 
     const colObs = new ResizeObserver(() => {
       const card = el.querySelector('.roadmap-card') as HTMLElement | null;
