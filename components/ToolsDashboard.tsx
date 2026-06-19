@@ -68,7 +68,7 @@ const InflationTool = () => {
     const futureValue = amount * Math.pow(1 + rate / 100, years);
 
     return (
-        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-3xl p-8 shadow-2xl flex flex-col h-full hover:border-[var(--text-muted)] transition-colors w-full min-w-0 overflow-hidden">
+        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-3xl p-8 shadow-2xl flex flex-col h-full hover:border-[var(--text-muted)] transition-colors w-full min-w-0 overflow-hidden select-none">
             <div className="flex items-center gap-3 mb-3">
                 <DollarSign className="w-6 h-6 text-[var(--text-muted)]" />
                 <h3 className="text-lg font-bold text-[var(--text-main)] uppercase tracking-wider">Inflation Reality</h3>
@@ -131,7 +131,7 @@ const RuleOf72Tool = () => {
     const yearsToDouble = 72 / rate;
 
     return (
-        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-3xl p-8 shadow-2xl flex flex-col h-full hover:border-[var(--text-muted)] transition-colors w-full min-w-0 overflow-hidden">
+        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-3xl p-8 shadow-2xl flex flex-col h-full hover:border-[var(--text-muted)] transition-colors w-full min-w-0 overflow-hidden select-none">
             <div className="flex items-center gap-3 mb-3">
                 <Clock className="w-6 h-6 text-[var(--text-muted)]" />
                 <h3 className="text-lg font-bold text-[var(--text-main)] uppercase tracking-wider">Rule of 72</h3>
@@ -298,7 +298,7 @@ const SegmentedControl = ({
 // --- Projections View (No Data State) ---
 const ProjectionsEmptyState = ({ onNavigateHome }: { onNavigateHome: () => void }) => {
     return (
-        <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
+        <div className="flex flex-col items-center justify-center py-16 px-4 text-center select-none">
             <div className="w-20 h-20 rounded-full bg-[var(--bg-hover)] border border-[var(--border)] flex items-center justify-center mb-6">
                 <TrendingUp className="w-10 h-10 text-[var(--text-muted)]" />
             </div>
@@ -352,9 +352,9 @@ export const ToolsDashboard: React.FC<ToolsDashboardProps> = ({
     }, [activeView]);
 
     return (
-        <div className="w-full animate-fade-in-up pb-12 relative overflow-y-auto" style={{ background: 'transparent' }}>
+        <div className="w-full animate-fade-in-up pb-12 relative overflow-y-auto select-none" style={{ background: 'transparent' }}>
             {/* Header */}
-            <div className="text-center mb-8 pt-4 relative z-10">
+            <div className="text-center mb-8 pt-4 relative z-10 select-none">
                 <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-[var(--text-main)] mb-4 tracking-tight">Financial Toolbox</h2>
                 <p className="text-[var(--text-muted)] max-w-2xl mx-auto text-sm sm:text-base md:text-lg font-light px-4">
                     Advanced projections and calculators to help you plan your financial future.
@@ -362,12 +362,12 @@ export const ToolsDashboard: React.FC<ToolsDashboardProps> = ({
             </div>
 
             {/* Segmented Control */}
-            <div className="flex justify-center mb-10 px-4">
+            <div className="flex justify-center mb-10 px-4 select-none">
                 <SegmentedControl activeView={activeView} onViewChange={setActiveView} />
             </div>
 
             {/* Content Views */}
-            <div className="relative z-10 max-w-7xl mx-auto px-4 lg:px-0">
+            <div className="relative z-10 max-w-7xl mx-auto px-4 lg:px-0 select-none">
                 {activeView === 'projections' ? (
                     /* Projections View */
                     results && assumptions ? (

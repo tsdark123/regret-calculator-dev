@@ -12,7 +12,7 @@ interface HeroProps {
 
 const StatCounter = ({ value, suffix = '', progress = 1 }: { value: number, suffix?: string, progress?: number }) => {
   const current = Math.floor(value * progress);
-  return <span>{current.toLocaleString()}{suffix}</span>;
+  return <span className="select-none">{current.toLocaleString()}{suffix}</span>;
 };
 
 // --- Testimonial Component ---
@@ -40,7 +40,7 @@ const TestimonialTicker = () => {
     }, []);
 
     return (
-        <div className="mt-12 h-14 flex flex-col items-center justify-center">
+        <div className="mt-12 h-14 flex flex-col items-center justify-center select-none">
             <div className={`transition-opacity duration-500 flex flex-col items-center ${fade ? 'opacity-100' : 'opacity-0'}`}>
                 <p className="text-lg text-[var(--text-muted)] italic font-light tracking-wide">"{TESTIMONIALS[index].text}"</p>
                 <span className="text-xs text-[var(--text-muted)] uppercase tracking-widest font-bold mt-2">- {TESTIMONIALS[index].author}</span>
@@ -238,7 +238,7 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
   };
 
   return (
-    <section className="min-h-dvh md:min-h-[90vh] flex flex-col items-center justify-center text-center px-4 relative overflow-hidden pt-8 md:pt-32 select-none">
+    <section className="min-h-dvh md:min-h-[90vh] flex flex-col items-center justify-center text-center px-4 relative overflow-hidden pt-8 md:pt-32 select-none" style={{ userSelect: 'none', WebkitUserSelect: 'none', MozUserSelect: 'none', msUserSelect: 'none' }}>
       
       {/* --- Background Elements - Desktop only for performance --- */}
       <div className="hidden md:block">
@@ -253,7 +253,7 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
 
       {/* 3. Left Side: Bar Graph Decoration - Desktop only */}
       <div className="absolute left-[5%] lg:left-[8%] top-[45vh] -translate-y-1/2 hidden xl:flex flex-col gap-4 opacity-60 -z-10 pointer-events-none select-none transition-opacity duration-700 hover:opacity-80">
-        <div className="w-56 p-5 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)]/80 backdrop-blur-sm transform -rotate-6 shadow-2xl">
+        <div className="w-56 p-5 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)]/80 backdrop-blur-sm transform -rotate-6 shadow-2xl select-none">
             <div className="flex items-end gap-3 h-32 mb-3 px-2 border-b border-[var(--border)] pb-2">
                 <div className="w-1/4 bg-slate-800 rounded-t-sm h-[30%] animate-pulse"></div>
                 <div className="w-1/4 bg-slate-700 rounded-t-sm h-[50%] animate-pulse delay-75"></div>
@@ -269,16 +269,16 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
 
       {/* 4. Right Side: Abstract Radial UI - Desktop only */}
       <div className="absolute right-[5%] lg:right-[8%] top-[45vh] -translate-y-1/2 hidden xl:flex flex-col opacity-60 -z-10 pointer-events-none select-none transition-opacity duration-700 hover:opacity-80">
-        <div className="relative w-64 h-64 flex items-center justify-center transform rotate-12">
+        <div className="relative w-64 h-64 flex items-center justify-center transform rotate-12 select-none">
             {/* Outer Ring */}
             <div className="absolute inset-0 rounded-full border border-dashed border-[var(--border)] animate-[spin_20s_linear_infinite]"></div>
-            
+
             {/* Inner Floating Card */}
-            <div className="w-40 h-40 bg-[var(--bg-card)]/80 backdrop-blur-md rounded-2xl border border-[var(--border)] shadow-2xl flex items-center justify-center relative overflow-hidden">
+            <div className="w-40 h-40 bg-[var(--bg-card)]/80 backdrop-blur-md rounded-2xl border border-[var(--border)] shadow-2xl flex items-center justify-center relative overflow-hidden select-none">
                 <div className="absolute inset-0 bg-[var(--primary)] opacity-10"></div>
-                <div className="text-center space-y-2 relative z-10">
-                   <div className="text-3xl font-bold text-[var(--text-main)] tracking-tight">+124%</div>
-                   <div className="text-[10px] text-[var(--primary)] uppercase tracking-widest bg-[var(--bg-input)] px-2 py-1 rounded-full border border-[var(--primary)]">Growth</div>
+                <div className="text-center space-y-2 relative z-10 select-none">
+                   <div className="text-3xl font-bold text-[var(--text-main)] tracking-tight select-none">+124%</div>
+                   <div className="text-[10px] text-[var(--primary)] uppercase tracking-widest bg-[var(--bg-input)] px-2 py-1 rounded-full border border-[var(--primary)] select-none">Growth</div>
                 </div>
             </div>
 
@@ -299,21 +299,21 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
         <span className="text-[12px] text-[var(--text-muted)]">Best experience on desktop. Mobile is in beta.</span>
       </div>
 
-      <h1 className="text-[clamp(2.5rem,_12.6vw,_3.754rem)] sm:text-8xl md:text-8xl font-bold tracking-tighter mb-4 md:mb-8 text-[var(--text-main)] drop-shadow-2xl leading-[1.1] animate-fade-in-down z-10 max-w-4xl mt-20 md:mt-0">
+      <h1 className="text-[clamp(2.5rem,_12.6vw,_3.754rem)] sm:text-8xl md:text-8xl font-bold tracking-tighter mb-4 md:mb-8 text-[var(--text-main)] drop-shadow-2xl leading-[1.1] animate-fade-in-down z-10 max-w-4xl mt-20 md:mt-0 select-none">
         Calculated Growth.<br />
         <span className="text-[var(--primary)]">Zero Regret.</span>
       </h1>
-      
-      <div className="relative">
+
+      <div className="relative select-none">
         {/* Theme-aware Glow Effect - Relocated from AmbientBackground */}
-        <div 
+        <div
           className="hidden md:block absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 blur-3xl rounded-full pointer-events-none z-0"
           style={{
             backgroundColor: getGlowColor()
           }}
         />
-        
-        <p className="text-[clamp(0.9rem,_3.7vw,_1.1rem)] sm:text-2xl md:text-2xl text-[var(--text-muted)] max-w-3xl mb-6 md:mb-12 leading-relaxed font-light animate-fade-in-up delay-100 opacity-0 z-10 px-4">
+
+        <p className="text-[clamp(0.9rem,_3.7vw,_1.1rem)] sm:text-2xl md:text-2xl text-[var(--text-muted)] max-w-3xl mb-6 md:mb-12 leading-relaxed font-light animate-fade-in-up delay-100 opacity-0 z-10 px-4 select-none">
           See how the price of inaction grows over time. <br className="hidden md:block"/>
           Input your habits to see what waiting is <span className="text-[var(--text-main)] font-medium">really</span> costing you.
         </p>
@@ -325,9 +325,9 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
         {/* Mobile: Vertical list of wide buttons (Learn → Calculate → Presets) */}
         <div className="flex flex-col md:hidden gap-3 w-full">
           {/* 1. Learn - How it Works */}
-          <button 
+          <button
             onClick={() => setShowTheory(true)}
-            className="w-full flex items-center justify-center gap-3 px-[clamp(12px,_4vw,_20px)] py-[clamp(10px,_3vw,_14px)] rounded-2xl border border-[var(--border)] bg-[var(--bg-card)]/60 text-[var(--text-main)] font-semibold text-[clamp(0.8rem,_3.2vw,_0.95rem)] hover:bg-[var(--bg-hover)] transition-all backdrop-blur-sm active:scale-[0.98] shadow-lg"
+            className="w-full flex items-center justify-center gap-3 px-[clamp(12px,_4vw,_20px)] py-[clamp(10px,_3vw,_14px)] rounded-2xl border border-[var(--border)] bg-[var(--bg-card)]/60 text-[var(--text-main)] font-semibold text-[clamp(0.8rem,_3.2vw,_0.95rem)] hover:bg-[var(--bg-hover)] transition-all backdrop-blur-sm active:scale-[0.98] shadow-lg select-none"
           >
             <BookOpen className="w-[clamp(0.9rem,_3.5vw,_1.1rem)] h-[clamp(0.9rem,_3.5vw,_1.1rem)] text-blue-400" />
             <span>How it Works</span>
@@ -336,41 +336,41 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
           {/* 2. Calculate - Main CTA */}
           <button
             onClick={onStart}
-            className="group w-full flex items-center justify-center gap-3 px-[clamp(12px,_4vw,_20px)] py-[clamp(10px,_3vw,_14px)] font-bold text-white transition-all duration-300 bg-[var(--primary)] rounded-2xl hover:bg-[var(--primary-hover)] active:scale-[0.98] shadow-xl shadow-[var(--primary)]/25 text-[clamp(0.8rem,_3.2vw,_0.95rem)]"
+            className="group w-full flex items-center justify-center gap-3 px-[clamp(12px,_4vw,_20px)] py-[clamp(10px,_3vw,_14px)] font-bold text-white transition-all duration-300 bg-[var(--primary)] rounded-2xl hover:bg-[var(--primary-hover)] active:scale-[0.98] shadow-xl shadow-[var(--primary)]/25 text-[clamp(0.8rem,_3.2vw,_0.95rem)] select-none"
           >
             <span>Calculate Your Regret</span>
             <ArrowDown className="w-[clamp(0.9rem,_3.5vw,_1.1rem)] h-[clamp(0.9rem,_3.5vw,_1.1rem)] group-hover:translate-y-1 transition-transform duration-300" />
           </button>
 
           {/* 3. Presets - Quick Load */}
-          <button 
+          <button
             onClick={() => setShowPreset(true)}
-            className="w-full flex items-center justify-center gap-3 px-[clamp(12px,_4vw,_20px)] py-[clamp(10px,_3vw,_14px)] rounded-2xl border border-[var(--border)] bg-[var(--bg-card)]/60 text-[var(--text-main)] font-semibold text-[clamp(0.8rem,_3.2vw,_0.95rem)] hover:bg-[var(--bg-hover)] transition-all backdrop-blur-sm active:scale-[0.98] shadow-lg"
+            className="w-full flex items-center justify-center gap-3 px-[clamp(12px,_4vw,_20px)] py-[clamp(10px,_3vw,_14px)] rounded-2xl border border-[var(--border)] bg-[var(--bg-card)]/60 text-[var(--text-main)] font-semibold text-[clamp(0.8rem,_3.2vw,_0.95rem)] hover:bg-[var(--bg-hover)] transition-all backdrop-blur-sm active:scale-[0.98] shadow-lg select-none"
           >
             <Zap className="w-[clamp(0.9rem,_3.5vw,_1.1rem)] h-[clamp(0.9rem,_3.5vw,_1.1rem)] text-yellow-400" />
             <span>Quick Load Presets</span>
           </button>
 
           {/* Mobile Stats Bar */}
-          <div className="w-full mt-4 bg-[var(--bg-card)]/50 backdrop-blur-md border border-[var(--border)] rounded-2xl py-[clamp(12px,_3vw,_16px)] px-[clamp(8px,_2.5vw,_12px)] shadow-xl">
+          <div className="w-full mt-4 bg-[var(--bg-card)]/50 backdrop-blur-md border border-[var(--border)] rounded-2xl py-[clamp(12px,_3vw,_16px)] px-[clamp(8px,_2.5vw,_12px)] shadow-xl select-none">
             <div className="grid grid-cols-3 gap-3">
               <div className={`flex flex-col items-center justify-center ${animationComplete ? 'animate-float' : ''}`}>
-                <span className="text-[clamp(1rem,_4.5vw,_1.25rem)] font-bold text-[var(--text-main)] tracking-tight mb-1">
+                <span className="text-[clamp(1rem,_4.5vw,_1.25rem)] font-bold text-[var(--text-main)] tracking-tight mb-1 select-none">
                   <StatCounter value={decisionCount} suffix="+" progress={animationProgress} />
                 </span>
-                <span className="text-[clamp(6px,_2vw,_8px)] text-[var(--text-muted)] font-semibold uppercase tracking-wider text-center leading-tight">Decisions Analyzed</span>
+                <span className="text-[clamp(6px,_2vw,_8px)] text-[var(--text-muted)] font-semibold uppercase tracking-wider text-center leading-tight select-none">Decisions Analyzed</span>
               </div>
               <div className={`flex flex-col items-center justify-center border-x border-white/5 ${animationComplete ? 'animate-float' : ''}`}>
-                <span className="text-[clamp(1rem,_4.5vw,_1.25rem)] font-bold text-[var(--text-main)] tracking-tight mb-1">
+                <span className="text-[clamp(1rem,_4.5vw,_1.25rem)] font-bold text-[var(--text-main)] tracking-tight mb-1 select-none">
                   <StatCounter value={960} suffix="M+" progress={animationProgress} />
                 </span>
-                <span className="text-[clamp(6px,_2vw,_8px)] text-[var(--text-muted)] font-semibold uppercase tracking-wider text-center leading-tight">Total Capital Wasted</span>
+                <span className="text-[clamp(6px,_2vw,_8px)] text-[var(--text-muted)] font-semibold uppercase tracking-wider text-center leading-tight select-none">Total Capital Wasted</span>
               </div>
               <div className={`flex flex-col items-center justify-center ${animationComplete ? 'animate-float' : ''}`}>
-                <span className="text-[clamp(1rem,_4.5vw,_1.25rem)] font-bold text-[var(--text-main)] tracking-tight mb-1">
+                <span className="text-[clamp(1rem,_4.5vw,_1.25rem)] font-bold text-[var(--text-main)] tracking-tight mb-1 select-none">
                   <StatCounter value={667} suffix="%+" progress={animationProgress} />
                 </span>
-                <span className="text-[clamp(6px,_2vw,_8px)] text-[var(--text-muted)] font-semibold uppercase tracking-wider text-center leading-tight">Avg. Annual Yield Missed</span>
+                <span className="text-[clamp(6px,_2vw,_8px)] text-[var(--text-muted)] font-semibold uppercase tracking-wider text-center leading-tight select-none">Avg. Annual Yield Missed</span>
               </div>
             </div>
           </div>
@@ -395,9 +395,9 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
         {/* Desktop: Horizontal layout */}
         <div className="hidden md:flex gap-4 items-center">
           {/* Left: Presets */}
-          <button 
+          <button
             onClick={() => setShowPreset(true)}
-            className="flex items-center gap-2 px-6 py-[13px] rounded-2xl border border-[var(--border)] bg-[var(--bg-card)]/40 text-[var(--text-muted)] font-medium text-sm hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] transition-all backdrop-blur-sm active:scale-[0.98]"
+            className="flex items-center gap-2 px-6 py-[13px] rounded-2xl border border-[var(--border)] bg-[var(--bg-card)]/40 text-[var(--text-muted)] font-medium text-sm hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] transition-all backdrop-blur-sm active:scale-[0.98] select-none"
           >
             <Zap className="w-4 h-4 text-yellow-400" />
             <span>Quick Load</span>
@@ -406,16 +406,16 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
           {/* Center: Main CTA */}
           <button
             onClick={onStart}
-            className="group relative inline-flex items-center justify-center px-10 py-[13px] font-semibold text-white transition-all duration-300 bg-[var(--primary)] rounded-2xl hover:bg-[var(--primary-hover)] hover:scale-[1.02] active:scale-[0.98] hover:shadow-[0_0_30px_var(--primary)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary)] focus:ring-offset-[var(--bg-main)] shadow-xl"
+            className="group relative inline-flex items-center justify-center px-10 py-[13px] font-semibold text-white transition-all duration-300 bg-[var(--primary)] rounded-2xl hover:bg-[var(--primary-hover)] hover:scale-[1.02] active:scale-[0.98] hover:shadow-[0_0_30px_var(--primary)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary)] focus:ring-offset-[var(--bg-main)] shadow-xl select-none"
           >
             <span className="mr-3 text-base">Calculate Your Regret</span>
             <ArrowDown className="w-4 h-4 group-hover:translate-y-1 transition-transform duration-300" />
           </button>
 
           {/* Right: Theory */}
-          <button 
+          <button
             onClick={() => setShowTheory(true)}
-            className="flex items-center gap-2 px-6 py-[13px] rounded-2xl border border-[var(--border)] bg-[var(--bg-card)]/40 text-[var(--text-muted)] font-medium text-sm hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] transition-all backdrop-blur-sm active:scale-[0.98]"
+            className="flex items-center gap-2 px-6 py-[13px] rounded-2xl border border-[var(--border)] bg-[var(--bg-card)]/40 text-[var(--text-muted)] font-medium text-sm hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] transition-all backdrop-blur-sm active:scale-[0.98] select-none"
           >
             <BookOpen className="w-4 h-4 text-blue-400" />
             <span>How it Works</span>
@@ -424,31 +424,31 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
       </div>
 
       {/* Stats Bar (Desktop Only) */}
-      <div className="w-full max-w-4xl mx-auto hidden md:block animate-fade-in-up delay-300 opacity-0 z-10">
+      <div className="w-full max-w-4xl mx-auto hidden md:block animate-fade-in-up delay-300 opacity-0 z-10 select-none">
           <div className="grid grid-cols-3 divide-x divide-white/5 bg-[var(--bg-card)]/50 backdrop-blur-md border border-[var(--border)] rounded-full py-5 px-8 shadow-2xl">
             <div className={`flex flex-col items-center justify-center group ${animationComplete ? 'animate-float' : ''}`}>
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="text-3xl font-bold text-[var(--text-main)] tracking-tight group-hover:text-[var(--primary)] transition-colors">
+                  <span className="text-3xl font-bold text-[var(--text-main)] tracking-tight group-hover:text-[var(--primary)] transition-colors select-none">
                       <StatCounter value={decisionCount} suffix="+" progress={animationProgress} />
                   </span>
                 </div>
-                <span className="text-[10px] text-[var(--text-muted)] font-semibold uppercase tracking-widest">Decisions Analyzed</span>
+                <span className="text-[10px] text-[var(--text-muted)] font-semibold uppercase tracking-widest select-none">Decisions Analyzed</span>
             </div>
             <div className={`flex flex-col items-center justify-center group ${animationComplete ? 'animate-float' : ''}`}>
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="text-3xl font-bold text-[var(--text-main)] tracking-tight group-hover:text-[var(--primary)] transition-colors">
+                  <span className="text-3xl font-bold text-[var(--text-main)] tracking-tight group-hover:text-[var(--primary)] transition-colors select-none">
                       <StatCounter value={960} suffix="M+" progress={animationProgress} />
                   </span>
                 </div>
-                <span className="text-[10px] text-[var(--text-muted)] font-semibold uppercase tracking-widest">Total Capital Wasted</span>
+                <span className="text-[10px] text-[var(--text-muted)] font-semibold uppercase tracking-widest select-none">Total Capital Wasted</span>
             </div>
             <div className={`flex flex-col items-center justify-center group ${animationComplete ? 'animate-float' : ''}`}>
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="text-3xl font-bold text-[var(--text-main)] tracking-tight group-hover:text-[var(--primary)] transition-colors">
+                  <span className="text-3xl font-bold text-[var(--text-main)] tracking-tight group-hover:text-[var(--primary)] transition-colors select-none">
                       <StatCounter value={667} suffix="%+" progress={animationProgress} />
                   </span>
                 </div>
-                <span className="text-[10px] text-[var(--text-muted)] font-semibold uppercase tracking-widest">Avg. Annual Yield Missed</span>
+                <span className="text-[10px] text-[var(--text-muted)] font-semibold uppercase tracking-widest select-none">Avg. Annual Yield Missed</span>
             </div>
           </div>
 

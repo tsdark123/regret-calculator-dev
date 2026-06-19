@@ -152,8 +152,9 @@ const getStatusColor = (status: PlanStepStatus) => {
   }
 };
 
-export const Roadmap: React.FC = () => {
+export const Roadmap: React.FC<{ cardClassName?: string }> = ({ cardClassName }) => {
   const mainContentRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isMobile, setIsMobile] = useState(false);
 
   // Detect mobile device
@@ -162,6 +163,76 @@ export const Roadmap: React.FC = () => {
     checkMobile();
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Wave animation
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let time = 0;
+    let animId: number;
+
+    const waveData = Array.from({ length: 8 }).map(() => ({
+      value: Math.random() * 0.5 + 0.1,
+      targetValue: Math.random() * 0.5 + 0.1,
+      speed: Math.random() * 0.02 + 0.01,
+    }));
+
+    function resize() {
+      canvas!.width = canvas!.parentElement?.offsetWidth || 0;
+      canvas!.height = canvas!.parentElement?.offsetHeight || 0;
+    }
+
+    function update() {
+      waveData.forEach(d => {
+        if (Math.random() < 0.01) d.targetValue = Math.random() * 0.7 + 0.1;
+        d.value += (d.targetValue - d.value) * d.speed;
+      });
+    }
+
+    function draw() {
+      ctx!.clearRect(0, 0, canvas!.width, canvas!.height);
+      waveData.forEach((d, i) => {
+        const freq = d.value * 7;
+        ctx!.beginPath();
+        for (let x = 0; x < canvas!.width; x++) {
+          const nx = (x / canvas!.width) * 2 - 1;
+          const px = nx + i * 0.04 + freq * 0.03;
+          const py = Math.sin(px * 10 + time) * Math.cos(px * 2) * freq * 0.1 * ((i + 1) / 8);
+          const y = (py + 1) * canvas!.height / 2;
+          x === 0 ? ctx!.moveTo(x, y) : ctx!.lineTo(x, y);
+        }
+        const intensity = Math.min(1, freq * 0.3);
+        const r = 40 + intensity * 60;
+        const g = 40 + intensity * 80;
+        ctx!.lineWidth = 0.8 + i * 0.2;
+        ctx!.strokeStyle = `rgba(${r},${g},229,0.08)`;
+        ctx!.shadowColor = `rgba(${r},${g},229,0.04)`;
+        ctx!.shadowBlur = 2;
+        ctx!.stroke();
+        ctx!.shadowBlur = 0;
+      });
+    }
+
+    function animate() {
+      time += 0.02;
+      update();
+      draw();
+      animId = requestAnimationFrame(animate);
+    }
+
+    const observer = new ResizeObserver(resize);
+    observer.observe(canvas.parentElement!);
+    resize();
+    animate();
+
+    return () => {
+      cancelAnimationFrame(animId);
+      observer.disconnect();
+    };
   }, []);
 
   const [expandedSteps, setExpandedSteps] = useState<Record<string, boolean>>(
@@ -206,10 +277,11 @@ export const Roadmap: React.FC = () => {
   const allSuccess = STEPS.every((s) => s.status === "success");
 
   return (
-    <div className="w-full h-full flex items-center justify-center px-4 py-10 md:py-14 overflow-y-auto">
-      <div className="w-full max-w-4xl mx-auto my-4 font-sans text-[var(--text-main)]">
+    <div className="w-full h-full flex items-center justify-center px-4 py-6 overflow-hidden relative select-none">
+      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none opacity-100" />
+      <div className="w-full max-w-4xl mx-auto my-4 font-sans text-[var(--text-main)] relative z-10 select-none">
         {/* Outer Card */}
-        <div className="bg-[var(--bg-card)] border border-[var(--border)] shadow-sm rounded-xl overflow-hidden transition-all duration-300">
+        <div className={`bg-[var(--bg-card)] border border-[var(--border)] shadow-sm rounded-xl overflow-hidden transition-all duration-300 select-none${cardClassName ? ` ${cardClassName}` : ''}`}>
 
           {/* Top Header */}
           <div className="flex items-center justify-between px-4 py-3.5 select-none bg-[var(--bg-hover)]/30 border-b border-gray-500/10">

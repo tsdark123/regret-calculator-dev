@@ -313,6 +313,20 @@
         }
       }
 
+      @keyframes border-beam {
+        100% {
+          offset-distance: 100%;
+        }
+      }
+      .animate-border-beam {
+        animation: border-beam calc(var(--duration)*1s) infinite linear;
+      }
+
+      @keyframes beam-slide {
+        0%   { transform: translateX(-100%); }
+        100% { transform: translateX(400%); }
+      }
+
       .animate-fade-in-up {
         animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
       }

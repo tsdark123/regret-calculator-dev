@@ -8,6 +8,7 @@ import { StockSelector } from './components/StockSelector';
 import { Footer } from './components/Footer';
 import { TestimonialsSection } from './components/TestimonialsSection';
 import { FeaturesReveal } from './components/FeaturesReveal';
+import { GlobeSection } from './components/GlobeSection';
 import { AmbientBackground } from './components/AmbientBackground';
 import { FunFactGenerator } from './components/FunFactGenerator';
 import { ToolsDashboard } from './components/ToolsDashboard';
@@ -23,6 +24,7 @@ import { AdminStats } from './components/AdminStats';
 import { AnalyticsTracker } from './components/AnalyticsTracker';
 import { MobileBottomNav } from './components/MobileBottomNav';
 import { MobileIntro } from './components/MobileIntro';
+import { StatusPanel } from './components/StatusPanel';
 import { ArrowRight, Calculator, RefreshCw } from 'lucide-react';
 
 import { ResultsDashboard } from './components/ResultsDashboard';
@@ -58,6 +60,48 @@ declare global {
 }
 
 type NavTab = 'home' | 'calculate' | 'tools' | 'roadmap';
+
+function RoadmapLayout() {
+  const roadmapColRef = useRef<HTMLDivElement>(null);
+  const [roadmapHeight, setRoadmapHeight] = useState<number | null>(null);
+
+  useEffect(() => {
+    const el = roadmapColRef.current;
+    if (!el) return;
+    let cardObs: ResizeObserver | null = null;
+
+    const colObs = new ResizeObserver(() => {
+      const card = el.querySelector('.roadmap-card') as HTMLElement | null;
+      if (card) {
+        setRoadmapHeight(card.offsetHeight);
+        if (!cardObs) {
+          cardObs = new ResizeObserver(() => setRoadmapHeight(card.offsetHeight));
+          cardObs.observe(card);
+        }
+      }
+    });
+    colObs.observe(el);
+    return () => { colObs.disconnect(); cardObs?.disconnect(); };
+  }, []);
+
+  return (
+    <div className="fixed inset-0 z-40 pt-16 animate-fade-in-up">
+      {/* Desktop: side-by-side layout */}
+      <div className="hidden md:flex w-full h-full items-center justify-center gap-6 px-6 overflow-y-auto py-6">
+        <div className="flex-shrink-0" style={{ width: 380, height: roadmapHeight ?? undefined }}>
+          <StatusPanel />
+        </div>
+        <div ref={roadmapColRef} className="flex-1 max-w-4xl">
+          <Roadmap cardClassName="roadmap-card" />
+        </div>
+      </div>
+      {/* Mobile: roadmap only */}
+      <div className="md:hidden w-full h-full">
+        <Roadmap />
+      </div>
+    </div>
+  );
+}
 
 // Main calculator app component
 function MainApp() {
@@ -563,10 +607,8 @@ function MainApp() {
                 />
               </div>
             ) : viewMode === 'roadmap' ? (
-              /* Roadmap now takes full control of positioning to center itself */
-              <div className="fixed inset-0 z-40 pt-16 animate-fade-in-up">
-                  <Roadmap />
-              </div>
+              /* Roadmap view: side-by-side on desktop, roadmap only on mobile */
+              <RoadmapLayout />
             ) : (
               /* VIEW: CALCULATOR (HERO + MAIN) */
               <>
@@ -787,6 +829,7 @@ function MainApp() {
                       </div>
                   </main>
                   {viewMode === 'input' && <FeaturesReveal />}
+                  {viewMode === 'input' && <GlobeSection theme={theme} />}
                   {viewMode === 'input' && <TestimonialsSection />}
                   {viewMode !== 'results' && <Footer />}
               </>
