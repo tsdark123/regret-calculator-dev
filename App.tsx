@@ -6,6 +6,8 @@ import { QueueModule } from './components/QueueModule';
 import { SettingsPanel } from './components/SettingsPanel';
 import { StockSelector } from './components/StockSelector';
 import { Footer } from './components/Footer';
+import { TestimonialsSection } from './components/TestimonialsSection';
+import { FeaturesReveal } from './components/FeaturesReveal';
 import { AmbientBackground } from './components/AmbientBackground';
 import { FunFactGenerator } from './components/FunFactGenerator';
 import { ToolsDashboard } from './components/ToolsDashboard';
@@ -20,6 +22,7 @@ import { SnowBackground } from './components/SnowBackground';
 import { AdminStats } from './components/AdminStats';
 import { AnalyticsTracker } from './components/AnalyticsTracker';
 import { MobileBottomNav } from './components/MobileBottomNav';
+import { MobileIntro } from './components/MobileIntro';
 import { ArrowRight, Calculator, RefreshCw } from 'lucide-react';
 
 import { ResultsDashboard } from './components/ResultsDashboard';
@@ -60,6 +63,20 @@ type NavTab = 'home' | 'calculate' | 'tools' | 'roadmap';
 function MainApp() {
   const { decisionCount, incrementDecisionCount, logActivityEvent } = useAnalytics();
   
+  // Mobile intro state - only show on first visit for mobile users
+  const [showMobileIntro, setShowMobileIntro] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    const isMobile = window.innerWidth < 768;
+    const hasSeenIntro = sessionStorage.getItem('hasSeenIntro');
+    const isHomePath = window.location.pathname === '/' || window.location.pathname === '';
+    return isMobile && !hasSeenIntro && isHomePath;
+  });
+
+  const handleIntroComplete = () => {
+    sessionStorage.setItem('hasSeenIntro', 'true');
+    setShowMobileIntro(false);
+  };
+
   const [theme, setTheme] = useState<Theme>(() => getStoredTheme());
   const [expenses, setExpenses] = useState<Expense[]>([
     { id: '1', name: 'Subscription', amount: 15, frequency: 'Monthly', isWant: true },
@@ -508,6 +525,7 @@ function MainApp() {
 
   return (
     <>
+      {showMobileIntro && <MobileIntro onComplete={handleIntroComplete} />}
       <AnalyticsTracker />
       <div className={`flex flex-col theme-${theme} min-h-screen font-sans selection:bg-[var(--primary)] selection:text-white relative bg-[var(--bg-main)] text-[var(--text-main)] transition-colors duration-500 ${(window.innerWidth < 1024 && (currentPath === '/calculate' || currentPath.startsWith('/calculate') || currentPath === '/roadmap' || currentPath.startsWith('/roadmap'))) ? 'overflow-hidden h-screen' : ''}`}>
         {/* Full-Viewport Particle Background - Outside all containers */}
@@ -768,6 +786,8 @@ function MainApp() {
                           )}
                       </div>
                   </main>
+                  {viewMode === 'input' && <FeaturesReveal />}
+                  {viewMode === 'input' && <TestimonialsSection />}
                   {viewMode !== 'results' && <Footer />}
               </>
             )}

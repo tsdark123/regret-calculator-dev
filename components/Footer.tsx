@@ -28,8 +28,8 @@ const FAQItem = ({ question, answer }: { question: string; answer: string }) => 
 
 export const Footer: React.FC = () => {
   return (
-    <footer 
-        className="mt-8 lg:mt-24 pb-12 px-6 border-t border-[var(--border)]"
+    <footer
+        className="mt-8 lg:mt-12 pb-12 px-6 border-t border-[var(--border)]"
         style={{ background: 'var(--bg-footer)' }}
     >
       <div className="max-w-3xl mx-auto pt-8 lg:pt-16">

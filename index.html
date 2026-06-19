@@ -238,7 +238,7 @@
           transform: translateY(0px);
         }
         50% {
-          transform: translateY(-20px);
+          transform: translateY(-3px);
         }
       }
 
@@ -322,7 +322,7 @@
       }
 
       .animate-float {
-        animation: float 6s ease-in-out infinite;
+        animation: float 4s ease-in-out infinite;
       }
 
       .animate-float-delayed {
@@ -408,6 +408,49 @@
           max-width: 100vw;
         }
       }
+      @keyframes marquee-vertical {
+        from { transform: translateY(0); }
+        to   { transform: translateY(calc(-100% - 1rem)); }
+      }
+
+      /* --- Cube Loader --- */
+      @keyframes cubeSpin {
+        0%   { transform: rotateX(0deg) rotateY(0deg); }
+        100% { transform: rotateX(360deg) rotateY(360deg); }
+      }
+      @keyframes breathe {
+        0%, 100% { transform: translateZ(40px); opacity: 0.8; }
+        50%       { transform: translateZ(65px); opacity: 0.4; border-color: rgba(255,255,255,0.8); }
+      }
+      @keyframes pulse-fast {
+        0%, 100% { transform: scale(0.8); opacity: 0.5; }
+        50%       { transform: scale(1.2); opacity: 1; }
+      }
+      @keyframes shadow-breathe {
+        0%, 100% { transform: scale(1);   opacity: 0.4; }
+        50%       { transform: scale(1.5); opacity: 0.2; }
+      }
+      .animate-cube-spin     { animation: cubeSpin      8s linear     infinite; }
+      .animate-pulse-fast    { animation: pulse-fast    2s ease-in-out infinite; }
+      .animate-shadow-breathe{ animation: shadow-breathe 3s ease-in-out infinite; }
+      .preserve-3d           { transform-style: preserve-3d; }
+      .perspective-container { perspective: 1200px; }
+      .side-wrapper {
+        position: absolute; width: 100%; height: 100%;
+        display: flex; align-items: center; justify-content: center;
+        transform-style: preserve-3d;
+      }
+      .face {
+        width: 100%; height: 100%; position: absolute;
+        animation: breathe 3s ease-in-out infinite;
+        backdrop-filter: blur(2px);
+      }
+      .cube-front  { transform: rotateY(0deg); }
+      .cube-back   { transform: rotateY(180deg); }
+      .cube-right  { transform: rotateY(90deg); }
+      .cube-left   { transform: rotateY(-90deg); }
+      .cube-top    { transform: rotateX(90deg); }
+      .cube-bottom { transform: rotateX(-90deg); }
     </style>
   <script type="importmap">
 {

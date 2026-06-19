@@ -10,45 +10,9 @@ interface HeroProps {
   theme: Theme;
 }
 
-const StatCounter = ({ value, suffix = '', duration = 2000 }: { value: number, suffix?: string, duration?: number }) => {
-  const [displayValue, setDisplayValue] = useState(0);
-  const startValueRef = useRef(0);
-  const startTimeRef = useRef<number | null>(null);
-
-  useEffect(() => {
-    // If it's a small increment (live update), make it fast. 
-    // If it's a large jump (initial load), make it slow.
-    const isInitial = startValueRef.current === 0;
-    const currentDuration = isInitial ? duration : 500; 
-
-    const startVal = startValueRef.current;
-    const endVal = value;
-    
-    // Reset animation frame reference
-    startTimeRef.current = null;
-
-    const step = (timestamp: number) => {
-      if (!startTimeRef.current) startTimeRef.current = timestamp;
-      const progress = Math.min((timestamp - startTimeRef.current) / currentDuration, 1);
-      
-      // Easing: Cubic ease out
-      const easeProgress = 1 - Math.pow(1 - progress, 3);
-      
-      const current = Math.floor(startVal + (endVal - startVal) * easeProgress);
-      setDisplayValue(current);
-
-      if (progress < 1) {
-        window.requestAnimationFrame(step);
-      } else {
-        startValueRef.current = endVal; // Update ref for next animation
-      }
-    };
-    
-    window.requestAnimationFrame(step);
-  }, [value, duration]);
-
-  return <span>{displayValue.toLocaleString()}{suffix}</span>;
-
+const StatCounter = ({ value, suffix = '', progress = 1 }: { value: number, suffix?: string, progress?: number }) => {
+  const current = Math.floor(value * progress);
+  return <span>{current.toLocaleString()}{suffix}</span>;
 };
 
 // --- Testimonial Component ---
@@ -239,6 +203,29 @@ const TheoryModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void
 export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount, theme }) => {
   const [showPreset, setShowPreset] = useState(false);
   const [showTheory, setShowTheory] = useState(false);
+  const [animationProgress, setAnimationProgress] = useState(0);
+  const [animationComplete, setAnimationComplete] = useState(false);
+
+  // Shared animation for all stats
+  useEffect(() => {
+    const duration = 1100;
+    const startTime = performance.now();
+
+    const step = (timestamp: number) => {
+      const progress = Math.min((timestamp - startTime) / duration, 1);
+      // Ease-out cubic: fast at start, slow at end
+      const easeProgress = 1 - Math.pow(1 - progress, 3);
+      setAnimationProgress(easeProgress);
+
+      if (progress < 1) {
+        requestAnimationFrame(step);
+      } else {
+        setAnimationComplete(true);
+      }
+    };
+
+    requestAnimationFrame(step);
+  }, []);
   
   // Theme-aware glow color
   const getGlowColor = () => {
@@ -367,21 +354,21 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
           {/* Mobile Stats Bar */}
           <div className="w-full mt-4 bg-[var(--bg-card)]/50 backdrop-blur-md border border-[var(--border)] rounded-2xl py-[clamp(12px,_3vw,_16px)] px-[clamp(8px,_2.5vw,_12px)] shadow-xl">
             <div className="grid grid-cols-3 gap-3">
-              <div className="flex flex-col items-center justify-center">
+              <div className={`flex flex-col items-center justify-center ${animationComplete ? 'animate-float' : ''}`}>
                 <span className="text-[clamp(1rem,_4.5vw,_1.25rem)] font-bold text-[var(--text-main)] tracking-tight mb-1">
-                  <StatCounter value={decisionCount} suffix="+" />
+                  <StatCounter value={decisionCount} suffix="+" progress={animationProgress} />
                 </span>
                 <span className="text-[clamp(6px,_2vw,_8px)] text-[var(--text-muted)] font-semibold uppercase tracking-wider text-center leading-tight">Decisions Analyzed</span>
               </div>
-              <div className="flex flex-col items-center justify-center border-x border-white/5">
+              <div className={`flex flex-col items-center justify-center border-x border-white/5 ${animationComplete ? 'animate-float' : ''}`}>
                 <span className="text-[clamp(1rem,_4.5vw,_1.25rem)] font-bold text-[var(--text-main)] tracking-tight mb-1">
-                  <StatCounter value={960} suffix="M+" />
+                  <StatCounter value={960} suffix="M+" progress={animationProgress} />
                 </span>
                 <span className="text-[clamp(6px,_2vw,_8px)] text-[var(--text-muted)] font-semibold uppercase tracking-wider text-center leading-tight">Total Capital Wasted</span>
               </div>
-              <div className="flex flex-col items-center justify-center">
+              <div className={`flex flex-col items-center justify-center ${animationComplete ? 'animate-float' : ''}`}>
                 <span className="text-[clamp(1rem,_4.5vw,_1.25rem)] font-bold text-[var(--text-main)] tracking-tight mb-1">
-                  <StatCounter value={667} suffix="%+" />
+                  <StatCounter value={667} suffix="%+" progress={animationProgress} />
                 </span>
                 <span className="text-[clamp(6px,_2vw,_8px)] text-[var(--text-muted)] font-semibold uppercase tracking-wider text-center leading-tight">Avg. Annual Yield Missed</span>
               </div>
@@ -439,26 +426,26 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
       {/* Stats Bar (Desktop Only) */}
       <div className="w-full max-w-4xl mx-auto hidden md:block animate-fade-in-up delay-300 opacity-0 z-10">
           <div className="grid grid-cols-3 divide-x divide-white/5 bg-[var(--bg-card)]/50 backdrop-blur-md border border-[var(--border)] rounded-full py-5 px-8 shadow-2xl">
-            <div className="flex flex-col items-center justify-center group">
+            <div className={`flex flex-col items-center justify-center group ${animationComplete ? 'animate-float' : ''}`}>
                 <div className="flex items-center gap-2 mb-1">
                   <span className="text-3xl font-bold text-[var(--text-main)] tracking-tight group-hover:text-[var(--primary)] transition-colors">
-                      <StatCounter value={decisionCount} suffix="+" />
+                      <StatCounter value={decisionCount} suffix="+" progress={animationProgress} />
                   </span>
                 </div>
                 <span className="text-[10px] text-[var(--text-muted)] font-semibold uppercase tracking-widest">Decisions Analyzed</span>
             </div>
-            <div className="flex flex-col items-center justify-center group">
+            <div className={`flex flex-col items-center justify-center group ${animationComplete ? 'animate-float' : ''}`}>
                 <div className="flex items-center gap-2 mb-1">
                   <span className="text-3xl font-bold text-[var(--text-main)] tracking-tight group-hover:text-[var(--primary)] transition-colors">
-                      <StatCounter value={960} suffix="M+" />
+                      <StatCounter value={960} suffix="M+" progress={animationProgress} />
                   </span>
                 </div>
                 <span className="text-[10px] text-[var(--text-muted)] font-semibold uppercase tracking-widest">Total Capital Wasted</span>
             </div>
-            <div className="flex flex-col items-center justify-center group">
+            <div className={`flex flex-col items-center justify-center group ${animationComplete ? 'animate-float' : ''}`}>
                 <div className="flex items-center gap-2 mb-1">
                   <span className="text-3xl font-bold text-[var(--text-main)] tracking-tight group-hover:text-[var(--primary)] transition-colors">
-                      <StatCounter value={667} suffix="%+" />
+                      <StatCounter value={667} suffix="%+" progress={animationProgress} />
                   </span>
                 </div>
                 <span className="text-[10px] text-[var(--text-muted)] font-semibold uppercase tracking-widest">Avg. Annual Yield Missed</span>

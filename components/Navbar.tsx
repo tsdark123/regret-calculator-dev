@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { motion } from 'framer-motion';
 import { TrendingUp, Settings, ChevronDown, Check, Palette, Home, Calculator, Wrench, MapPin } from 'lucide-react';
 import { Theme } from '../types';
 
@@ -136,14 +137,6 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, onNavigate, currentTh
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const getButtonClass = (tabName: string) => {
-      const baseClass = "px-4 py-1.5 text-xs font-medium rounded-full transition-colors";
-      if (activeTab === tabName) {
-          return `${baseClass} text-[var(--nav-active-text)] bg-[var(--nav-active-bg)]`;
-      }
-      return `${baseClass} text-[var(--text-muted)] hover:text-[var(--text-main)]`;
-  };
-
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out px-0 md:px-6 pt-6 md:pt-4 pb-4 select-none ${
@@ -211,12 +204,46 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, onNavigate, currentTh
           </div>
         </div>
 
-        {/* Desktop Center: Links (Absolute Centered) */}
+        {/* Desktop Center: Tubelight Nav */}
         <div className="hidden md:flex items-center gap-1 bg-[var(--bg-card)]/80 backdrop-blur-md px-2 py-1.5 rounded-full border border-[var(--border)] shadow-lg absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
-          <button onClick={() => onNavigate('home')} className={getButtonClass('home')}>Home</button>
-          <button onClick={() => onNavigate('calculate')} className={getButtonClass('calculate')}>Calculate</button>
-          <button onClick={() => onNavigate('tools')} className={getButtonClass('tools')}>Tools</button>
-          <button onClick={() => onNavigate('roadmap')} className={getButtonClass('roadmap')}>Roadmap</button>
+          {([
+            { tab: 'home',      label: 'Home'      },
+            { tab: 'calculate', label: 'Calculate' },
+            { tab: 'tools',     label: 'Tools'     },
+            { tab: 'roadmap',   label: 'Roadmap'   },
+          ] as const).map(({ tab, label }) => {
+            const isActive = activeTab === tab;
+            return (
+              <button
+                key={tab}
+                onClick={() => onNavigate(tab)}
+                className={`relative px-4 py-1.5 text-xs font-semibold rounded-full transition-colors ${
+                  isActive ? 'text-[var(--primary)]' : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
+                }`}
+              >
+                <span className="relative z-10">{label}</span>
+                {isActive && (
+                  <motion.div
+                    layoutId="tubelight"
+                    className="absolute inset-0 rounded-full -z-10"
+                    style={{ backgroundColor: 'color-mix(in srgb, var(--primary) 12%, transparent)' }}
+                    initial={false}
+                    transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                  >
+                    {/* Tube glow at top edge */}
+                    <div
+                      className="absolute -top-2 left-1/2 -translate-x-1/2 w-8 h-[3px] rounded-t-full"
+                      style={{ backgroundColor: 'var(--primary)' }}
+                    >
+                      <div className="absolute w-12 h-6 rounded-full blur-md -top-2 -left-2" style={{ backgroundColor: 'var(--primary)', opacity: 0.12 }} />
+                      <div className="absolute w-8 h-6 rounded-full blur-md -top-1" style={{ backgroundColor: 'var(--primary)', opacity: 0.1 }} />
+                      <div className="absolute w-4 h-4 rounded-full blur-sm top-0 left-2" style={{ backgroundColor: 'var(--primary)', opacity: 0.08 }} />
+                    </div>
+                  </motion.div>
+                )}
+              </button>
+            );
+          })}
         </div>
 
         {/* Desktop Right: Empty for balance */}

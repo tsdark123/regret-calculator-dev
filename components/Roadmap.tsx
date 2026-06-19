@@ -1,605 +1,322 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
-  ArrowLeft,
-  Search,
-  MoreVertical,
-  Plus,
-  Mic,
-  Send,
-  Lock,
-  CheckCheck,
-  Zap,
   ChevronDown,
-  ChevronLeft,
   ChevronRight,
-  Info,
+  Loader2,
+  Check,
+  Zap,
   Smartphone,
-  X,
+  Lock,
+  BrainCircuit,
+  TerminalSquare,
+  Code,
 } from "lucide-react";
 
-// --- Custom Styles for Subtle Bounce & Typing Dots ---
-const CustomStyles = () => (
-  <style>{`
-    @keyframes sub-bounce {
-      0%, 100% {
-        transform: translateY(-15%);
-        animation-timing-function: cubic-bezier(0.8,0,1,1);
-      }
-      50% {
-        transform: translateY(0);
-        animation-timing-function: cubic-bezier(0,0,0.2,1);
-      }
-    }
-    .animate-sub-bounce {
-      animation: sub-bounce 1.5s infinite;
-    }
-    @keyframes gentle-bounce {
-      0%, 100% {
-        transform: translateY(0);
-      }
-      50% {
-        transform: translateY(3px);
-      }
-    }
-    .animate-gentle-bounce {
-      animation: gentle-bounce 2s ease-in-out infinite;
-    }
-    @keyframes typing-dot {
-      0%, 60%, 100% {
-        transform: translateY(0);
-        opacity: 0.4;
-      }
-      30% {
-        transform: translateY(-4px);
-        opacity: 1;
-      }
-    }
-    .typing-dot-1 { animation: typing-dot 1.4s ease-in-out infinite; }
-    .typing-dot-2 { animation: typing-dot 1.4s ease-in-out 0.2s infinite; }
-    .typing-dot-3 { animation: typing-dot 1.4s ease-in-out 0.4s infinite; }
-  `}</style>
-);
+export type PlanStepStatus = "pending" | "active" | "success" | "error";
 
-// --- Background Component ---
-const RoadmapBackground = () => (
-  <div className="absolute inset-0 w-full h-full overflow-hidden -z-10 pointer-events-none select-none">
-    {/* Grid Pattern */}
-    <div
-      className="absolute inset-0 opacity-20"
-      style={{
-        backgroundImage: `linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px)`,
-        backgroundSize: "3rem 3rem",
-        maskImage: "radial-gradient(ellipse 60% 50% at 50% 0%, black, transparent)",
-        WebkitMaskImage: "radial-gradient(ellipse 60% 50% at 50% 0%, black, transparent)",
-      }}
-    />
-
-    {/* Ambient Glows */}
-    <div className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] bg-[var(--primary)] opacity-[0.05] rounded-full blur-[120px] animate-pulse" />
-    <div className="absolute bottom-[20%] right-[-5%] w-[500px] h-[500px] bg-blue-500 opacity-[0.03] rounded-full blur-[100px]" />
-  </div>
-);
-
-// --- Chat Message Components ---
-
-interface MessageProps {
-  isSender: boolean;
+export interface PlanStep {
+  id: string;
+  title: string;
   content?: React.ReactNode;
-  timestamp?: string;
-  isMedia?: boolean;
-  isLocked?: boolean;
-  delay?: number;
+  status: PlanStepStatus;
+  icon?: React.ReactNode;
+  duration?: string;
+  defaultExpanded?: boolean;
 }
 
-const ChatBubble: React.FC<MessageProps> = ({ isSender, content, timestamp, isMedia, isLocked, delay = 0 }) => {
-  return (
-    <div
-      className={`flex w-full mb-3 ${isSender ? "justify-end" : "justify-start"} animate-fade-in-up`}
-      style={{ animationDelay: `${delay}ms`, animationFillMode: "backwards" }}
-    >
-      <div
-        className={`relative ${isMedia ? "max-w-full" : "max-w-[90%] sm:max-w-[75%]"} group flex flex-col ${isSender ? "items-end" : "items-start"}`}
-      >
-        {/* Lock Overlay */}
-        {isLocked && (
-          <div className="absolute inset-0 z-20 flex items-center justify-center bg-[var(--bg-main)]/60 backdrop-blur-[2px] rounded-[22px]">
-            <div className="bg-[var(--bg-input)] p-3 rounded-full border border-[var(--border)] shadow-xl">
-              <Lock className="w-5 h-5 text-[var(--text-muted)]" />
+const STEPS: PlanStep[] = [
+  {
+    id: "v2",
+    title: "v2.0.0 — Mobile & Retirement Update",
+    status: "success",
+    duration: "Jun 2025",
+    icon: <Smartphone className="w-3.5 h-3.5" />,
+    defaultExpanded: true,
+    content: (
+      <div className="space-y-3 font-mono text-[14px] mt-2">
+        <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-medium">
+          <Check className="w-3.5 h-3.5" />
+          <span>Biggest update yet. Full mobile + retirement tools.</span>
+        </div>
+        <div className="p-3 rounded-md bg-[var(--bg-main)]/40 text-[var(--text-muted)]">
+          <ul className="space-y-1.5 list-disc list-inside">
+            <li>Retirement Freedom Bridge (Time-to-$1M Calculator)</li>
+            <li>Full Mobile Navigation & 3-Step Wizard</li>
+            <li>Sovereign Snow Particle Effect</li>
+            <li className="hidden md:block">Simplified Theme System & Smooth Animations</li>
+            <li className="hidden md:block">Head-to-Head Battle UI Polish</li>
+            <li className="hidden md:block">Investment Strategy Selector with Real Returns</li>
+          </ul>
+        </div>
+      </div>
+    ),
+  },
+  {
+    id: "v1.2",
+    title: "v1.2.0 — Theming & Export Update",
+    status: "success",
+    duration: "Jun 2025",
+    icon: <TerminalSquare className="w-3.5 h-3.5" />,
+    defaultExpanded: true,
+    content: (
+      <div className="space-y-3 font-mono text-[14px] mt-2">
+        <div className="flex items-center gap-2">
+          <span className="text-[var(--text-muted)]">Shipped:</span>
+          <span className="px-1.5 py-0.5 rounded-md bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-semibold flex items-center gap-1">
+            <TerminalSquare className="w-3 h-3" />
+            6 features
+          </span>
+        </div>
+        <div className="p-3 rounded-md bg-[var(--bg-main)]/40 text-[var(--text-muted)]">
+          <div className="text-emerald-600 dark:text-emerald-400 mb-2 font-semibold">All features deployed</div>
+          <ul className="space-y-1.5 list-disc list-inside">
+            <li>Dynamic Theme Engine (Matrix & Ocean)</li>
+            <li>PNG Export System (Regret Reports)</li>
+            <li>Opportunity Cost Methodology Model</li>
+            <li>Theme Persistence via Local Storage</li>
+            <li>Enhanced UI Tooltips & Dynamic Arrows</li>
+            <li>Responsive Design Optimization</li>
+          </ul>
+        </div>
+      </div>
+    ),
+  },
+  {
+    id: "v1",
+    title: "v1.0.0 — Genesis Update",
+    status: "success",
+    duration: "May 2025",
+    icon: <Zap className="w-3.5 h-3.5" />,
+    content: (
+      <div className="space-y-2 font-mono text-[14px] text-[var(--text-muted)] mt-2">
+        <div className="flex items-start gap-2 text-emerald-600 dark:text-emerald-400 font-medium">
+          <Check className="w-3.5 h-3.5 mt-0.5 shrink-0" />
+          <span>Foundation deployed. Core regret engine live.</span>
+        </div>
+        <div className="grid grid-cols-[80px_1fr] gap-1.5 mt-3 bg-[var(--bg-main)]/40 p-2.5 rounded-md">
+          <span className="text-[var(--text-muted)] font-medium">Engine:</span>
+          <span className="text-[var(--text-main)]">V1 Regret Algorithm, Compound Engine</span>
+          <span className="text-[var(--text-muted)] font-medium">Data:</span>
+          <span className="text-[var(--text-main)]">Market Data Hooks, Real-Time Analytics</span>
+          <span className="text-[var(--text-muted)] font-medium">Perf:</span>
+          <span className="text-amber-600 dark:text-amber-400">Latency reduced 40%, Dark Mode</span>
+        </div>
+      </div>
+    ),
+  },
+  {
+    id: "v3",
+    title: "v3.0 — The Social Compound",
+    status: "active",
+    duration: "In Progress",
+    icon: <BrainCircuit className="w-3.5 h-3.5" />,
+    content: (
+      <div className="space-y-3 font-mono text-[14px] mt-2">
+        <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400 font-medium">
+          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+          <span>Building social features...</span>
+        </div>
+        <div className="relative rounded-md overflow-hidden bg-black dark:bg-black/80 p-3.5 shadow-inner">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-indigo-500 opacity-50" />
+          <div className="text-zinc-400 space-y-1.5 leading-relaxed">
+            <div><span className="text-purple-400">deploy</span> <span className="text-blue-300">socialModule</span></div>
+            <div className="pl-4">- Leaderboards & user profiles</div>
+            <div className="pl-4">- Regret sharing & challenges</div>
+            <div className="pl-4 text-zinc-300 font-medium animate-pulse flex items-center gap-1">
+              <ChevronRight className="w-3 h-3 text-blue-400" />
+              Community regret feed |
             </div>
           </div>
-        )}
-
-        {/* Message Bubble - Inspiration Style (Scaled Up) */}
-        <div
-          className={`
-            px-6 py-4 text-[17px] leading-relaxed shadow-sm relative transition-all duration-300
-            ${isMedia ? "p-0 bg-transparent shadow-none w-full" : ""}
-            ${!isMedia && !isSender ? "bg-[var(--bg-hover)] text-[var(--text-main)] rounded-[24px] rounded-tl-none border border-[var(--border)]" : ""} 
-            ${!isMedia && isSender ? "bg-[var(--primary)] text-white rounded-[24px] rounded-tr-none shadow-lg shadow-[var(--primary)]/20" : ""}
-        `}
-        >
-          {content}
         </div>
-
-        {/* Status / Time */}
-        {!isLocked && timestamp && (
-          <div
-            className={`
-                flex items-center gap-2 mt-1.5 opacity-80
-                ${isSender ? "justify-end" : "justify-start"}
-            `}
-          >
-            <span className="text-xs text-[var(--text-muted)]">{timestamp}</span>
-            {isSender && <CheckCheck className="w-4 h-4 text-[var(--primary)]" />}
-          </div>
-        )}
       </div>
-    </div>
-  );
-};
-
-// Clean Date Pill like inspiration (Scaled Up)
-const DatePill = ({ date }: { date: string }) => (
-  <div className="flex justify-center my-4">
-    <span className="text-xs font-semibold text-[var(--text-muted)] bg-[var(--bg-input)] border border-[var(--border)] px-5 py-1.5 rounded-full shadow-sm">
-      {date}
-    </span>
-  </div>
-);
-
-// --- Version Data ---
-
-const versionData = {
-  "v2.0.0": {
-    version: "v2.0.0",
-    title: "Mobile & Retirement Update",
-    description: "Full mobile support, retirement planning tools, and polished interactions.",
-    details: [
-      "Retirement Freedom Bridge (Time-to-$1M Calculator)",
-      "Full Mobile Navigation & 3-Step Wizard",
-      "Sovereign Snow Particle Effect",
-      "Simplified Theme System & Smooth Animations",
-      "Head-to-Head Battle UI Polish",
-      "Investment Strategy Selector with Real Returns",
-    ],
+    ),
   },
-  "v1.2.0": {
-    version: "v1.2.0",
-    title: "Genesis Update - V1.2.0",
-    description: "Enhanced experience with theming, exports, and persistence.",
-    details: [
-      "Dynamic Theme Engine (Matrix & Ocean)",
-      "PNG Export System (Regret Reports)",
-      "Opportunity Cost Methodology Model",
-      "Interactive Theme Persistence (Local Storage)",
-      "Enhanced UI Tooltips & Dynamic Arrows",
-      "Responsive Design Optimization",
-    ],
+  {
+    id: "v4",
+    title: "v4.0 — Automated Reality",
+    status: "pending",
+    icon: <Code className="w-3.5 h-3.5" />,
   },
-  "v1.0.0": {
-    version: "v1.0.0",
-    title: "Genesis Update",
-    description: "The foundation is set. Calculate compound regret with real-time market data.",
-    details: ["V1 Regret Algorithm", "Market Data Hooks", "Compound Engine", "Latency -40%", "Dark Mode", "Real-Time Analytics"],
-  },
-};
+];
 
-type VersionKey = keyof typeof versionData;
-
-// --- Rich Media Cards ---
-
-interface UpdateCardProps {
-  versionInfo: (typeof versionData)["v1.0.0"];
-  onViewNotes: () => void;
-  onNavigateBack?: () => void;
-  onNavigateForward?: () => void;
-  showBackArrow: boolean;
-  showForwardArrow: boolean;
-}
-
-// Get icon and gradient based on version
-const getVersionStyle = (version: string) => {
-  if (version === "v2.0.0") {
-    return {
-      icon: <Smartphone className="w-10 h-10 text-white" />,
-      gradient: "from-emerald-600 via-teal-700 to-[var(--bg-card)]",
-      accent: "bg-[radial-gradient(circle_at_50%_120%,#10b981,transparent)]",
-    };
+const getStatusColor = (status: PlanStepStatus) => {
+  switch (status) {
+    case "success":
+      return "bg-emerald-500/20 text-emerald-400";
+    case "active":
+      return "bg-blue-500/20 text-blue-400";
+    case "error":
+      return "bg-rose-500/20 text-rose-400";
+    case "pending":
+      return "bg-[var(--bg-hover)] text-[var(--text-muted)]";
   }
-  return {
-    icon: <Zap className="w-10 h-10 text-white" />,
-    gradient: "from-indigo-900 to-[var(--bg-card)]",
-    accent: "bg-[radial-gradient(circle_at_50%_120%,var(--primary),transparent)]",
-  };
 };
-
-const UpdateCard = ({
-  versionInfo,
-  onViewNotes,
-  onNavigateBack,
-  onNavigateForward,
-  showBackArrow,
-  showForwardArrow,
-}: UpdateCardProps) => {
-  const style = getVersionStyle(versionInfo.version);
-  
-  return (
-  <div className="bg-[var(--bg-input)] rounded-[24px] border border-[var(--border)] overflow-hidden w-full sm:w-[360px] h-[380px] select-none shadow-lg flex-none flex flex-col hover:border-[var(--primary)] transition-all duration-300 group relative z-10">
-    {/* Top Image Area */}
-    <div className={`h-52 bg-gradient-to-br ${style.gradient} relative flex items-center justify-center overflow-hidden`}>
-      <div className={`absolute inset-0 opacity-30 ${style.accent}`}></div>
-      <div className="w-20 h-20 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 shadow-xl z-10 group-hover:scale-110 transition-transform duration-500">
-        {style.icon}
-      </div>
-      {/* Version Tag */}
-      <div className="absolute top-5 right-5 px-2.5 py-1.5 bg-black/50 backdrop-blur-sm rounded-lg text-xs font-mono text-white border border-white/10">
-        {versionInfo.version}
-      </div>
-    </div>
-
-    {/* Content Body */}
-    <div className="p-6 bg-[var(--bg-card)] flex-1 flex flex-col justify-between">
-      <div>
-        <h4 className="font-bold text-[var(--text-main)] text-xl mb-2 flex items-center justify-between">
-          <span>{versionInfo.title}</span>
-          <div className="flex items-center gap-1">
-            <button
-              onClick={onNavigateBack}
-              disabled={!showBackArrow}
-              className={`p-1 hover:bg-[var(--bg-hover)] rounded-full transition-colors ${
-                !showBackArrow ? 'opacity-30 cursor-not-allowed' : ''
-              }`}
-            >
-              <ChevronLeft className="w-5 h-5 text-[var(--text-muted)] hover:text-[var(--primary)]" />
-            </button>
-            <button
-              onClick={onNavigateForward}
-              disabled={!showForwardArrow}
-              className={`p-1 hover:bg-[var(--bg-hover)] rounded-full transition-colors ${
-                !showForwardArrow ? 'opacity-30 cursor-not-allowed' : ''
-              }`}
-            >
-              <ChevronRight className="w-5 h-5 text-[var(--text-muted)] hover:text-[var(--primary)]" />
-            </button>
-          </div>
-        </h4>
-        <p className="text-sm text-[var(--text-muted)] leading-relaxed">{versionInfo.description}</p>
-      </div>
-
-      <button
-        onClick={onViewNotes}
-        className="w-full mt-4 py-3 bg-[var(--bg-hover)] hover:bg-[var(--primary)] hover:text-white text-[var(--text-muted)] rounded-xl text-sm font-semibold transition-colors border border-[var(--border)] border-dashed hover:border-transparent flex items-center justify-center gap-2"
-      >
-        View Release Notes <ArrowLeft className="w-4 h-4 rotate-180" />
-      </button>
-    </div>
-  </div>
-  );
-};
-
-interface ReleaseNotesDetailsProps {
-  details: string[];
-  onClose?: () => void;
-  showCloseButton?: boolean;
-  versionTitle?: string;
-}
-
-// Mobile version - fixed width to match update cards
-const MobileReleaseNotesDetails = ({ details, onClose, showCloseButton, versionTitle }: ReleaseNotesDetailsProps) => (
-  <div className="w-full min-w-full h-full bg-[var(--bg-input)] rounded-[24px] border border-[var(--border)] p-6 shadow-lg flex flex-col">
-    <h4 className="font-bold text-[var(--text-main)] mb-5 flex items-center gap-2 text-base border-b border-[var(--border)] pb-3">
-      <Info className="w-5 h-5 text-[var(--primary)]" />
-      <span className="flex-1">{versionTitle ? versionTitle : "Details"}</span>
-      {showCloseButton && onClose && (
-        <button
-          onClick={onClose}
-          className="p-1.5 hover:bg-[var(--bg-hover)] rounded-full transition-colors"
-        >
-          <X className="w-5 h-5 text-[var(--text-muted)] hover:text-[var(--primary)]" />
-        </button>
-      )}
-    </h4>
-    <ul className="space-y-4 flex-1 overflow-y-auto">
-      {details.map((item, i) => (
-        <li key={i} className="flex items-center gap-3 text-sm text-[var(--text-muted)]">
-          <CheckCheck className="w-4 h-4 text-[var(--primary)] flex-none" />
-          {item}
-        </li>
-      ))}
-    </ul>
-    <div className="mt-auto pt-4 text-xs text-[var(--text-muted)] opacity-60 text-center font-medium">
-      Deployed successfully
-    </div>
-  </div>
-);
-
-// Desktop version - flexible width for side panel
-const DesktopReleaseNotesDetails = ({ details }: ReleaseNotesDetailsProps) => (
-  <div className="w-full h-full bg-[var(--bg-input)] rounded-[24px] border border-[var(--border)] p-6 shadow-lg flex flex-col">
-    <h4 className="font-bold text-[var(--text-main)] mb-5 flex items-center gap-2 text-base border-b border-[var(--border)] pb-3">
-      <Info className="w-5 h-5 text-[var(--primary)]" />
-      Details
-    </h4>
-    <ul className="space-y-4 flex-1 overflow-y-auto">
-      {details.map((item, i) => (
-        <li key={i} className="flex items-center gap-3 text-sm text-[var(--text-muted)]">
-          <CheckCheck className="w-4 h-4 text-[var(--primary)] flex-none" />
-          {item}
-        </li>
-      ))}
-    </ul>
-    <div className="mt-auto pt-4 text-xs text-[var(--text-muted)] opacity-60 text-center font-medium">
-      Deployed successfully
-    </div>
-  </div>
-);
-
-// --- Main Component ---
 
 export const Roadmap: React.FC = () => {
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const [showReleaseNotes, setShowReleaseNotes] = useState(false);
-  const [showMobileReleaseNotes, setShowMobileReleaseNotes] = useState(false);
-  const [isTyping, setIsTyping] = useState(true);
-  const [currentVersion, setCurrentVersion] = useState<VersionKey>("v2.0.0");
+  const mainContentRef = useRef<HTMLDivElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
 
-  // Lock body scroll & typing indicator logic
+  // Detect mobile device
   useEffect(() => {
-    document.body.style.overflow = "hidden";
-    if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollTop = 0;
-    }
-
-    // Initial typing indicator for 5 seconds
-    const initialTimeout = setTimeout(() => {
-      setIsTyping(false);
-    }, 5000);
-
-    // Flicker every 12 seconds
-    const flickerInterval = setInterval(() => {
-      setIsTyping(true);
-      setTimeout(() => setIsTyping(false), 5000);
-    }, 12000);
-
-    return () => {
-      document.body.style.overflow = "unset";
-      clearTimeout(initialTimeout);
-      clearInterval(flickerInterval);
-    };
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  const scrollToNextSection = () => {
-    if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollTo({
-        top: scrollContainerRef.current.scrollHeight, // Scroll to the very bottom
-        behavior: "smooth",
-      });
-    }
+  const [expandedSteps, setExpandedSteps] = useState<Record<string, boolean>>(
+    STEPS.reduce((acc, step) => {
+      // On mobile, don't expand by default. On desktop, use defaultExpanded
+      acc[step.id] = isMobile ? false : (step.defaultExpanded || false);
+      return acc;
+    }, {} as Record<string, boolean>)
+  );
+
+  // Update expandedSteps when isMobile changes
+  useEffect(() => {
+    setExpandedSteps(
+      STEPS.reduce((acc, step) => {
+        acc[step.id] = isMobile ? false : (step.defaultExpanded || false);
+        return acc;
+      }, {} as Record<string, boolean>)
+    );
+  }, [isMobile]);
+
+  const toggleStep = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setExpandedSteps((prev) => {
+      const isCurrentlyExpanded = prev[id];
+      const expandedCount = Object.values(prev).filter(Boolean).length;
+      const maxExpanded = isMobile ? 1 : 2;
+
+      if (!isCurrentlyExpanded && expandedCount >= maxExpanded) {
+        // Find the first expanded step that's not the one being toggled and close it
+        const expandedIds = Object.keys(prev).filter((key) => prev[key] && key !== id);
+        if (expandedIds.length > 0) {
+          const toClose = expandedIds[0];
+          return { ...prev, [toClose]: false, [id]: true };
+        }
+      }
+
+      return { ...prev, [id]: !prev[id] };
+    });
   };
 
+  const hasActive = STEPS.some((s) => s.status === "active");
+  const allSuccess = STEPS.every((s) => s.status === "success");
+
   return (
-    <div className="w-full h-full flex items-center justify-center px-[clamp(8px,_3vw,_16px)] py-10 md:py-14">
-      <RoadmapBackground />
-      <CustomStyles />
+    <div className="w-full h-full flex items-center justify-center px-4 py-10 md:py-14 overflow-y-auto">
+      <div className="w-full max-w-4xl mx-auto my-4 font-sans text-[var(--text-main)]">
+        {/* Outer Card */}
+        <div className="bg-[var(--bg-card)] border border-[var(--border)] shadow-sm rounded-xl overflow-hidden transition-all duration-300">
 
-      {/* 
-         Main Container - scaled up look
-      */}
-      <div className="w-full max-w-5xl h-full bg-[var(--bg-card)] border border-[var(--border)] rounded-[40px] shadow-2xl overflow-hidden flex flex-col animate-fade-in-up relative">
-        {/* Header - Scaled Up */}
-        <div className="h-24 bg-[var(--bg-card)] border-b border-[var(--border)] flex items-center justify-between px-[clamp(16px,_5vw,_32px)] shrink-0 z-20 relative">
-          <div className="flex items-center gap-[clamp(12px,_3vw,_20px)]">
-            {/* Back Button Integrated */}
-            <div className="p-2.5 -ml-2 hover:bg-[var(--bg-hover)] rounded-full cursor-pointer transition-colors text-[var(--text-muted)] hover:text-[var(--text-main)]">
-              <ArrowLeft className="w-6 h-6" />
-            </div>
-
-            {/* Profile Pic & Info */}
-            <div className="flex items-center gap-[clamp(10px,_3vw,_16px)]">
-              <div className="relative">
-                <div className="w-[clamp(40px,_10vw,_56px)] h-[clamp(40px,_10vw,_56px)] rounded-full bg-gradient-to-tr from-[var(--primary)] to-purple-800 flex items-center justify-center text-sm font-bold text-white shadow-lg border-2 border-[var(--bg-card)]">
-                  RC
-                </div>
-                <div className="absolute bottom-0 right-0 w-4 h-4 bg-green-500 rounded-full border-2 border-[var(--bg-card)]"></div>
+          {/* Top Header */}
+          <div className="flex items-center justify-between px-4 py-3.5 select-none bg-[var(--bg-hover)]/30 border-b border-gray-500/10">
+            <div className="flex items-center gap-3">
+              <div className="flex items-center justify-center w-5 h-5">
+                {hasActive ? (
+                  <Loader2 className="w-4 h-4 text-blue-600 dark:text-blue-400 animate-spin" />
+                ) : allSuccess ? (
+                  <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                ) : (
+                  <BrainCircuit className="w-4 h-4 text-[var(--text-muted)]" />
+                )}
               </div>
-              <div className="flex flex-col gap-0.5">
-                <span className="text-[clamp(0.875rem,_4vw,_1.125rem)] font-bold text-[var(--text-main)] leading-tight">Regret Calculator</span>
-                <span className="text-xs text-[var(--primary)] font-semibold tracking-wide">Official Updates</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Right Icons */}
-          <div className="flex items-center gap-2 lg:gap-5 text-[var(--text-muted)]">
-            {/* Down arrow button - visible on both mobile and desktop */}
-            <div className="relative group">
-              <button
-                onClick={scrollToNextSection}
-                className="p-2 bg-[var(--bg-card)] border border-[var(--border)] rounded-full shadow-sm hover:border-[var(--primary)] transition-colors cursor-pointer animate-[flashRing_1.5s_ease-in-out_infinite] lg:animate-gentle-bounce"
-              >
-                <ChevronDown className="w-4 h-4 lg:w-5 lg:h-5 text-[var(--text-muted)] group-hover:text-[var(--primary)]" />
-              </button>
-              {/* Custom Tooltip */}
-              <div className="absolute right-0 top-full mt-2 px-3 py-2 
-                            bg-[var(--bg-card)] border border-[var(--border)] rounded-lg
-                            text-xs text-[var(--text-muted)] whitespace-nowrap
-                            opacity-0 pointer-events-none group-hover:opacity-100 
-                            transition-opacity duration-200 z-50 shadow-xl">
-                Jump to latest
-              </div>
-            </div>
-            <Search className="hidden lg:block w-6 h-6 cursor-pointer hover:text-[var(--text-main)] transition-colors" />
-            <MoreVertical className="w-6 h-6 cursor-pointer hover:text-[var(--text-main)] transition-colors" />
-          </div>
-        </div>
-
-        {/* Scrollable Chat Area */}
-        <div
-          ref={scrollContainerRef}
-          className="flex-1 overflow-y-auto px-[clamp(16px,_5vw,_32px)] py-4 pb-12 custom-scrollbar scroll-smooth bg-[var(--bg-main)]/30"
-        >
-          {/* Start Content Higher Up (Reduced top spacing) */}
-          <DatePill date="Tuesday, 9:41 AM" />
-
-          <ChatBubble
-            isSender={false}
-            delay={200}
-            timestamp="09:41"
-            content={
-              <span>
-                Welcome to the official update channel. 🚀
-                <br />
-                Here is what we have deployed so far.
+              <span className="text-[15px] font-semibold text-[var(--text-main)]/90 tracking-tight">
+                Regret Calculator Roadmap
               </span>
-            }
-          />
-
-          <ChatBubble
-            isSender={false}
-            isMedia
-            delay={500}
-            timestamp="09:41"
-            content={
-              <div className="flex items-start">
-                {/* Mobile: Show either UpdateCard or ReleaseNotes with animation */}
-                <div className="lg:hidden w-full">
-                  {!showMobileReleaseNotes ? (
-                    <div key="update-card" className="animate-fade-in-up" style={{ animationDuration: '0.4s' }}>
-                      <UpdateCard
-                        versionInfo={versionData[currentVersion]}
-                        onViewNotes={() => setShowMobileReleaseNotes(true)}
-                        onNavigateBack={() => {
-                          setShowMobileReleaseNotes(false);
-                          if (currentVersion === "v2.0.0") setCurrentVersion("v1.2.0");
-                          else if (currentVersion === "v1.2.0") setCurrentVersion("v1.0.0");
-                        }}
-                        onNavigateForward={() => {
-                          setShowMobileReleaseNotes(false);
-                          if (currentVersion === "v1.0.0") setCurrentVersion("v1.2.0");
-                          else if (currentVersion === "v1.2.0") setCurrentVersion("v2.0.0");
-                        }}
-                        showBackArrow={currentVersion !== "v1.0.0"}
-                        showForwardArrow={currentVersion !== "v2.0.0"}
-                      />
-                    </div>
-                  ) : (
-                    <div 
-                      key="release-notes" 
-                      className="w-full sm:w-[360px] h-[380px] animate-fade-in-up" 
-                      style={{ animationDuration: '0.4s' }}
-                    >
-                      <MobileReleaseNotesDetails 
-                        details={versionData[currentVersion].details} 
-                        onClose={() => setShowMobileReleaseNotes(false)}
-                        showCloseButton={true}
-                        versionTitle={versionData[currentVersion].title}
-                      />
-                    </div>
-                  )}
-                </div>
-
-                {/* Desktop: Show UpdateCard with side panel */}
-                <div className="hidden lg:flex items-start">
-                  <UpdateCard
-                    versionInfo={versionData[currentVersion]}
-                    onViewNotes={() => setShowReleaseNotes(!showReleaseNotes)}
-                    onNavigateBack={() => {
-                      if (currentVersion === "v2.0.0") setCurrentVersion("v1.2.0");
-                      else if (currentVersion === "v1.2.0") setCurrentVersion("v1.0.0");
-                    }}
-                    onNavigateForward={() => {
-                      if (currentVersion === "v1.0.0") setCurrentVersion("v1.2.0");
-                      else if (currentVersion === "v1.2.0") setCurrentVersion("v2.0.0");
-                    }}
-                    showBackArrow={currentVersion !== "v1.0.0"}
-                    showForwardArrow={currentVersion !== "v2.0.0"}
-                  />
-
-                  {/* Animated Details Panel - Desktop only */}
-                  <div
-                    className={`
-                      overflow-hidden transition-all duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] h-[380px]
-                      ${showReleaseNotes ? "w-[300px] opacity-100 ml-6" : "w-0 opacity-0 ml-0"}
-                    `}
-                  >
-                    <div className="w-[300px] h-full">
-                      <DesktopReleaseNotesDetails details={versionData[currentVersion].details} />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            }
-          />
-
-          {/* Next Section - Compact spacing */}
-          <DatePill date="Today" />
-
-          <ChatBubble isSender={true} delay={0} timestamp="11:25" content="This looks clean! What's coming next?" />
-
-          <ChatBubble
-            isSender={false}
-            delay={500}
-            timestamp="11:25"
-            content={
-              <div className="flex items-center gap-2 h-7 px-1">
-                <div className="w-2 h-2 bg-[var(--text-muted)] opacity-60 rounded-full animate-bounce"></div>
-                <div className="w-2 h-2 bg-[var(--text-muted)] opacity-60 rounded-full animate-bounce delay-100"></div>
-                <div className="w-2 h-2 bg-[var(--text-muted)] opacity-60 rounded-full animate-bounce delay-200"></div>
-              </div>
-            }
-          />
-
-          {/* Future Timeline */}
-          <div className="mt-16 space-y-4 opacity-90 pb-12">
-            <DatePill date="Future Timeline" />
-
-            <ChatBubble
-              isSender={false}
-              isLocked
-              content="Update 3.0: The Social Compound. Leaderboards, user profiles, and regret sharing."
-            />
-
-            <ChatBubble
-              isSender={false}
-              isLocked
-              content="Update 4.0: Automated Reality. Bank integration, AI suggestions, Mobile App."
-            />
-          </div>
-        </div>
-
-        {/* Floating Input Area (Scaled Up) - Added shrink-0 */}
-        <div className="p-5 bg-[var(--bg-card)] border-t border-[var(--border)] z-20 shrink-0">
-          {/* Typing Indicator */}
-          <div
-            className={`flex items-center gap-2 mb-3 ml-2 transition-all duration-300 ${isTyping ? "opacity-100" : "opacity-0 pointer-events-none"}`}
-          >
-            <span className="text-xs font-medium text-[var(--primary)]">Regret Calculator is typing</span>
-            <div className="flex items-center gap-0.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-[var(--primary)] typing-dot-1"></span>
-              <span className="w-1.5 h-1.5 rounded-full bg-[var(--primary)] typing-dot-2"></span>
-              <span className="w-1.5 h-1.5 rounded-full bg-[var(--primary)] typing-dot-3"></span>
             </div>
           </div>
 
-          <div className="bg-[var(--bg-input)] border border-[var(--border)] rounded-full h-16 px-3 flex items-center shadow-inner transition-colors focus-within:border-[var(--primary)]">
-            <button className="w-12 h-12 rounded-full flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--primary)] hover:bg-[var(--bg-hover)] transition-all ml-1">
-              <Plus className="w-6 h-6" />
-            </button>
+          {/* Timeline Area */}
+          <div className="bg-[var(--bg-card)]">
+              <div ref={mainContentRef} className="p-10 flex flex-col">
 
-            <input
-              type="text"
-              placeholder="Write your message here..."
-              className="flex-1 bg-transparent border-none outline-none text-[var(--text-main)] px-4 text-lg placeholder:text-[var(--text-muted)]/50 h-full"
-              disabled
-            />
+                {STEPS.map((step, index) => {
+                  const isStepExpanded = expandedSteps[step.id];
+                  const isLast = index === STEPS.length - 1;
 
-            <button className="w-12 h-12 rounded-full flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-all">
-              <Mic className="w-6 h-6" />
-            </button>
+                  return (
+                    <div
+                      key={step.id}
+                      className={`relative flex gap-8 animate-fade-in-up
+                        ${step.status === "pending" ? "opacity-60 grayscale" : "opacity-100"}
+                      `}
+                      style={{ animationDelay: `${index * 80}ms`, animationFillMode: "backwards" }}
+                    >
+                      {/* Timeline connecting line */}
+                      {!isLast && (
+                        <div className="absolute left-[18px] top-3 bottom-0 w-[2px] bg-gray-500/10 z-0" />
+                      )}
 
-            <button className="w-12 h-12 rounded-full flex items-center justify-center text-[var(--primary)] hover:bg-[var(--primary)]/10 transition-all mr-1">
-              <Send className="w-6 h-6" />
-            </button>
+                      {/* Icon Column */}
+                      <div className="relative z-10 flex-none w-10 h-10">
+                        <div
+                          className={`flex items-center justify-center w-full h-full rounded-full transition-colors duration-300 ${getStatusColor(step.status)}`}
+                          style={{ boxShadow: "0 0 0 6px var(--bg-card)" }}
+                        >
+                          {step.status === "success" ? (
+                            <Check className="w-5.5 h-5.5" />
+                          ) : step.status === "active" ? (
+                            <Loader2 className="w-5.5 h-5.5 animate-spin" />
+                          ) : (
+                            step.icon || <div className="w-2.5 h-2.5 rounded-full bg-current" />
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Content Column */}
+                      <div className="flex-1 pb-6">
+                        {/* Step Header */}
+                        <div
+                          className={`flex items-center justify-between group rounded-md -mx-2 px-2 py-1 transition-colors
+                            ${step.content ? "cursor-pointer hover:bg-[var(--bg-hover)]/50" : ""}
+                          `}
+                          onClick={(e) => step.content && toggleStep(step.id, e)}
+                        >
+                          <span
+                            className={`text-[14px] tracking-tight transition-colors duration-200
+                              ${step.status === "active" ? "text-[var(--text-main)] font-semibold" :
+                                step.status === "error" ? "text-rose-600 dark:text-rose-400 font-semibold" :
+                                "text-[var(--text-main)]/80 group-hover:text-[var(--text-main)] font-medium"}
+                            `}
+                          >
+                            {step.title}
+                          </span>
+
+                          <div className="flex items-center gap-3">
+                            {step.duration && (
+                              <span className="text-[14px] font-mono text-[var(--text-muted)] tabular-nums">
+                                {step.duration}
+                              </span>
+                            )}
+                            {step.content && (
+                              <div className="text-[var(--text-muted)]/40 group-hover:text-[var(--text-muted)] transition-colors">
+                                {isStepExpanded ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Step Expanded Content */}
+                        {step.content && (
+                          <div
+                            className={`grid transition-all duration-400 ease-in-out ${
+                              isStepExpanded ? "grid-rows-[1fr] mt-2 opacity-100" : "grid-rows-[0fr] mt-0 opacity-0"
+                            }`}
+                          >
+                            <div className="overflow-hidden">
+                              <div className="pt-1 pb-2">{step.content}</div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+
+              </div>
           </div>
         </div>
       </div>
