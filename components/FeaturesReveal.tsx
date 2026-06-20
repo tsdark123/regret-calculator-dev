@@ -127,7 +127,7 @@ export const FeaturesReveal: React.FC = () => {
   }, []);
 
   return (
-  <section ref={sectionRef} className="hidden md:block w-full py-12 select-none relative overflow-hidden border-b" style={{ borderColor: 'rgba(107, 114, 128, 0.2)' }}>
+  <section ref={sectionRef} className="w-full py-12 select-none relative overflow-hidden md:border-b" style={{ borderColor: 'rgba(107, 114, 128, 0.2)' }}>
     <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none opacity-90" />
     <div className="relative z-10 flex w-full items-center justify-center">
       <motion.div

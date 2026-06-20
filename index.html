@@ -175,6 +175,98 @@
           overscroll-behavior: none !important;
         }
       }
+
+      /* Mobile-only: page-by-page scroll-snap container for home page */
+      @media (max-width: 1023px) {
+        .mobile-snap-container {
+          position: fixed;
+          top: 64px; /* below navbar */
+          left: 0;
+          right: 0;
+          bottom: 0;
+          width: 100%;
+          overflow-y: scroll;
+          overflow-x: hidden;
+          scroll-snap-type: y mandatory;
+          scroll-behavior: smooth;
+          overscroll-behavior: contain;
+          -webkit-overflow-scrolling: touch;
+          scrollbar-width: none;
+          touch-action: pan-y;
+          z-index: 10;
+        }
+        .mobile-snap-container::-webkit-scrollbar {
+          display: none;
+        }
+        .mobile-snap-card {
+          height: calc(100svh - 64px);
+          height: calc(100dvh - 64px);
+          min-height: calc(100svh - 64px);
+          min-height: calc(100dvh - 64px);
+          width: 100%;
+          scroll-snap-align: start;
+          scroll-snap-stop: always;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          position: relative;
+          flex-shrink: 0;
+          overflow: hidden;
+        }
+        /* Animated beam dividers (top & bottom) — adapt to any phone width */
+        .mobile-snap-card::before,
+        .mobile-snap-card::after {
+          content: '';
+          position: absolute;
+          left: 0;
+          width: 40%;
+          height: 1px;
+          background: linear-gradient(to right, transparent, var(--primary), transparent);
+          opacity: 0.6;
+          pointer-events: none;
+          z-index: 100;
+          animation: beam-slide 4s linear infinite;
+        }
+        .mobile-snap-card::before {
+          top: 0; /* At the top of each card to divide from previous card */
+          animation-delay: 0s;
+        }
+        /* First card: top beam at top of container (container already starts below navbar) */
+        .mobile-snap-container > .mobile-snap-card:first-child::before {
+          top: 0;
+        }
+        .mobile-snap-card::after {
+          bottom: 0;
+          animation-delay: -2s;
+          animation-direction: reverse;
+        }
+        /* Footer card: only bottom-of-screen treatment */
+        .mobile-snap-card-footer {
+          min-height: calc(100svh - 64px);
+          min-height: calc(100dvh - 64px);
+          justify-content: flex-start;
+        }
+        /* Remove top beam from first card (card 1) */
+        .mobile-snap-container > .mobile-snap-card:first-child::before {
+          display: none;
+        }
+        /* Skip the top navbar beam on cards 2+ — only the first card sits under navbar */
+        .mobile-snap-card ~ .mobile-snap-card::before {
+          top: 0;
+        }
+      }
+      @media (max-width: 1023px) and (prefers-reduced-motion: reduce) {
+        .mobile-snap-container {
+          scroll-snap-type: y proximity;
+          scroll-behavior: auto;
+        }
+        .mobile-snap-card::before,
+        .mobile-snap-card::after {
+          animation: none;
+          width: 100%;
+          opacity: 0.25;
+        }
+      }
       
       /* Re-enable text selection for inputs and textareas */
       input, textarea {
@@ -325,6 +417,17 @@
       @keyframes beam-slide {
         0%   { transform: translateX(-100%); }
         100% { transform: translateX(400%); }
+      }
+
+      /* GPU-accelerated testimonials marquee — buttery smooth infinite scroll */
+      @keyframes testimonials-scroll {
+        0%   { transform: translate3d(0, 0, 0); }
+        100% { transform: translate3d(0, -50%, 0); }
+      }
+      .testimonials-marquee {
+        will-change: transform;
+        backface-visibility: hidden;
+        transform: translate3d(0, 0, 0);
       }
 
       .animate-fade-in-up {

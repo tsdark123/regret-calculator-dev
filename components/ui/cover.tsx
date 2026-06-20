@@ -7,10 +7,12 @@ export const Cover = ({
   children,
   className,
   lightMode = false,
+  disableHover = false,
 }: {
   children?: React.ReactNode;
   className?: string;
   lightMode?: boolean;
+  disableHover?: boolean;
 }) => {
   const [hovered, setHovered] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -32,8 +34,8 @@ export const Cover = ({
 
   return (
     <div
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      onMouseEnter={disableHover ? undefined : () => setHovered(true)}
+      onMouseLeave={disableHover ? undefined : () => setHovered(false)}
       ref={ref}
       className="relative group/cover inline-block px-2 py-2 transition duration-200 rounded-sm"
       style={{ backgroundColor: lightMode ? '#ffffff' : '#171717' }}

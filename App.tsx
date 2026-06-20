@@ -280,11 +280,11 @@ function MainApp() {
 
   // Removed auto-expand ProDashboard - users should manually expand if they want to see advanced analysis
 
-  // Disable scroll on home, /calculate, and /roadmap for mobile. /results and /tools can scroll.
+  // Disable scroll on /calculate and /roadmap for mobile. Home / uses scroll-snap container.
+  // /results and /tools can scroll normally.
   useEffect(() => {
     if (window.innerWidth < 1024) {
-      const isScrollLocked = currentPath === '/' || currentPath === '' || 
-                             currentPath === '/calculate' || currentPath.startsWith('/calculate') ||
+      const isScrollLocked = currentPath === '/calculate' || currentPath.startsWith('/calculate') ||
                              currentPath === '/roadmap' || currentPath.startsWith('/roadmap');
       if (isScrollLocked) {
         // Lock scroll completely - Safari-compatible fix
@@ -577,7 +577,7 @@ function MainApp() {
     <>
       {showMobileIntro && <MobileIntro onComplete={handleIntroComplete} />}
       <AnalyticsTracker />
-      <div className={`flex flex-col theme-${theme} min-h-screen font-sans selection:bg-[var(--primary)] selection:text-white relative bg-[var(--bg-main)] text-[var(--text-main)] transition-colors duration-500 ${(window.innerWidth < 1024 && (currentPath === '/calculate' || currentPath.startsWith('/calculate') || currentPath === '/roadmap' || currentPath.startsWith('/roadmap'))) ? 'overflow-hidden h-screen' : ''}`}>
+      <div className={`flex flex-col theme-${theme} min-h-screen font-sans selection:bg-[var(--primary)] selection:text-white relative bg-[var(--bg-main)] text-[var(--text-main)] transition-colors duration-500 ${(window.innerWidth < 1024 && (currentPath === '/calculate' || currentPath.startsWith('/calculate') || currentPath === '/roadmap' || currentPath.startsWith('/roadmap') || ((currentPath === '/' || currentPath === '') && viewMode === 'input'))) ? 'overflow-hidden h-screen' : ''}`}>
         {/* Full-Viewport Particle Background - Outside all containers */}
         <ParticleBackground theme={theme} />
         
@@ -618,8 +618,34 @@ function MainApp() {
             ) : (
               /* VIEW: CALCULATOR (HERO + MAIN) */
               <>
-                  {/* Hero Section - Hidden on /calculate and /results routes for mobile */}
-                  {(window.innerWidth >= 1024 || (currentPath === '/' || currentPath === '')) && !(window.innerWidth < 1024 && (currentPath === '/results' || currentPath.startsWith('/results'))) && (
+                  {/* MOBILE HOME: scroll-snap card-by-card experience (lg:hidden) */}
+                  {viewMode === 'input' && window.innerWidth < 1024 && (currentPath === '/' || currentPath === '') && (
+                    <div className="mobile-snap-container lg:hidden">
+                      <section className="mobile-snap-card">
+                        <Hero
+                          onStart={handleStart}
+                          onLoadPreset={handleLoadPreset}
+                          decisionCount={decisionCount}
+                          theme={theme}
+                        />
+                      </section>
+                      <section className="mobile-snap-card">
+                        <FeaturesReveal />
+                      </section>
+                      <section className="mobile-snap-card">
+                        <GlobeSection theme={theme} />
+                      </section>
+                      <section className="mobile-snap-card">
+                        <TestimonialsSection />
+                      </section>
+                      <section className="mobile-snap-card mobile-snap-card-footer">
+                        <Footer />
+                      </section>
+                    </div>
+                  )}
+
+                  {/* Hero Section - Hidden on /calculate and /results routes for mobile; also hidden on mobile home (handled by snap container above) */}
+                  {(window.innerWidth >= 1024 || (currentPath === '/' || currentPath === '')) && !(window.innerWidth < 1024 && (currentPath === '/results' || currentPath.startsWith('/results'))) && !(window.innerWidth < 1024 && (currentPath === '/' || currentPath === '')) && (
                     <>
                       {/* Theme-aware Beam for Hero Section - Fixed positioning so it stays with hero text */}
                       <div 
@@ -638,6 +664,7 @@ function MainApp() {
                     </>
                   )}
                   
+                  {!(window.innerWidth < 1024 && (currentPath === '/' || currentPath === '') && viewMode === 'input') && (
                   <main className={`px-4 md:px-8 w-full min-h-[600px] relative ${(window.innerWidth < 1024 && (currentPath === '/calculate' || currentPath.startsWith('/calculate'))) ? 'pt-28 pb-24' : (window.innerWidth < 1024 && (currentPath === '/results' || currentPath.startsWith('/results'))) ? 'pt-20 pb-24' : 'py-8'}`} ref={inputSectionRef}>
                       <AmbientBackground />
                       {/* Theme-aware backgrounds for /calculate on mobile only */}
@@ -834,10 +861,15 @@ function MainApp() {
                           )}
                       </div>
                   </main>
-                  {viewMode === 'input' && <FeaturesReveal />}
-                  {viewMode === 'input' && <GlobeSection theme={theme} />}
-                  {viewMode === 'input' && <TestimonialsSection />}
-                  {viewMode !== 'results' && <Footer />}
+                  )}
+                  {!(window.innerWidth < 1024 && (currentPath === '/' || currentPath === '') && viewMode === 'input') && (
+                    <>
+                      {viewMode === 'input' && <FeaturesReveal />}
+                      {viewMode === 'input' && <GlobeSection theme={theme} />}
+                      {viewMode === 'input' && <TestimonialsSection />}
+                      {viewMode !== 'results' && <Footer />}
+                    </>
+                  )}
               </>
             )}
         </div>

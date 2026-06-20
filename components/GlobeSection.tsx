@@ -109,18 +109,28 @@ export const GlobeSection: React.FC<GlobeSectionProps> = ({ theme }) => {
   });
 
   return (
-    <section className="hidden md:flex w-full py-12 flex-col items-center justify-center select-none border-t border-b relative flex-shrink-0" style={{ borderColor: 'rgba(107, 114, 128, 0.2)' }}>
+    <section className="flex w-full pt-4 pb-8 md:py-12 flex-col items-center justify-center select-none md:border-t md:border-b relative flex-shrink-0" style={{ borderColor: 'rgba(107, 114, 128, 0.2)' }}>
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none opacity-100" />
-      <div style={{ ...beamStyle(false, '0s'), top: -1 }} />
-      <div style={{ ...beamStyle(true, '-2s'), top: -1 }} />
-      <div style={{ ...beamStyle(false, '-1s'), bottom: -1 }} />
-      <div style={{ ...beamStyle(true, '-3s'), bottom: -1 }} />
-      <div className="relative z-10 text-center mb-10 flex flex-col items-center gap-3">
-        <h2 className="text-3xl md:text-4xl lg:text-5xl font-semibold max-w-3xl mx-auto text-center relative z-20 py-2 text-[var(--text-main)]">
+      <div className="hidden md:block" style={{ ...beamStyle(false, '0s'), top: -1 }} />
+      <div className="hidden md:block" style={{ ...beamStyle(true, '-2s'), top: -1 }} />
+      <div className="hidden md:block" style={{ ...beamStyle(false, '-1s'), bottom: -1 }} />
+      <div className="hidden md:block" style={{ ...beamStyle(true, '-3s'), bottom: -1 }} />
+      <div className="relative z-10 text-center mb-4 md:mb-10 flex flex-col items-center gap-3 mt-0 md:mt-0 px-4">
+        {/* Mobile heading: explicit line breaks */}
+        <h2 className="md:hidden text-[clamp(1.5rem,_7vw,_2rem)] font-semibold mx-auto text-center relative z-20 py-2 text-[var(--text-main)] leading-tight">
+          Regret Calculator has been<br />
+          used in over{" "}
+          <Cover className="font-bold" lightMode={theme === 'blue'} disableHover>85 countries</Cover>
+        </h2>
+        {/* Desktop heading: original single-line flow */}
+        <h2 className="hidden md:block text-3xl md:text-4xl lg:text-5xl font-semibold max-w-3xl mx-auto text-center relative z-20 py-2 text-[var(--text-main)]">
           Regret Calculator has been used in over{" "}
           <Cover className="font-bold" lightMode={theme === 'blue'}>85 countries</Cover>
         </h2>
-        <p className="mt-1 text-lg text-[var(--text-muted)]">
+        <p className="md:hidden mt-1 text-base text-[var(--text-muted)] max-w-xs leading-snug">
+          See where we've helped people make<br />smarter financial decisions worldwide
+        </p>
+        <p className="hidden md:block mt-1 text-lg text-[var(--text-muted)]">
           See where we've helped people make smarter financial decisions worldwide
         </p>
       </div>
@@ -145,13 +155,14 @@ export const GlobeSection: React.FC<GlobeSectionProps> = ({ theme }) => {
         </div>
       </div>
 
-      {/* Mobile: centered globe only */}
-      <div className="lg:hidden w-[400px] h-[400px] relative z-10">
+      {/* Mobile: centered globe only — non-interactive (touch passes through to scroll-snap) */}
+      <div className="lg:hidden w-[400px] h-[400px] max-w-full relative z-10">
         <GlobePulse
           markerColor={themeMarkerColors[theme]}
           pulseColor={themePulseColors[theme]}
           speed={0.008}
           lightMode={theme === 'blue'}
+          interactive={false}
         />
       </div>
     </section>

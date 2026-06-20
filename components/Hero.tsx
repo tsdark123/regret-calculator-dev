@@ -246,7 +246,7 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
       </div>
       
       {/* 1. Central Glow - Simpler on mobile */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] md:w-[600px] h-[300px] md:h-[600px] bg-[var(--primary)] opacity-8 md:opacity-15 rounded-full blur-[40px] md:blur-[120px] -z-10 pointer-events-none" style={{ willChange: 'transform' }} />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] md:w-[600px] h-[300px] md:h-[600px] bg-[var(--primary)] opacity-[0.05] md:opacity-[0.15] rounded-full blur-[40px] md:blur-[120px] -z-10 pointer-events-none" style={{ willChange: 'transform' }} />
       
       {/* 2. Animated Grid Pattern - Desktop only */}
       <div className="hidden md:block absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_70%_70%_at_50%_50%,black,transparent)] -z-20 pointer-events-none" />

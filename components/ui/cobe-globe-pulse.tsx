@@ -16,6 +16,7 @@ interface GlobePulseProps {
   markerColor?: [number, number, number]
   pulseColor?: string
   lightMode?: boolean
+  interactive?: boolean
 }
 
 const defaultMarkers: PulseMarker[] = [
@@ -43,6 +44,7 @@ export function GlobePulse({
   markerColor = [0.6, 0.2, 0.9],
   pulseColor = "#a855f7",
   lightMode = false,
+  interactive = true,
 }: GlobePulseProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const pointerInteracting = useRef<{ x: number; y: number } | null>(null)
@@ -148,16 +150,17 @@ export function GlobePulse({
       `}</style>
       <canvas
         ref={canvasRef}
-        onPointerDown={handlePointerDown}
+        onPointerDown={interactive ? handlePointerDown : undefined}
         style={{
           width: "600px",
           height: "600px",
           maxWidth: "600px",
           maxHeight: "600px",
-          cursor: "grab",
+          cursor: interactive ? "grab" : "default",
           opacity: 1,
           borderRadius: "50%",
-          touchAction: "none",
+          touchAction: interactive ? "none" : "pan-y",
+          pointerEvents: interactive ? "auto" : "none",
         }}
       />
       {markers.map((m) => (
