@@ -293,13 +293,13 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
       {/* --- Main Content --- */}
 
       {/* Beta Notice - Mobile Only - Absolutely positioned */}
-      <div className="md:hidden absolute top-16 left-0 right-0 flex items-center justify-center gap-2 px-4 py-3 bg-[var(--bg-card)]/40 backdrop-blur-sm z-20">
+      <div className="md:hidden absolute top-8 left-0 right-0 flex items-center justify-center gap-2 px-4 py-3 bg-[var(--bg-card)]/40 backdrop-blur-sm z-20">
         <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-[pulse_0.8s_ease-in-out_infinite]" />
         <span className="text-[9px] font-mono tracking-wider text-[var(--text-muted)] uppercase">Beta</span>
         <span className="text-[12px] text-[var(--text-muted)]">Best experience on desktop. Mobile is in beta.</span>
       </div>
 
-      <h1 className="text-[clamp(2.5rem,_12.6vw,_3.754rem)] sm:text-8xl md:text-8xl font-bold tracking-tighter mb-4 md:mb-8 text-[var(--text-main)] drop-shadow-2xl leading-[1.1] animate-fade-in-down z-10 max-w-4xl mt-20 md:mt-0 select-none">
+      <h1 className="text-[clamp(2.5rem,_12.6vw,_3.754rem)] sm:text-8xl md:text-8xl font-bold tracking-tighter mb-4 md:mb-8 text-[var(--text-main)] drop-shadow-2xl leading-[1.1] animate-fade-in-down z-10 max-w-4xl mt-12 md:mt-0 select-none">
         Calculated Growth.<br />
         <span className="text-[var(--primary)]">Zero Regret.</span>
       </h1>
@@ -376,7 +376,7 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
           </div>
 
           {/* Mobile Legal Links */}
-          <div className="flex gap-3 justify-center">
+          <div className="flex gap-3 justify-center mb-4">
             <a
               href="/privacy"
               className="opacity-60 hover:opacity-100 px-5 py-1.5 rounded-xl border border-[var(--border)] bg-[var(--bg-card)]/60 text-[var(--text-muted)] font-semibold text-[11px] hover:bg-[var(--bg-hover)] transition-all backdrop-blur-sm active:scale-[0.98]"

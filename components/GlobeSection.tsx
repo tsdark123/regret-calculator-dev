@@ -109,13 +109,13 @@ export const GlobeSection: React.FC<GlobeSectionProps> = ({ theme }) => {
   });
 
   return (
-    <section className="flex w-full pt-4 pb-8 md:py-12 flex-col items-center justify-center select-none md:border-t md:border-b relative flex-shrink-0" style={{ borderColor: 'rgba(107, 114, 128, 0.2)' }}>
+    <section className="flex w-full pt-2 pb-8 md:py-12 flex-col items-center justify-center select-none md:border-t md:border-b relative flex-shrink-0" style={{ borderColor: 'rgba(107, 114, 128, 0.2)' }}>
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none opacity-100" />
       <div className="hidden md:block" style={{ ...beamStyle(false, '0s'), top: -1 }} />
       <div className="hidden md:block" style={{ ...beamStyle(true, '-2s'), top: -1 }} />
       <div className="hidden md:block" style={{ ...beamStyle(false, '-1s'), bottom: -1 }} />
       <div className="hidden md:block" style={{ ...beamStyle(true, '-3s'), bottom: -1 }} />
-      <div className="relative z-10 text-center mb-4 md:mb-10 flex flex-col items-center gap-3 mt-0 md:mt-0 px-4">
+      <div className="relative z-10 text-center mb-2 md:mb-10 flex flex-col items-center gap-3 -mt-12 md:mt-0 px-4">
         {/* Mobile heading: explicit line breaks */}
         <h2 className="md:hidden text-[clamp(1.5rem,_7vw,_2rem)] font-semibold mx-auto text-center relative z-20 py-2 text-[var(--text-main)] leading-tight">
           Regret Calculator has been<br />

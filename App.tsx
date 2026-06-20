@@ -6,6 +6,7 @@ import { QueueModule } from './components/QueueModule';
 import { SettingsPanel } from './components/SettingsPanel';
 import { StockSelector } from './components/StockSelector';
 import { Footer } from './components/Footer';
+import { MobileFAQ } from './components/MobileFAQ';
 import { TestimonialsSection } from './components/TestimonialsSection';
 import { FeaturesReveal } from './components/FeaturesReveal';
 import { GlobeSection } from './components/GlobeSection';
@@ -638,8 +639,8 @@ function MainApp() {
                       <section className="mobile-snap-card">
                         <TestimonialsSection />
                       </section>
-                      <section className="mobile-snap-card mobile-snap-card-footer">
-                        <Footer />
+                      <section className="mobile-snap-card">
+                        <MobileFAQ />
                       </section>
                     </div>
                   )}
