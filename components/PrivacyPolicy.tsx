@@ -79,7 +79,7 @@ export const PrivacyPolicy: React.FC = () => {
 
               <section id="do-track">
                 <h2 className="text-[var(--text-main)] font-semibold text-lg mb-3">What We Do Track</h2>
-                <p>The only metric we track is a <span className="text-[var(--text-main)]">global, anonymous counter</span> of how many analyses have been run across all users. This number is stored in Firebase and increments by 1 each time someone clicks "Calculate Your Regret." No identifying information is attached to this count.</p>
+                <p>We track a <span className="text-[var(--text-main)]">global, anonymous counter</span> of how many analyses have been run across all users. Additionally, for locations that have not previously used the site, we may store one anonymous city/country entry to map usage geography. No personal identifiers, expense data, or calculation results are ever collected or stored.</p>
               </section>
 
               <section id="local-storage">

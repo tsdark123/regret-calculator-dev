@@ -79,6 +79,7 @@ export const TermsOfService: React.FC = () => {
                   <li>Use automated bots or scripts to access the Site</li>
                   <li>Misrepresent the tool's outputs as professional financial guidance</li>
                 </ul>
+                <p className="mt-3">By using the Site, you acknowledge that for new locations, we may store one anonymous city/country entry to map usage geography. No personal identifiers are ever collected.</p>
               </section>
 
               <section id="accuracy">

@@ -12,7 +12,7 @@ const FAQ_ITEMS = [
   },
   {
     question: "Do you store my data?",
-    answer: "No. All calculations run locally in your browser. No inputs are sent to any server. What happens in this tab stays in this tab. The only metric we track is the global count of analyses performed, never the content.",
+    answer: "All calculations run locally in your browser. No expense data, habit inputs, or results are sent to any server. We track a global analysis counter and, for new locations, may store one anonymous city/country entry to map usage geography. No personal identifiers are ever collected.",
   },
   {
     question: "How accurate are the stock returns?",
