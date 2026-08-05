@@ -655,7 +655,7 @@ function MainApp() {
                       <section className="mobile-snap-card">
                         <GlobeSection theme={theme} />
                       </section>
-                      <section className="mobile-snap-card">
+                      <section className="mobile-snap-card !justify-start">
                         <TestimonialsSection />
                       </section>
                       <section className="mobile-snap-card">
