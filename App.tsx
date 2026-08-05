@@ -593,7 +593,7 @@ function MainApp() {
     <>
       {showMobileIntro && <MobileIntro onComplete={handleIntroComplete} />}
       <AnalyticsTracker />
-      <div className={`flex flex-col theme-${theme} min-h-screen font-sans selection:bg-[var(--primary)] selection:text-white relative bg-[var(--bg-main)] text-[var(--text-main)] transition-colors duration-500 ${(window.innerWidth < 1024 && (currentPath === '/calculate' || currentPath.startsWith('/calculate') || currentPath === '/roadmap' || currentPath.startsWith('/roadmap') || ((currentPath === '/' || currentPath === '') && viewMode === 'input'))) ? 'overflow-hidden h-screen' : ''}`}>
+      <div className={`flex flex-col theme-${theme} min-h-screen font-sans selection:bg-[var(--primary)] selection:text-white relative bg-[var(--bg-main)] text-[var(--text-main)] transition-colors duration-500 ${(window.innerWidth < 1024 && (currentPath === '/roadmap' || currentPath.startsWith('/roadmap') || ((currentPath === '/' || currentPath === '') && viewMode === 'input'))) ? 'overflow-hidden h-screen' : ''}`}>
         {/* Full-Viewport Particle Background - Outside all containers */}
         <ParticleBackground theme={theme} />
         
@@ -720,13 +720,13 @@ function MainApp() {
 
                                 {/* Mobile: 3-Step Wizard with Lightweight CSS Animations */}
                                 {/* Key forces remount when navigating to /calculate, triggering animation like Financial Toolbox */}
-                                <div 
+                                <div
                                     key={`mobile-wizard-${currentPath === '/calculate' || currentPath.startsWith('/calculate') ? 'calculate' : 'other'}`}
-                                    className="lg:hidden animate-fade-in-up"
+                                    className="lg:hidden animate-fade-in-up h-[calc(100vh_-_7rem_-_6rem)]"
                                     style={{ animationDuration: '0.5s' }}
                                 >
                                     {mobileStep === 1 && (
-                                        <div key="step-1" className="animate-fade-in-up" style={{ animationDuration: '0.35s' }}>
+                                        <div key="step-1" className="animate-fade-in-up h-full" style={{ animationDuration: '0.35s' }}>
                                             <MobileQueueStep
                                                 expenses={expenses}
                                                 onAdd={addExpense}
@@ -741,9 +741,9 @@ function MainApp() {
                                     )}
 
                                     {mobileStep === 2 && (
-                                        <div 
+                                        <div
                                             key="step-2"
-                                            className="animate-fade-in-up"
+                                            className="animate-fade-in-up h-full"
                                             style={{ animationDuration: '0.35s' }}
                                         >
                                             <MobileAssumptionsStep
@@ -757,9 +757,9 @@ function MainApp() {
                                     )}
 
                                     {mobileStep === 3 && (
-                                        <div 
+                                        <div
                                             key="step-3"
-                                            className="animate-fade-in-up"
+                                            className="animate-fade-in-up h-full"
                                             style={{ animationDuration: '0.35s' }}
                                         >
                                             <MobileFinalWisdomStep
