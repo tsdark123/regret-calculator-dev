@@ -10,6 +10,7 @@ interface QueueModuleProps {
   onAnalyze: () => void;
   buttonText?: string;
   buttonIcon?: 'calculator' | 'arrow';
+  initialMobileExpenseIndex?: number;
 }
 
 // Internal Debounced Name Input Component
@@ -224,17 +225,39 @@ export const QueueModule: React.FC<QueueModuleProps> = ({
   onAnalyze,
   buttonText = 'Analyze',
   buttonIcon = 'calculator',
+  initialMobileExpenseIndex,
 }) => {
   // Mobile: Track which expense is currently visible
-  const [mobileExpenseIndex, setMobileExpenseIndex] = useState(0);
+  const [mobileExpenseIndex, setMobileExpenseIndex] = useState(() => {
+    if (initialMobileExpenseIndex !== undefined) {
+      return Math.max(0, Math.min(initialMobileExpenseIndex, expenses.length - 1));
+    }
+    return 0;
+  });
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 1024;
 
-  // When expenses change, ensure index is valid
+  // Track previous expenses to detect externally added items (e.g., Quick Load presets)
+  const prevExpensesRef = useRef(expenses);
+
+  // When expenses change, ensure index is valid and navigate to a newly added expense
   useEffect(() => {
-    if (mobileExpenseIndex >= expenses.length && expenses.length > 0) {
-      setMobileExpenseIndex(expenses.length - 1);
+    const prevExpenses = prevExpensesRef.current;
+    const newLastIndex = expenses.length - 1;
+
+    // If an expense was added externally and we aren't already showing the last item,
+    // jump to the newly added expense so the user sees it (mobile Quick Load fix).
+    if (
+      expenses.length > prevExpenses.length &&
+      newLastIndex >= 0 &&
+      mobileExpenseIndex !== newLastIndex
+    ) {
+      setMobileExpenseIndex(newLastIndex);
+    } else if (mobileExpenseIndex >= expenses.length && expenses.length > 0) {
+      setMobileExpenseIndex(newLastIndex);
     }
-  }, [expenses.length, mobileExpenseIndex]);
+
+    prevExpensesRef.current = expenses;
+  }, [expenses, mobileExpenseIndex]);
 
   // Navigate to next expense on mobile
   const goToNextExpense = () => {

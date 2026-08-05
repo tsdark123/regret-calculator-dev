@@ -180,8 +180,18 @@ function MainApp() {
   // Mobile wizard step state (1: Decisions, 2: Assumptions, 3: Final Wisdom)
   const [mobileStep, setMobileStep] = useState<1 | 2 | 3>(1);
   
+  // Mobile QueueModule initial expense index (used by Quick Load to focus the new preset)
+  const [queueInitialIndex, setQueueInitialIndex] = useState<number | undefined>(undefined);
+  
   // Loading State
   const [isLoading, setIsLoading] = useState(false);
+
+  // Reset queueInitialIndex once it has been consumed by the next render
+  useEffect(() => {
+    if (queueInitialIndex !== undefined) {
+      setQueueInitialIndex(undefined);
+    }
+  }, [queueInitialIndex]);
 
   // Scroll to top on page reload for desktop users
   useEffect(() => {
@@ -434,8 +444,10 @@ function MainApp() {
   };
 
   const handleLoadPreset = (expense: Expense) => {
+      const newIndex = expenses.length; // new expense will land at this index
       setExpenses(prev => [...prev, expense]);
-      handleStart(); 
+      setQueueInitialIndex(newIndex);
+      handleStart();
   };
 
   const generateId = () => Math.random().toString(36).substr(2, 9);
@@ -686,6 +698,7 @@ function MainApp() {
                                             onRemove={removeExpense}
                                             onUpdate={updateExpense}
                                             onAnalyze={handleAnalyze}
+                                            initialMobileExpenseIndex={queueInitialIndex}
                                         />
                                     </div>
                                     
@@ -719,6 +732,7 @@ function MainApp() {
                                                 onAnalyze={() => setMobileStep(2)}
                                                 buttonText="Next Step →"
                                                 buttonIcon="arrow"
+                                                initialMobileExpenseIndex={queueInitialIndex}
                                             />
                                         </div>
                                     )}
