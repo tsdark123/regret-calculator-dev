@@ -1,4 +1,5 @@
 import React from 'react';
+import { TestimonialsShuffle } from './TestimonialsShuffle';
 
 interface Testimonial {
   text: string;
@@ -148,7 +149,11 @@ export const TestimonialsSection: React.FC = () => (
       </p>
     </div>
 
-    <div className="flex justify-center gap-6 md:max-h-[540px] overflow-hidden w-full">
+    <div className="md:hidden w-full">
+      <TestimonialsShuffle />
+    </div>
+
+    <div className="hidden md:flex justify-center gap-6 md:max-h-[540px] overflow-hidden w-full">
       <TestimonialsColumn testimonials={firstColumn} duration={20} />
       <TestimonialsColumn testimonials={secondColumn} className="hidden md:block" duration={19} />
       <TestimonialsColumn testimonials={thirdColumn} className="hidden lg:block" duration={17} />
