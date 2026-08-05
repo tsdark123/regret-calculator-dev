@@ -136,10 +136,10 @@ export const TestimonialsSection: React.FC = () => (
   <section className="w-full py-8 md:py-12 select-none flex flex-col items-center">
     <div className="relative z-10 text-center mb-6 md:mb-10 flex flex-col items-center gap-3 mt-6 md:mt-0 px-4">
       <h2 className="md:hidden text-[clamp(1.5rem,_7vw,_2rem)] font-semibold mx-auto text-center relative z-20 py-2 text-[var(--text-main)] leading-tight">
-        What our users say
+        Testimonials
       </h2>
       <h2 className="hidden md:block text-3xl md:text-4xl lg:text-5xl font-semibold max-w-3xl mx-auto text-center relative z-20 py-2 text-[var(--text-main)]">
-        What our users say
+        Testimonials
       </h2>
       <p className="md:hidden mt-1 text-base text-[var(--text-muted)] max-w-xs leading-snug">
         See how we're bringing<br />smarter spending awareness worldwide
