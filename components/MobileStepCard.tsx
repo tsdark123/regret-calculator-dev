@@ -1,8 +1,6 @@
 import React from 'react';
 import {
   DialogHeader,
-  DialogTitle,
-  DialogDescription,
   DialogBody,
   DialogFooter,
 } from '@/components/ui/dialog';
@@ -37,8 +35,8 @@ export const MobileStepCard: React.FC<MobileStepCardProps> = ({
             {step}
           </div>
           <div>
-            <DialogTitle>{title}</DialogTitle>
-            {description && <DialogDescription>{description}</DialogDescription>}
+            <h2 className="text-lg leading-none font-semibold text-[var(--text-main)]">{title}</h2>
+            {description && <p className="text-sm text-[var(--text-muted)]">{description}</p>}
           </div>
         </div>
       </DialogHeader>
