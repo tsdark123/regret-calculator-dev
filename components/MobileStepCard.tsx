@@ -25,7 +25,7 @@ export const MobileStepCard: React.FC<MobileStepCardProps> = ({
   return (
     <div
       className={
-        'bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl shadow-2xl backdrop-blur-sm flex flex-col h-full overflow-hidden ' +
+        'bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl shadow-2xl backdrop-blur-sm flex flex-col overflow-hidden ' +
         (className || '')
       }
     >
@@ -40,7 +40,7 @@ export const MobileStepCard: React.FC<MobileStepCardProps> = ({
           </div>
         </div>
       </DialogHeader>
-      <DialogBody className="flex-1 overflow-y-auto min-h-0">{children}</DialogBody>
+      <DialogBody>{children}</DialogBody>
       {footer && <DialogFooter>{footer}</DialogFooter>}
     </div>
   );

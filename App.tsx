@@ -722,11 +722,11 @@ function MainApp() {
                                 {/* Key forces remount when navigating to /calculate, triggering animation like Financial Toolbox */}
                                 <div
                                     key={`mobile-wizard-${currentPath === '/calculate' || currentPath.startsWith('/calculate') ? 'calculate' : 'other'}`}
-                                    className="lg:hidden animate-fade-in-up h-[calc(100vh_-_7rem_-_6rem)]"
+                                    className="lg:hidden animate-fade-in-up"
                                     style={{ animationDuration: '0.5s' }}
                                 >
                                     {mobileStep === 1 && (
-                                        <div key="step-1" className="animate-fade-in-up h-full" style={{ animationDuration: '0.35s' }}>
+                                        <div key="step-1" className="animate-fade-in-up" style={{ animationDuration: '0.35s' }}>
                                             <MobileQueueStep
                                                 expenses={expenses}
                                                 onAdd={addExpense}
@@ -743,7 +743,7 @@ function MainApp() {
                                     {mobileStep === 2 && (
                                         <div
                                             key="step-2"
-                                            className="animate-fade-in-up h-full"
+                                            className="animate-fade-in-up"
                                             style={{ animationDuration: '0.35s' }}
                                         >
                                             <MobileAssumptionsStep
@@ -759,7 +759,7 @@ function MainApp() {
                                     {mobileStep === 3 && (
                                         <div
                                             key="step-3"
-                                            className="animate-fade-in-up h-full"
+                                            className="animate-fade-in-up"
                                             style={{ animationDuration: '0.35s' }}
                                         >
                                             <MobileFinalWisdomStep
