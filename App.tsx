@@ -3,6 +3,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Hero } from './components/Hero';
 import { Navbar } from './components/Navbar';
 import { QueueModule } from './components/QueueModule';
+import { MobileQueueStep } from './components/MobileQueueStep';
+import { MobileAssumptionsStep } from './components/MobileAssumptionsStep';
+import { MobileFinalWisdomStep } from './components/MobileFinalWisdomStep';
 import { SettingsPanel } from './components/SettingsPanel';
 import { StockSelector } from './components/StockSelector';
 import { Footer } from './components/Footer';
@@ -26,7 +29,7 @@ import { AnalyticsTracker } from './components/AnalyticsTracker';
 import { MobileBottomNav } from './components/MobileBottomNav';
 import { MobileIntro } from './components/MobileIntro';
 import { StatusPanel } from './components/StatusPanel';
-import { ArrowRight, Calculator, RefreshCw } from 'lucide-react';
+
 
 import { ResultsDashboard } from './components/ResultsDashboard';
 import { Expense, Assumptions, CalculationResult, StockOption, Theme } from './types';
@@ -724,13 +727,13 @@ function MainApp() {
                                 >
                                     {mobileStep === 1 && (
                                         <div key="step-1" className="animate-fade-in-up" style={{ animationDuration: '0.35s' }}>
-                                            <QueueModule
+                                            <MobileQueueStep
                                                 expenses={expenses}
                                                 onAdd={addExpense}
                                                 onRemove={removeExpense}
                                                 onUpdate={updateExpense}
                                                 onAnalyze={() => setMobileStep(2)}
-                                                buttonText="Next Step →"
+                                                buttonText="Next Step"
                                                 buttonIcon="arrow"
                                                 initialMobileExpenseIndex={queueInitialIndex}
                                             />
@@ -743,103 +746,31 @@ function MainApp() {
                                             className="animate-fade-in-up"
                                             style={{ animationDuration: '0.35s' }}
                                         >
-                                            <SettingsPanel 
-                                                assumptions={assumptions} 
-                                                onChange={updateAssumptions} 
+                                            <MobileAssumptionsStep
+                                                assumptions={assumptions}
+                                                onChange={updateAssumptions}
                                                 onOpenStockSelector={() => setIsStockModalOpen(true)}
-                                                showStepNumber={2}
+                                                onBack={() => setMobileStep(1)}
+                                                onNext={() => setMobileStep(3)}
                                             />
-                                            <div className="flex flex-col sm:flex-row gap-3 mt-4 pt-2">
-                                                <button
-                                                    onClick={() => setMobileStep(3)}
-                                                    className="flex-1 py-2.5 bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-white rounded-xl font-bold shadow-lg shadow-[var(--primary)]/20 transition-all flex items-center justify-center gap-2 active:scale-[0.98] text-sm"
-                                                >
-                                                    <ArrowRight className="w-4 h-4" />
-                                                    Next Step
-                                                </button>
-                                            </div>
                                         </div>
                                     )}
 
                                     {mobileStep === 3 && (
                                         <div 
                                             key="step-3"
-                                            className="bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl md:rounded-3xl p-4 md:p-5 shadow-2xl backdrop-blur-sm animate-fade-in-up min-h-[400px] flex flex-col"
+                                            className="animate-fade-in-up"
                                             style={{ animationDuration: '0.35s' }}
                                         >
-                                            <div className="flex items-center gap-3 mb-3 md:mb-4">
-                                                <div className="w-6 h-6 rounded-full bg-[var(--primary)] bg-opacity-10 flex items-center justify-center text-[var(--primary)] font-bold text-xs ring-1 ring-[var(--primary)] ring-opacity-20">3</div>
-                                                <h2 className="text-xs md:text-sm font-bold text-[var(--text-main)] uppercase tracking-wider">Final Wisdom</h2>
-                                            </div>
-                                            <div className="space-y-3 text-[var(--text-muted)] text-sm mb-4 flex-grow">
-                                                <p>You're about to see how <span className="text-[var(--text-main)] font-semibold">{expenses.length} decision{expenses.length !== 1 ? 's' : ''}</span> compound over <span className="text-[var(--text-main)] font-semibold">{assumptions.timeHorizonYears} years</span>.</p>
-                                                <p>Remember: Every dollar spent today is a dollar that can't grow tomorrow.</p>
-                                                
-                                                {/* Analysis Preview */}
-                                                <div className="bg-[var(--bg-input)] p-3 rounded-xl border border-[var(--border)] mt-3">
-                                                    <p className="text-[10px] uppercase tracking-wider text-[var(--text-muted)] font-semibold mb-2">Your Expenses (Monthly Equivalent)</p>
-                                                    <div className="space-y-1.5">
-                                                        {expenses.slice(0, 3).map((exp, i) => {
-                                                            const amt = exp.amount || 0;
-                                                            let monthlyAmt = 0;
-                                                            if (exp.frequency === 'Weekly') monthlyAmt = amt * 4.33;
-                                                            else if (exp.frequency === 'Monthly') monthlyAmt = amt;
-                                                            else if (exp.frequency === 'Yearly') monthlyAmt = amt / 12;
-                                                            else if (exp.frequency === 'One-time') monthlyAmt = amt / (assumptions.timeHorizonYears * 12);
-                                                            return (
-                                                                <div key={exp.id} className="flex items-center justify-between text-xs">
-                                                                    <span className="text-[var(--text-main)] truncate max-w-[140px]">{exp.name || `Expense ${i + 1}`}</span>
-                                                                    <span className="text-[var(--primary)] font-semibold">${monthlyAmt.toFixed(2)}/mo</span>
-                                                                </div>
-                                                            );
-                                                        })}
-                                                        {expenses.length > 3 && (
-                                                            <p className="text-[10px] text-[var(--text-muted)]">+{expenses.length - 3} more...</p>
-                                                        )}
-                                                    </div>
-                                                    <div className="border-t border-[var(--border)] mt-2 pt-2 flex items-center justify-between">
-                                                        <span className="text-[10px] text-[var(--text-muted)]">Est. Monthly Total</span>
-                                                        <span className="text-sm font-bold text-[var(--text-main)]">
-                                                            ${expenses.reduce((sum, exp) => {
-                                                                const amt = exp.amount || 0;
-                                                                if (exp.frequency === 'Weekly') return sum + (amt * 4.33);
-                                                                if (exp.frequency === 'Monthly') return sum + amt;
-                                                                if (exp.frequency === 'Yearly') return sum + (amt / 12);
-                                                                if (exp.frequency === 'One-time') return sum + (amt / (assumptions.timeHorizonYears * 12));
-                                                                return sum;
-                                                            }, 0).toFixed(2)}
-                                                        </span>
-                                                    </div>
-                                                </div>
-
-                                                <div className="bg-[var(--bg-hover)] p-4 rounded-xl border border-[var(--border)] mt-3 relative">
-                                                    <p className="text-xs text-[var(--text-muted)] italic pr-8">
-                                                        "{financialWisdoms[currentWisdomIndex]}"
-                                                    </p>
-                                                    <button
-                                                        onClick={cycleWisdom}
-                                                        className="absolute top-3 right-3 p-1.5 rounded-lg hover:bg-[var(--bg-card)] transition-all active:scale-95 group"
-                                                        title="Next wisdom"
-                                                    >
-                                                        <RefreshCw className="w-3.5 h-3.5 text-[var(--text-muted)] group-hover:text-[var(--primary)] transition-colors" />
-                                                    </button>
-                                                </div>
-                                            </div>
-                                            <div className="flex flex-col gap-3 pt-2 mt-auto">
-                                                <button
-                                                    onClick={handleAnalyze}
-                                                    className="w-full py-4 bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-white rounded-xl font-bold shadow-lg transition-all flex items-center justify-center gap-2 active:scale-[0.98] text-base"
-                                                >
-                                                    <Calculator className="w-5 h-5" />
-                                                    Analyze My Regret
-                                                </button>
-                                                <button
-                                                    onClick={() => setMobileStep(1)}
-                                                    className="w-full py-2 text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors text-sm"
-                                                >
-                                                    ← Back to Start
-                                                </button>
-                                            </div>
+                                            <MobileFinalWisdomStep
+                                                expenses={expenses}
+                                                assumptions={assumptions}
+                                                financialWisdoms={financialWisdoms}
+                                                currentWisdomIndex={currentWisdomIndex}
+                                                onCycleWisdom={cycleWisdom}
+                                                onAnalyze={handleAnalyze}
+                                                onBack={() => setMobileStep(2)}
+                                            />
                                         </div>
                                     )}
                                 </div>

@@ -3,7 +3,7 @@ import { Settings, Info, ChevronRight, BarChart3 } from 'lucide-react';
 import { Assumptions } from '../types';
 
 // Simple Debounced Slider Component with Real-time Display
-const DebouncedSlider = ({ 
+export const DebouncedSlider = ({ 
   value, 
   onChange, 
   onDisplayChange, // New callback for real-time display updates
