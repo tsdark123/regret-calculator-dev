@@ -48,7 +48,7 @@ export function TestimonialsShuffle() {
 
   // Auto-cycle every 4 seconds; resets if the user drags
   React.useEffect(() => {
-    const id = setTimeout(handleShuffle, 4000);
+    const id = setTimeout(handleShuffle, 2500);
     return () => clearTimeout(id);
   }, [positions, handleShuffle]);
 
