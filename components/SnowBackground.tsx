@@ -17,6 +17,7 @@ export const SnowBackground = React.memo(function SnowBackground({ theme }: Snow
     return false;
   });
 
+  // This effect is intentionally cheap on desktop: it only toggles isMobile on resize.
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 1024);
@@ -26,7 +27,10 @@ export const SnowBackground = React.memo(function SnowBackground({ theme }: Snow
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // Only initialize the (relatively heavy) tsparticles engine on mobile.
   useEffect(() => {
+    if (!isMobile) return;
+
     initParticlesEngine(async (engine: Engine) => {
       await loadSlim(engine);
     }).then(() => {
@@ -34,7 +38,7 @@ export const SnowBackground = React.memo(function SnowBackground({ theme }: Snow
     }).catch((error) => {
       console.error("SnowBackground: Failed to initialize particles engine", error);
     });
-  }, []);
+  }, [isMobile]);
 
   const particleColor = useMemo(() => {
     if (theme === "blue") {
@@ -52,18 +56,20 @@ export const SnowBackground = React.memo(function SnowBackground({ theme }: Snow
 
   const particleSize = useMemo(() => {
     if (isMobile) {
-      return { min: 1.7, max: 3 };
+      return { min: 1.2, max: 2.2 };
     }
     return { min: 0.5, max: 1.5 };
   }, [isMobile]);
 
   const options: ISourceOptions = useMemo(
     () => ({
-      fpsLimit: 60,
-      detectRetina: true,
+      fpsLimit: 30,
+      detectRetina: false,
+      pauseOnBlur: true,
+      fullScreen: false,
       particles: {
         number: {
-          value: 100,
+          value: 35,
           density: {
             enable: true,
           },
@@ -81,13 +87,13 @@ export const SnowBackground = React.memo(function SnowBackground({ theme }: Snow
           value: particleSize,
         },
         shadow: {
-          enable: true,
+          enable: false,
           color: particleColor,
           blur: 5,
         },
         move: {
           enable: true,
-          speed: 1.2,
+          speed: 0.8,
           direction: "bottom",
           random: false,
           straight: false,
@@ -98,7 +104,7 @@ export const SnowBackground = React.memo(function SnowBackground({ theme }: Snow
           },
           wobble: {
             enable: true,
-            distance: 15,
+            distance: 10,
             speed: 1,
           },
         },
@@ -117,14 +123,14 @@ export const SnowBackground = React.memo(function SnowBackground({ theme }: Snow
     [particleColor, particleOpacity, particleSize]
   );
 
-  if (!init) {
+  if (!init || !isMobile) {
     return null;
   }
 
   return (
-    <div 
-      className="fixed inset-0 pointer-events-none" 
-      style={{ 
+    <div
+      className="fixed inset-0 pointer-events-none"
+      style={{
         zIndex: 1,
         width: '100vw',
         height: '100vh',
@@ -133,8 +139,8 @@ export const SnowBackground = React.memo(function SnowBackground({ theme }: Snow
         left: 0
       }}
     >
-      <Particles 
-        id="snow-particles" 
+      <Particles
+        id="snow-particles"
         options={options}
         style={{
           width: '100%',

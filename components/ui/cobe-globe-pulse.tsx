@@ -17,24 +17,25 @@ interface GlobePulseProps {
   pulseColor?: string
   lightMode?: boolean
   interactive?: boolean
+  active?: boolean
 }
 
 const defaultMarkers: PulseMarker[] = [
-  { id: "pulse-1", location: [51.51, -0.13], delay: 0, label: "London" },       // London
-  { id: "pulse-2", location: [40.71, -74.01], delay: 0.3, label: "New York" },    // New York
-  { id: "pulse-3", location: [35.68, 139.65], delay: 0.6, label: "Tokyo" },    // Tokyo
-  { id: "pulse-4", location: [-33.87, 151.21], delay: 0.9, label: "Sydney" },   // Sydney
-  { id: "pulse-5", location: [48.86, 2.35], delay: 1.2, label: "Paris" },      // Paris
-  { id: "pulse-6", location: [55.76, 37.62], delay: 1.5, label: "Moscow" },     // Moscow
-  { id: "pulse-7", location: [19.43, -99.13], delay: 1.8, label: "Mexico City" },    // Mexico City
-  { id: "pulse-8", location: [-23.55, -46.63], delay: 2.1, label: "São Paulo" },   // São Paulo
-  { id: "pulse-9", location: [1.35, 103.82], delay: 2.4, label: "Singapore" },     // Singapore
-  { id: "pulse-10", location: [28.61, 77.21], delay: 2.7, label: "Delhi" },    // Delhi
-  { id: "pulse-11", location: [37.57, 126.98], delay: 3.0, label: "Seoul" },   // Seoul
-  { id: "pulse-12", location: [-1.29, 36.82], delay: 3.3, label: "Nairobi" },    // Nairobi
-  { id: "pulse-13", location: [52.52, 13.41], delay: 3.6, label: "Berlin" },    // Berlin
-  { id: "pulse-14", location: [34.05, -118.24], delay: 3.9, label: "Los Angeles" },  // Los Angeles
-  { id: "pulse-15", location: [25.20, 55.27], delay: 4.2, label: "Dubai" },    // Dubai
+  { id: "pulse-1", location: [51.51, -0.13], delay: 0, label: "London" },
+  { id: "pulse-2", location: [40.71, -74.01], delay: 0.3, label: "New York" },
+  { id: "pulse-3", location: [35.68, 139.65], delay: 0.6, label: "Tokyo" },
+  { id: "pulse-4", location: [-33.87, 151.21], delay: 0.9, label: "Sydney" },
+  { id: "pulse-5", location: [48.86, 2.35], delay: 1.2, label: "Paris" },
+  { id: "pulse-6", location: [55.76, 37.62], delay: 1.5, label: "Moscow" },
+  { id: "pulse-7", location: [19.43, -99.13], delay: 1.8, label: "Mexico City" },
+  { id: "pulse-8", location: [-23.55, -46.63], delay: 2.1, label: "São Paulo" },
+  { id: "pulse-9", location: [1.35, 103.82], delay: 2.4, label: "Singapore" },
+  { id: "pulse-10", location: [28.61, 77.21], delay: 2.7, label: "Delhi" },
+  { id: "pulse-11", location: [37.57, 126.98], delay: 3.0, label: "Seoul" },
+  { id: "pulse-12", location: [-1.29, 36.82], delay: 3.3, label: "Nairobi" },
+  { id: "pulse-13", location: [52.52, 13.41], delay: 3.6, label: "Berlin" },
+  { id: "pulse-14", location: [34.05, -118.24], delay: 3.9, label: "Los Angeles" },
+  { id: "pulse-15", location: [25.20, 55.27], delay: 4.2, label: "Dubai" },
 ]
 
 export function GlobePulse({
@@ -45,6 +46,7 @@ export function GlobePulse({
   pulseColor = "#a855f7",
   lightMode = false,
   interactive = true,
+  active = true,
 }: GlobePulseProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const pointerInteracting = useRef<{ x: number; y: number } | null>(null)
@@ -52,6 +54,7 @@ export function GlobePulse({
   const phiOffsetRef = useRef(0)
   const thetaOffsetRef = useRef(0)
   const isPausedRef = useRef(false)
+  const activeRef = useRef(active)
 
   const handlePointerDown = useCallback((e: React.PointerEvent) => {
     pointerInteracting.current = { x: e.clientX, y: e.clientY }
@@ -69,6 +72,10 @@ export function GlobePulse({
     if (canvasRef.current) canvasRef.current.style.cursor = "grab"
     isPausedRef.current = false
   }, [])
+
+  useEffect(() => {
+    activeRef.current = active
+  }, [active])
 
   useEffect(() => {
     const handlePointerMove = (e: PointerEvent) => {
@@ -106,8 +113,8 @@ export function GlobePulse({
         theta: 0.2,
         dark: lightMode ? 0 : 1,
         diffuse: lightMode ? 1.2 : 1.5,
-        mapSamples: 16000,
-        mapBrightness: lightMode ? 6 : 10,
+        mapSamples: 8000,
+        mapBrightness: lightMode ? 5 : 8,
         baseColor: lightMode ? [0.8, 0.8, 0.8] : [0.5, 0.5, 0.5],
         markerColor: markerColor,
         glowColor: lightMode ? [0.9, 0.9, 0.9] : [0.05, 0.05, 0.05],
@@ -117,14 +124,14 @@ export function GlobePulse({
       })
 
       function animate() {
-        if (!isPausedRef.current) {
+        if (activeRef.current && !isPausedRef.current) {
           phi += speed
+          globe!.update({
+            phi: phi + phiOffsetRef.current + dragOffset.current.phi,
+            theta: 0.2 + thetaOffsetRef.current + dragOffset.current.theta,
+            markers: markers.map((m) => ({ location: m.location, size: 0.03, id: m.id })),
+          })
         }
-        globe!.update({
-          phi: phi + phiOffsetRef.current + dragOffset.current.phi,
-          theta: 0.2 + thetaOffsetRef.current + dragOffset.current.theta,
-          markers: markers.map((m) => ({ location: m.location, size: 0.03, id: m.id })),
-        })
         animationId = requestAnimationFrame(animate)
       }
       animate()

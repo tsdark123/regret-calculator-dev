@@ -38,6 +38,7 @@ export const FeaturesReveal: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isVisible, setIsVisible] = useState(false);
 
+  // Wave canvas: only run the expensive animation while the section is in view.
   useEffect(() => {
     const canvas = canvasRef.current;
     const section = sectionRef.current;
@@ -45,10 +46,13 @@ export const FeaturesReveal: React.FC = () => {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    let time = 0;
-    let animId: number;
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let isVisibleRef = false;
+    let isPaused = document.hidden || reducedMotion.matches;
+    let animId: number | undefined;
 
-    const waveData = Array.from({ length: 8 }).map(() => ({
+    // Fewer, simpler waves than before for a lighter render loop
+    const waveData = Array.from({ length: 5 }).map(() => ({
       value: Math.random() * 0.5 + 0.1,
       targetValue: Math.random() * 0.5 + 0.1,
       speed: Math.random() * 0.02 + 0.01,
@@ -59,23 +63,20 @@ export const FeaturesReveal: React.FC = () => {
       canvas!.height = section!.offsetHeight;
     }
 
-    function update() {
-      waveData.forEach(d => {
-        if (Math.random() < 0.01) d.targetValue = Math.random() * 0.7 + 0.1;
-        d.value += (d.targetValue - d.value) * d.speed;
-      });
-    }
-
     function draw() {
-      ctx!.clearRect(0, 0, canvas!.width, canvas!.height);
+      const w = canvas!.width;
+      const h = canvas!.height;
+      ctx!.clearRect(0, 0, w, h);
+
       waveData.forEach((d, i) => {
         const freq = d.value * 7;
         ctx!.beginPath();
-        for (let x = 0; x < canvas!.width; x++) {
-          const nx = (x / canvas!.width) * 2 - 1;
+        // Lower resolution stepping: only calculate every 4 pixels to cut CPU cost
+        for (let x = 0; x <= w; x += 4) {
+          const nx = (x / w) * 2 - 1;
           const px = nx + i * 0.04 + freq * 0.03;
-          const py = Math.sin(px * 10 + time) * Math.cos(px * 2) * freq * 0.1 * ((i + 1) / 8);
-          const y = (py + 1) * canvas!.height / 2;
+          const py = Math.sin(px * 10 + time) * Math.cos(px * 2) * freq * 0.1 * ((i + 1) / waveData.length);
+          const y = (py + 1) * h / 2;
           x === 0 ? ctx!.moveTo(x, y) : ctx!.lineTo(x, y);
         }
         const intensity = Math.min(1, freq * 0.3);
@@ -90,40 +91,80 @@ export const FeaturesReveal: React.FC = () => {
       });
     }
 
+    let time = 0;
+
+    function update() {
+      waveData.forEach(d => {
+        if (Math.random() < 0.01) d.targetValue = Math.random() * 0.7 + 0.1;
+        d.value += (d.targetValue - d.value) * d.speed;
+      });
+    }
+
     function animate() {
+      if (isPaused || !isVisibleRef) {
+        return;
+      }
+
       time += 0.02;
       update();
       draw();
       animId = requestAnimationFrame(animate);
     }
 
-    const observer = new ResizeObserver(resize);
-    observer.observe(section);
+    function scheduleIfNeeded() {
+      if (animId) {
+        cancelAnimationFrame(animId);
+        animId = undefined;
+      }
+
+      if (isPaused || !isVisibleRef) {
+        // When paused (hidden or reduced motion), stop the loop to save CPU.
+        // We don't redraw a static frame because the section is already off-screen.
+        return;
+      }
+
+      animId = requestAnimationFrame(animate);
+    }
+
+    const resizeObserver = new ResizeObserver(resize);
+    resizeObserver.observe(section);
     resize();
-    animate();
 
-    return () => {
-      cancelAnimationFrame(animId);
-      observer.disconnect();
-    };
-  }, []);
-
-  // Track visibility to re-trigger animation
-  useEffect(() => {
-    const section = sectionRef.current;
-    if (!section) return;
-
-    const observer = new IntersectionObserver(
+    const intersectionObserver = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
+          isVisibleRef = entry.isIntersecting;
           setIsVisible(entry.isIntersecting);
+          scheduleIfNeeded();
         });
       },
-      { threshold: 0.3 }
+      { threshold: 0.1, rootMargin: '100px' }
     );
+    intersectionObserver.observe(section);
 
-    observer.observe(section);
-    return () => observer.disconnect();
+    const handleVisibility = () => {
+      isPaused = document.hidden || reducedMotion.matches;
+      scheduleIfNeeded();
+    };
+
+    const handleMotionChange = (e: MediaQueryListEvent) => {
+      isPaused = document.hidden || e.matches;
+      scheduleIfNeeded();
+    };
+
+    document.addEventListener('visibilitychange', handleVisibility);
+    reducedMotion.addEventListener('change', handleMotionChange);
+
+    // Initial schedule
+    scheduleIfNeeded();
+
+    return () => {
+      if (animId) cancelAnimationFrame(animId);
+      resizeObserver.disconnect();
+      intersectionObserver.disconnect();
+      document.removeEventListener('visibilitychange', handleVisibility);
+      reducedMotion.removeEventListener('change', handleMotionChange);
+    };
   }, []);
 
   return (
@@ -131,7 +172,6 @@ export const FeaturesReveal: React.FC = () => {
     <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none opacity-90" />
     <div className="relative z-10 flex w-full items-center justify-center">
       <motion.div
-        key={isVisible ? 'visible' : 'hidden'}
         className="flex max-w-lg flex-col items-start space-y-4 p-8 text-left"
         variants={containerVariants}
         initial="hidden"

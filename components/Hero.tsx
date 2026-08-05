@@ -10,9 +10,35 @@ interface HeroProps {
   theme: Theme;
 }
 
-const StatCounter = ({ value, suffix = '', progress = 1 }: { value: number, suffix?: string, progress?: number }) => {
-  const current = Math.floor(value * progress);
-  return <span className="select-none">{current.toLocaleString()}{suffix}</span>;
+const StatCounter = ({ value, suffix = '', duration = 1100 }: { value: number, suffix?: string, duration?: number }) => {
+  const ref = useRef<HTMLSpanElement>(null);
+  const hasAnimated = useRef(false);
+
+  useEffect(() => {
+    const span = ref.current;
+    if (!span) return;
+
+    if (hasAnimated.current) {
+      span.textContent = value.toLocaleString() + suffix;
+      return;
+    }
+
+    const start = performance.now();
+    const step = (timestamp: number) => {
+      const raw = Math.min((timestamp - start) / duration, 1);
+      const ease = 1 - Math.pow(1 - raw, 3);
+      const current = Math.floor(value * ease);
+      span.textContent = current.toLocaleString() + suffix;
+      if (raw < 1) {
+        requestAnimationFrame(step);
+      } else {
+        hasAnimated.current = true;
+      }
+    };
+    requestAnimationFrame(step);
+  }, [value, suffix, duration]);
+
+  return <span ref={ref} className="select-none">0{suffix}</span>;
 };
 
 // --- Testimonial Component ---
@@ -203,28 +229,12 @@ const TheoryModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void
 export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount, theme }) => {
   const [showPreset, setShowPreset] = useState(false);
   const [showTheory, setShowTheory] = useState(false);
-  const [animationProgress, setAnimationProgress] = useState(0);
   const [animationComplete, setAnimationComplete] = useState(false);
 
-  // Shared animation for all stats
+  // Stagger the floating animation after the stat counters finish.
   useEffect(() => {
-    const duration = 1100;
-    const startTime = performance.now();
-
-    const step = (timestamp: number) => {
-      const progress = Math.min((timestamp - startTime) / duration, 1);
-      // Ease-out cubic: fast at start, slow at end
-      const easeProgress = 1 - Math.pow(1 - progress, 3);
-      setAnimationProgress(easeProgress);
-
-      if (progress < 1) {
-        requestAnimationFrame(step);
-      } else {
-        setAnimationComplete(true);
-      }
-    };
-
-    requestAnimationFrame(step);
+    const timer = setTimeout(() => setAnimationComplete(true), 1100);
+    return () => clearTimeout(timer);
   }, []);
   
   // Theme-aware glow color
@@ -356,19 +366,19 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
             <div className="grid grid-cols-3 gap-3">
               <div className={`flex flex-col items-center justify-center ${animationComplete ? 'animate-float' : ''}`}>
                 <span className="text-[clamp(1rem,_4.5vw,_1.25rem)] font-bold text-[var(--text-main)] tracking-tight mb-1 select-none">
-                  <StatCounter value={decisionCount} suffix="+" progress={animationProgress} />
+                  <StatCounter value={decisionCount} suffix="+" />
                 </span>
                 <span className="text-[clamp(6px,_2vw,_8px)] text-[var(--text-muted)] font-semibold uppercase tracking-wider text-center leading-tight select-none">Decisions Analyzed</span>
               </div>
               <div className={`flex flex-col items-center justify-center border-x border-white/5 ${animationComplete ? 'animate-float' : ''}`}>
                 <span className="text-[clamp(1rem,_4.5vw,_1.25rem)] font-bold text-[var(--text-main)] tracking-tight mb-1 select-none">
-                  <StatCounter value={960} suffix="M+" progress={animationProgress} />
+                  <StatCounter value={960} suffix="M+" />
                 </span>
                 <span className="text-[clamp(6px,_2vw,_8px)] text-[var(--text-muted)] font-semibold uppercase tracking-wider text-center leading-tight select-none">Total Capital Wasted</span>
               </div>
               <div className={`flex flex-col items-center justify-center ${animationComplete ? 'animate-float' : ''}`}>
                 <span className="text-[clamp(1rem,_4.5vw,_1.25rem)] font-bold text-[var(--text-main)] tracking-tight mb-1 select-none">
-                  <StatCounter value={667} suffix="%+" progress={animationProgress} />
+                  <StatCounter value={667} suffix="%+" />
                 </span>
                 <span className="text-[clamp(6px,_2vw,_8px)] text-[var(--text-muted)] font-semibold uppercase tracking-wider text-center leading-tight select-none">Avg. Annual Yield Missed</span>
               </div>
@@ -429,7 +439,7 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
             <div className={`flex flex-col items-center justify-center group ${animationComplete ? 'animate-float' : ''}`}>
                 <div className="flex items-center gap-2 mb-1">
                   <span className="text-3xl font-bold text-[var(--text-main)] tracking-tight group-hover:text-[var(--primary)] transition-colors select-none">
-                      <StatCounter value={decisionCount} suffix="+" progress={animationProgress} />
+                      <StatCounter value={decisionCount} suffix="+" />
                   </span>
                 </div>
                 <span className="text-[10px] text-[var(--text-muted)] font-semibold uppercase tracking-widest select-none">Decisions Analyzed</span>
@@ -437,7 +447,7 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
             <div className={`flex flex-col items-center justify-center group ${animationComplete ? 'animate-float' : ''}`}>
                 <div className="flex items-center gap-2 mb-1">
                   <span className="text-3xl font-bold text-[var(--text-main)] tracking-tight group-hover:text-[var(--primary)] transition-colors select-none">
-                      <StatCounter value={960} suffix="M+" progress={animationProgress} />
+                      <StatCounter value={960} suffix="M+" />
                   </span>
                 </div>
                 <span className="text-[10px] text-[var(--text-muted)] font-semibold uppercase tracking-widest select-none">Total Capital Wasted</span>
@@ -445,7 +455,7 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
             <div className={`flex flex-col items-center justify-center group ${animationComplete ? 'animate-float' : ''}`}>
                 <div className="flex items-center gap-2 mb-1">
                   <span className="text-3xl font-bold text-[var(--text-main)] tracking-tight group-hover:text-[var(--primary)] transition-colors select-none">
-                      <StatCounter value={667} suffix="%+" progress={animationProgress} />
+                      <StatCounter value={667} suffix="%+" />
                   </span>
                 </div>
                 <span className="text-[10px] text-[var(--text-muted)] font-semibold uppercase tracking-widest select-none">Avg. Annual Yield Missed</span>

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { GlobePulse } from './ui/cobe-globe-pulse';
 import { Cover } from './ui/cover';
 import { LocationMap } from './ui/expand-map';
@@ -10,9 +10,9 @@ interface GlobeSectionProps {
 }
 
 const themeMarkerColors: Record<Theme, [number, number, number]> = {
-  purple: [0.66, 0.33, 0.97],  // #a855f7
-  green: [0.13, 0.55, 0.13],   // #22c55e
-  blue: [0.23, 0.51, 0.96],    // #3b82f6
+  purple: [0.66, 0.33, 0.97],
+  green: [0.13, 0.55, 0.13],
+  blue: [0.23, 0.51, 0.96],
 };
 
 const themePulseColors: Record<Theme, string> = {
@@ -23,27 +23,34 @@ const themePulseColors: Record<Theme, string> = {
 
 export const GlobeSection: React.FC<GlobeSectionProps> = ({ theme }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
 
-  // Wave animation
+  // Wave canvas: only run the expensive animation while the section is in view.
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    const section = sectionRef.current;
+    if (!canvas || !section) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    let time = 0;
-    let animId: number;
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let isVisibleRef = false;
+    let isPaused = document.hidden || reducedMotion.matches;
+    let animId: number | undefined;
 
-    const waveData = Array.from({ length: 8 }).map(() => ({
+    const waveData = Array.from({ length: 5 }).map(() => ({
       value: Math.random() * 0.5 + 0.1,
       targetValue: Math.random() * 0.5 + 0.1,
       speed: Math.random() * 0.02 + 0.01,
     }));
 
     function resize() {
-      canvas!.width = canvas!.parentElement?.offsetWidth || 0;
-      canvas!.height = canvas!.parentElement?.offsetHeight || 0;
+      canvas!.width = section!.offsetWidth;
+      canvas!.height = section!.offsetHeight;
     }
+
+    let time = 0;
 
     function update() {
       waveData.forEach(d => {
@@ -53,15 +60,19 @@ export const GlobeSection: React.FC<GlobeSectionProps> = ({ theme }) => {
     }
 
     function draw() {
-      ctx!.clearRect(0, 0, canvas!.width, canvas!.height);
+      const w = canvas!.width;
+      const h = canvas!.height;
+      ctx!.clearRect(0, 0, w, h);
+
       waveData.forEach((d, i) => {
         const freq = d.value * 7;
         ctx!.beginPath();
-        for (let x = 0; x < canvas!.width; x++) {
-          const nx = (x / canvas!.width) * 2 - 1;
+        // Lower resolution stepping to cut CPU cost
+        for (let x = 0; x <= w; x += 4) {
+          const nx = (x / w) * 2 - 1;
           const px = nx + i * 0.04 + freq * 0.03;
-          const py = Math.sin(px * 10 + time) * Math.cos(px * 2) * freq * 0.1 * ((i + 1) / 8);
-          const y = (py + 1) * canvas!.height / 2;
+          const py = Math.sin(px * 10 + time) * Math.cos(px * 2) * freq * 0.1 * ((i + 1) / waveData.length);
+          const y = (py + 1) * h / 2;
           x === 0 ? ctx!.moveTo(x, y) : ctx!.lineTo(x, y);
         }
         const intensity = Math.min(1, freq * 0.3);
@@ -77,20 +88,67 @@ export const GlobeSection: React.FC<GlobeSectionProps> = ({ theme }) => {
     }
 
     function animate() {
+      if (isPaused || !isVisibleRef) {
+        return;
+      }
+
       time += 0.02;
       update();
       draw();
       animId = requestAnimationFrame(animate);
     }
 
-    const observer = new ResizeObserver(resize);
-    observer.observe(canvas.parentElement!);
+    function scheduleIfNeeded() {
+      if (animId) {
+        cancelAnimationFrame(animId);
+        animId = undefined;
+      }
+
+      if (isPaused || !isVisibleRef) {
+        return;
+      }
+
+      animId = requestAnimationFrame(animate);
+    }
+
+    const resizeObserver = new ResizeObserver(resize);
+    resizeObserver.observe(section);
     resize();
-    animate();
+
+    const intersectionObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          isVisibleRef = entry.isIntersecting;
+          setIsVisible(entry.isIntersecting);
+          scheduleIfNeeded();
+        });
+      },
+      { threshold: 0.1, rootMargin: '100px' }
+    );
+    intersectionObserver.observe(section);
+
+    const handleVisibility = () => {
+      isPaused = document.hidden || reducedMotion.matches;
+      scheduleIfNeeded();
+    };
+
+    const handleMotionChange = (e: MediaQueryListEvent) => {
+      isPaused = document.hidden || e.matches;
+      scheduleIfNeeded();
+    };
+
+    document.addEventListener('visibilitychange', handleVisibility);
+    reducedMotion.addEventListener('change', handleMotionChange);
+
+    // Initial schedule
+    scheduleIfNeeded();
 
     return () => {
-      cancelAnimationFrame(animId);
-      observer.disconnect();
+      if (animId) cancelAnimationFrame(animId);
+      resizeObserver.disconnect();
+      intersectionObserver.disconnect();
+      document.removeEventListener('visibilitychange', handleVisibility);
+      reducedMotion.removeEventListener('change', handleMotionChange);
     };
   }, []);
 
@@ -109,7 +167,7 @@ export const GlobeSection: React.FC<GlobeSectionProps> = ({ theme }) => {
   });
 
   return (
-    <section className="flex w-full pt-2 pb-8 md:py-12 flex-col items-center justify-center select-none md:border-t md:border-b relative flex-shrink-0" style={{ borderColor: 'rgba(107, 114, 128, 0.2)' }}>
+    <section ref={sectionRef} className="flex w-full pt-2 pb-8 md:py-12 flex-col items-center justify-center select-none md:border-t md:border-b relative flex-shrink-0" style={{ borderColor: 'rgba(107, 114, 128, 0.2)' }}>
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none opacity-100" />
       <div className="hidden md:block" style={{ ...beamStyle(false, '0s'), top: -1 }} />
       <div className="hidden md:block" style={{ ...beamStyle(true, '-2s'), top: -1 }} />
@@ -151,6 +209,7 @@ export const GlobeSection: React.FC<GlobeSectionProps> = ({ theme }) => {
             pulseColor={themePulseColors[theme]}
             speed={0.008}
             lightMode={theme === 'blue'}
+            active={isVisible}
           />
         </div>
       </div>
@@ -163,6 +222,7 @@ export const GlobeSection: React.FC<GlobeSectionProps> = ({ theme }) => {
           speed={0.008}
           lightMode={theme === 'blue'}
           interactive={false}
+          active={isVisible}
         />
       </div>
     </section>

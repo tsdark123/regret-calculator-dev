@@ -109,6 +109,8 @@ const TestimonialsColumn = (props: {
                     height={40}
                     src={image}
                     alt={name}
+                    loading="lazy"
+                    decoding="async"
                     className="h-10 w-10 rounded-full"
                   />
                   <div className="flex flex-col">

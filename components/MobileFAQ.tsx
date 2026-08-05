@@ -20,7 +20,7 @@ const FAQ_ITEMS = [
   },
 ];
 
-const FAQRow = ({ question, answer }: { question: string; answer: string }) => {
+const FAQRow: React.FC<{ question: string; answer: string }> = ({ question, answer }) => {
   const [open, setOpen] = useState(false);
   return (
     <div className="border-b border-[var(--border)] last:border-0">
