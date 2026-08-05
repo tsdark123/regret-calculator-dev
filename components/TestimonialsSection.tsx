@@ -134,17 +134,17 @@ const thirdColumn = TESTIMONIALS.slice(8, 12);
 
 export const TestimonialsSection: React.FC = () => (
   <section className="w-full py-6 md:py-10 select-none flex flex-col items-center">
-    <div className="relative z-10 text-center mb-4 md:mb-8 flex flex-col items-center gap-3 mt-2 md:mt-0 px-4">
-      <h2 className="md:hidden text-[clamp(1.5rem,_7vw,_2rem)] font-semibold mx-auto text-center relative z-20 py-2 text-[var(--text-main)] leading-tight">
+    <div className="relative z-10 text-center mb-7 md:mb-11 flex flex-col items-center gap-2 mt-2 md:mt-0 px-4">
+      <h2 className="md:hidden text-[clamp(1.5rem,_7vw,_2rem)] font-semibold mx-auto text-center relative z-20 pt-2 pb-1 text-[var(--text-main)] leading-tight">
         Testimonials
       </h2>
-      <h2 className="hidden md:block text-3xl md:text-4xl lg:text-5xl font-semibold max-w-3xl mx-auto text-center relative z-20 py-2 text-[var(--text-main)]">
+      <h2 className="hidden md:block text-3xl md:text-4xl lg:text-5xl font-semibold max-w-3xl mx-auto text-center relative z-20 pt-2 pb-1 text-[var(--text-main)]">
         Testimonials
       </h2>
-      <p className="md:hidden mt-1 text-base text-[var(--text-muted)] max-w-xs leading-snug">
+      <p className="md:hidden text-base text-[var(--text-muted)] max-w-xs leading-snug">
         See how we're bringing<br />smarter spending awareness worldwide
       </p>
-      <p className="hidden md:block mt-1 text-lg text-[var(--text-muted)]">
+      <p className="hidden md:block text-lg text-[var(--text-muted)]">
         See how we're bringing smarter spending awareness worldwide
       </p>
     </div>
