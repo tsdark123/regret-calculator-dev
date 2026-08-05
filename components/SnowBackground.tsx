@@ -6,9 +6,10 @@ import { Theme } from "../types";
 
 interface SnowBackgroundProps {
   theme: Theme;
+  active?: boolean;
 }
 
-export const SnowBackground = React.memo(function SnowBackground({ theme }: SnowBackgroundProps) {
+export const SnowBackground = React.memo(function SnowBackground({ theme, active = true }: SnowBackgroundProps) {
   const [init, setInit] = useState(false);
   const [isMobile, setIsMobile] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -123,7 +124,7 @@ export const SnowBackground = React.memo(function SnowBackground({ theme }: Snow
     [particleColor, particleOpacity, particleSize]
   );
 
-  if (!init || !isMobile) {
+  if (!active || !init || !isMobile) {
     return null;
   }
 

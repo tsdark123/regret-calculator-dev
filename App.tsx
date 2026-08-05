@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useCallback, startTransition } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Hero } from './components/Hero';
 import { Navbar } from './components/Navbar';
@@ -490,15 +490,19 @@ function MainApp() {
   const handleAnalyze = () => {
     // 1. Increment the Global Counter via Firebase if available
     incrementDecisionCount();
-    
+
     setIsLoading(true);
     setTimeout(() => {
-        const calculated = calculateResults(expenses, assumptions);
+      const calculated = calculateResults(expenses, assumptions);
+
+      // Schedule the heavy view switch as a transition so the loading screen
+      // can keep animating while the results render in the background.
+      startTransition(() => {
         setResults(calculated);
         setResultsKey(prev => prev + 1);
         setIsLoading(false);
         setViewMode('results');
-        
+
         // 2. Log activity event with city, regret amount, and first expense name
         const firstExpenseName = expenses[0]?.name || 'Expense';
         logActivityEvent({
@@ -506,18 +510,19 @@ function MainApp() {
           regretAmount: calculated.potentialValueUnlocked,
           expenseName: firstExpenseName
         });
-        
+
         // Mobile: Navigate to /results route
         if (window.innerWidth < 1024) {
-            window.history.pushState({}, '', '/results');
-            setCurrentPath('/results');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+          window.history.pushState({}, '', '/results');
+          setCurrentPath('/results');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
         } else {
-            // Desktop: Just scroll
-            if (inputSectionRef.current) {
-                inputSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
+          // Desktop: Just scroll
+          if (inputSectionRef.current) {
+            inputSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
         }
+      });
     }, 2000);
   };
 
@@ -594,10 +599,10 @@ function MainApp() {
       <AnalyticsTracker />
       <div className={`flex flex-col theme-${theme} min-h-screen font-sans selection:bg-[var(--primary)] selection:text-white relative bg-[var(--bg-main)] text-[var(--text-main)] transition-colors duration-500 ${(window.innerWidth < 1024 && (currentPath === '/roadmap' || currentPath.startsWith('/roadmap') || ((currentPath === '/' || currentPath === '') && viewMode === 'input'))) ? 'overflow-hidden h-screen' : ''}`}>
         {/* Full-Viewport Particle Background - Outside all containers */}
-        <ParticleBackground theme={theme} />
+        <ParticleBackground theme={theme} active={!isLoading && viewMode === 'input'} />
         
         {/* Snow Particle Effect - Mobile only, behind all UI */}
-        <SnowBackground theme={theme} />
+        <SnowBackground theme={theme} active={!isLoading && viewMode === 'input'} />
         
         {/* Desktop Navbar */}
         <Navbar 

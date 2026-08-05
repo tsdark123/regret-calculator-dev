@@ -10,9 +10,10 @@ interface Particle {
 
 interface ParticleBackgroundProps {
     theme?: 'purple' | 'green' | 'blue';
+    active?: boolean;
 }
 
-export const ParticleBackground: React.FC<ParticleBackgroundProps> = React.memo(({ theme = 'purple' }) => {
+export const ParticleBackground: React.FC<ParticleBackgroundProps> = React.memo(({ theme = 'purple', active = true }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const particlesRef = useRef<Particle[]>([]);
     const mouseRef = useRef({ x: -1000, y: -1000 });
@@ -20,6 +21,7 @@ export const ParticleBackground: React.FC<ParticleBackgroundProps> = React.memo(
     const isPausedRef = useRef(false);
     const prefersReducedMotionRef = useRef(false);
     const isMobileRef = useRef(false);
+    const activeRef = useRef(active);
 
     // Theme-aware colors
     const getThemeColors = (theme: string) => {
@@ -234,7 +236,7 @@ export const ParticleBackground: React.FC<ParticleBackgroundProps> = React.memo(
                 animationRef.current = undefined;
             }
 
-            if (prefersReducedMotionRef.current) {
+            if (prefersReducedMotionRef.current || !activeRef.current) {
                 drawStatic();
                 return;
             }
@@ -244,6 +246,8 @@ export const ParticleBackground: React.FC<ParticleBackgroundProps> = React.memo(
             }
         };
 
+        // React to active prop changes
+        activeRef.current = active;
         scheduleIfNeeded();
 
         return () => {
@@ -258,7 +262,7 @@ export const ParticleBackground: React.FC<ParticleBackgroundProps> = React.memo(
                 cancelAnimationFrame(animationRef.current);
             }
         };
-    }, [initParticles, theme]);
+    }, [initParticles, theme, active]);
 
     return (
         <canvas
