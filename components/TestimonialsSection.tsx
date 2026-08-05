@@ -134,7 +134,7 @@ const thirdColumn = TESTIMONIALS.slice(8, 12);
 
 export const TestimonialsSection: React.FC = () => (
   <section className="w-full py-6 md:py-10 select-none flex flex-col items-center">
-    <div className="relative z-10 text-center mb-7 md:mb-11 flex flex-col items-center gap-2 mt-2 md:mt-0 px-4">
+    <div className="relative z-10 text-center mb-7 md:mb-11 flex flex-col items-center gap-2 mt-2 md:mt-0 -top-4 md:top-0 px-4">
       <h2 className="md:hidden text-[clamp(1.5rem,_7vw,_2rem)] font-semibold mx-auto text-center relative z-20 pt-2 pb-1 text-[var(--text-main)] leading-tight">
         Testimonials
       </h2>
