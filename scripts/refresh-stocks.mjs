@@ -12,8 +12,9 @@ const RETURNS_PATH = path.join(ROOT, 'src/data/stockReturns.json');
 const CHECKPOINT_PATH = path.join(ROOT, 'scripts/.checkpoint.json');
 
 const API_KEY = process.env.ALPHA_VANTAGE_API_KEY;
-const FIREBASE_DATABASE_URL = process.env.FIREBASE_DATABASE_URL;
 const FIREBASE_SERVICE_ACCOUNT_PATH = process.env.FIREBASE_SERVICE_ACCOUNT_PATH;
+const FIREBASE_DATABASE_URL =
+  process.env.FIREBASE_DATABASE_URL || 'https://regretcalculator-93baa-default-rtdb.firebaseio.com';
 
 const BATCH_SIZE = 25; // Alpha Vantage free daily limit
 const STALE_DAYS = 30;

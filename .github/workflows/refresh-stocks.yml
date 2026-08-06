@@ -34,7 +34,6 @@ jobs:
       - name: Run stock refresh
         env:
           ALPHA_VANTAGE_API_KEY: ${{ secrets.ALPHA_VANTAGE_API_KEY }}
-          FIREBASE_DATABASE_URL: ${{ secrets.FIREBASE_DATABASE_URL }}
           FIREBASE_SERVICE_ACCOUNT_PATH: ./serviceAccount.json
         run: node scripts/refresh-stocks.mjs
 
