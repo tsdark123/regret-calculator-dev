@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { CalculationResult, StockOption, Assumptions, Theme } from '../types';
 import { formatCurrency, formatCurrencyShort } from '../utils/financials';
+import stockReturns from '../src/data/stockReturns.json';
 import { ResultsChart } from './Chart';
 import { RefreshCcw, TrendingUp, TrendingDown, DollarSign, Lightbulb, Pencil, Share2, Copy, Check, Clock, ShoppingBag, Info, Download } from 'lucide-react';
 import { toPng } from 'html-to-image';
@@ -313,7 +314,7 @@ const MethodologySection = ({ assumptions, monthlyContribution }: { assumptions:
                     {isCustom ? (
                         <span> This is based on the custom rate you set in the slider.</span>
                     ) : (
-                        <span> This is based on <strong className="text-[var(--text-main)]">{assumptions.selectedStock?.name}</strong>'s approximate historical 10-year CAGR (manually curated, not live).</span>
+                        <span> This is based on <strong className="text-[var(--text-main)]">{assumptions.selectedStock?.name}</strong>'s approximate historical 10-year CAGR ({assumptions.selectedStock && stockReturns.returns[assumptions.selectedStock.symbol]?.source === 'Alpha Vantage' ? 'refreshed from Alpha Vantage' : 'manually curated, not live'}).</span>
                     )}
                 </p>
                 <p>

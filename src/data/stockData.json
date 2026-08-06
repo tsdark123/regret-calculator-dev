@@ -1,0 +1,1602 @@
+[
+  {
+    "symbol": "AZO",
+    "name": "AutoZone",
+    "type": "Stock",
+    "sector": "Consumer",
+    "avgReturn": 16,
+    "color": "bg-[#97de45]"
+  },
+  {
+    "symbol": "BKNG",
+    "name": "Booking Holdings",
+    "type": "Stock",
+    "sector": "Consumer",
+    "avgReturn": 18,
+    "color": "bg-[#94b82e]"
+  },
+  {
+    "symbol": "CHD",
+    "name": "Church & Dwight",
+    "type": "Stock",
+    "sector": "Consumer",
+    "avgReturn": 12,
+    "color": "bg-[#55cd37]"
+  },
+  {
+    "symbol": "CL",
+    "name": "Colgate-Palmolive",
+    "type": "Stock",
+    "sector": "Consumer",
+    "avgReturn": 9,
+    "color": "bg-[#b23472]"
+  },
+  {
+    "symbol": "CMG",
+    "name": "Chipotle",
+    "type": "Stock",
+    "sector": "Consumer",
+    "avgReturn": 28,
+    "color": "bg-[#441500]"
+  },
+  {
+    "symbol": "COST",
+    "name": "Costco",
+    "type": "Stock",
+    "sector": "Consumer",
+    "avgReturn": 20,
+    "color": "bg-[#005DAA]"
+  },
+  {
+    "symbol": "CVS",
+    "name": "CVS Health",
+    "type": "Stock",
+    "sector": "Consumer",
+    "avgReturn": 6,
+    "color": "bg-[#c7443d]"
+  },
+  {
+    "symbol": "DG",
+    "name": "Dollar General",
+    "type": "Stock",
+    "sector": "Consumer",
+    "avgReturn": 5,
+    "color": "bg-[#2eb8a7]"
+  },
+  {
+    "symbol": "DHI",
+    "name": "D.R. Horton",
+    "type": "Stock",
+    "sector": "Consumer",
+    "avgReturn": 18,
+    "color": "bg-[#317ad3]"
+  },
+  {
+    "symbol": "ETSY",
+    "name": "Etsy",
+    "type": "Stock",
+    "sector": "Consumer",
+    "avgReturn": 10,
+    "color": "bg-[#24e0a3]"
+  },
+  {
+    "symbol": "F",
+    "name": "Ford Motor",
+    "type": "Stock",
+    "sector": "Consumer",
+    "avgReturn": 8,
+    "color": "bg-[#22c323]"
+  },
+  {
+    "symbol": "GIS",
+    "name": "General Mills",
+    "type": "Stock",
+    "sector": "Consumer",
+    "avgReturn": 8,
+    "color": "bg-[#dacc2b]"
+  },
+  {
+    "symbol": "GM",
+    "name": "General Motors",
+    "type": "Stock",
+    "sector": "Consumer",
+    "avgReturn": 9,
+    "color": "bg-[#5c24e0]"
+  },
+  {
+    "symbol": "HD",
+    "name": "Home Depot",
+    "type": "Stock",
+    "sector": "Consumer",
+    "avgReturn": 18,
+    "color": "bg-[#F96302]"
+  },
+  {
+    "symbol": "KMB",
+    "name": "Kimberly-Clark",
+    "type": "Stock",
+    "sector": "Consumer",
+    "avgReturn": 7,
+    "color": "bg-[#3fc0e4]"
+  },
+  {
+    "symbol": "KO",
+    "name": "Coca-Cola",
+    "type": "Stock",
+    "sector": "Consumer",
+    "avgReturn": 9,
+    "color": "bg-[#F40009]"
+  },
+  {
+    "symbol": "KR",
+    "name": "Kroger",
+    "type": "Stock",
+    "sector": "Consumer",
+    "avgReturn": 9,
+    "color": "bg-[#8728bd]"
+  },
+  {
+    "symbol": "LOW",
+    "name": "Lowe's",
+    "type": "Stock",
+    "sector": "Consumer",
+    "avgReturn": 20,
+    "color": "bg-[#004990]"
+  },
+  {
+    "symbol": "LULU",
+    "name": "Lululemon",
+    "type": "Stock",
+    "sector": "Consumer",
+    "avgReturn": 22,
+    "color": "bg-[#E31837]"
+  },
+  {
+    "symbol": "MAR",
+    "name": "Marriott",
+    "type": "Stock",
+    "sector": "Consumer",
+    "avgReturn": 12,
+    "color": "bg-[#ca55ce]"
+  },
+  {
+    "symbol": "MCD",
+    "name": "McDonald's",
+    "type": "Stock",
+    "sector": "Consumer",
+    "avgReturn": 12,
+    "color": "bg-[#FFC72C]"
+  },
+  {
+    "symbol": "NKE",
+    "name": "Nike",
+    "type": "Stock",
+    "sector": "Consumer",
+    "avgReturn": 8,
+    "color": "bg-[#111111]"
+  },
+  {
+    "symbol": "ORLY",
+    "name": "O'Reilly Automotive",
+    "type": "Stock",
+    "sector": "Consumer",
+    "avgReturn": 20,
+    "color": "bg-[#1d46c9]"
+  },
+  {
+    "symbol": "PEP",
+    "name": "PepsiCo",
+    "type": "Stock",
+    "sector": "Consumer",
+    "avgReturn": 10,
+    "color": "bg-[#004B93]"
+  },
+  {
+    "symbol": "PG",
+    "name": "Procter & Gamble",
+    "type": "Stock",
+    "sector": "Consumer",
+    "avgReturn": 11,
+    "color": "bg-[#ce9c55]"
+  },
+  {
+    "symbol": "SBUX",
+    "name": "Starbucks",
+    "type": "Stock",
+    "sector": "Consumer",
+    "avgReturn": 7,
+    "color": "bg-[#00704A]"
+  },
+  {
+    "symbol": "STZ",
+    "name": "Constellation Brands",
+    "type": "Stock",
+    "sector": "Consumer",
+    "avgReturn": 13,
+    "color": "bg-[#574ad9]"
+  },
+  {
+    "symbol": "TGT",
+    "name": "Target",
+    "type": "Stock",
+    "sector": "Consumer",
+    "avgReturn": 8,
+    "color": "bg-[#CC0000]"
+  },
+  {
+    "symbol": "TJX",
+    "name": "TJX Companies",
+    "type": "Stock",
+    "sector": "Consumer",
+    "avgReturn": 14,
+    "color": "bg-[#d331b7]"
+  },
+  {
+    "symbol": "ULTA",
+    "name": "Ulta Beauty",
+    "type": "Stock",
+    "sector": "Consumer",
+    "avgReturn": 12,
+    "color": "bg-[#c36022]"
+  },
+  {
+    "symbol": "WBA",
+    "name": "Walgreens Boots Alliance",
+    "type": "Stock",
+    "sector": "Consumer",
+    "avgReturn": -5,
+    "color": "bg-[#50d37c]"
+  },
+  {
+    "symbol": "WMT",
+    "name": "Walmart",
+    "type": "Stock",
+    "sector": "Consumer",
+    "avgReturn": 12,
+    "color": "bg-[#0071CE]"
+  },
+  {
+    "symbol": "ADA",
+    "name": "Cardano",
+    "type": "Crypto",
+    "sector": "Crypto",
+    "avgReturn": 25,
+    "color": "bg-[#0033AD]"
+  },
+  {
+    "symbol": "APT",
+    "name": "Aptos",
+    "type": "Crypto",
+    "sector": "Crypto",
+    "avgReturn": 18,
+    "color": "bg-[#3fe4b6]"
+  },
+  {
+    "symbol": "ATOM",
+    "name": "Cosmos",
+    "type": "Crypto",
+    "sector": "Crypto",
+    "avgReturn": 18,
+    "color": "bg-[#3d28bd]"
+  },
+  {
+    "symbol": "AVAX",
+    "name": "Avalanche",
+    "type": "Crypto",
+    "sector": "Crypto",
+    "avgReturn": 62,
+    "color": "bg-[#E84142]"
+  },
+  {
+    "symbol": "BCH",
+    "name": "Bitcoin Cash",
+    "type": "Crypto",
+    "sector": "Crypto",
+    "avgReturn": 4,
+    "color": "bg-[#c73d7a]"
+  },
+  {
+    "symbol": "BNB",
+    "name": "BNB Chain",
+    "type": "Crypto",
+    "sector": "Crypto",
+    "avgReturn": 65,
+    "color": "bg-[#F3BA2F]"
+  },
+  {
+    "symbol": "BTC",
+    "name": "Bitcoin",
+    "type": "Crypto",
+    "sector": "Crypto",
+    "avgReturn": 55,
+    "color": "bg-[#F7931A]"
+  },
+  {
+    "symbol": "DOGE",
+    "name": "Dogecoin",
+    "type": "Crypto",
+    "sector": "Crypto",
+    "avgReturn": 42,
+    "color": "bg-[#C2A633]"
+  },
+  {
+    "symbol": "DOT",
+    "name": "Polkadot",
+    "type": "Crypto",
+    "sector": "Crypto",
+    "avgReturn": 12,
+    "color": "bg-[#2eb864]"
+  },
+  {
+    "symbol": "ETH",
+    "name": "Ethereum",
+    "type": "Crypto",
+    "sector": "Crypto",
+    "avgReturn": 48,
+    "color": "bg-[#627EEA]"
+  },
+  {
+    "symbol": "HBAR",
+    "name": "Hedera",
+    "type": "Crypto",
+    "sector": "Crypto",
+    "avgReturn": 10,
+    "color": "bg-[#b234b0]"
+  },
+  {
+    "symbol": "LINK",
+    "name": "Chainlink",
+    "type": "Crypto",
+    "sector": "Crypto",
+    "avgReturn": 28,
+    "color": "bg-[#ce6155]"
+  },
+  {
+    "symbol": "LTC",
+    "name": "Litecoin",
+    "type": "Crypto",
+    "sector": "Crypto",
+    "avgReturn": 8,
+    "color": "bg-[#1d9bc9]"
+  },
+  {
+    "symbol": "MATIC",
+    "name": "Polygon",
+    "type": "Crypto",
+    "sector": "Crypto",
+    "avgReturn": 15,
+    "color": "bg-[#a031d3]"
+  },
+  {
+    "symbol": "NEAR",
+    "name": "NEAR Protocol",
+    "type": "Crypto",
+    "sector": "Crypto",
+    "avgReturn": 22,
+    "color": "bg-[#da762b]"
+  },
+  {
+    "symbol": "SOL",
+    "name": "Solana",
+    "type": "Crypto",
+    "sector": "Crypto",
+    "avgReturn": 72,
+    "color": "bg-[#9945FF]"
+  },
+  {
+    "symbol": "TRX",
+    "name": "Tron",
+    "type": "Crypto",
+    "sector": "Crypto",
+    "avgReturn": 14,
+    "color": "bg-[#9fcd37]"
+  },
+  {
+    "symbol": "UNI",
+    "name": "Uniswap",
+    "type": "Crypto",
+    "sector": "Crypto",
+    "avgReturn": 14,
+    "color": "bg-[#deda45]"
+  },
+  {
+    "symbol": "XLM",
+    "name": "Stellar",
+    "type": "Crypto",
+    "sector": "Crypto",
+    "avgReturn": 6,
+    "color": "bg-[#63d350]"
+  },
+  {
+    "symbol": "XRP",
+    "name": "XRP",
+    "type": "Crypto",
+    "sector": "Crypto",
+    "avgReturn": 12,
+    "color": "bg-[#00AAE4]"
+  },
+  {
+    "symbol": "AEP",
+    "name": "American Electric Power",
+    "type": "Stock",
+    "sector": "Energy",
+    "avgReturn": 9,
+    "color": "bg-[#d9c34a]"
+  },
+  {
+    "symbol": "COP",
+    "name": "ConocoPhillips",
+    "type": "Stock",
+    "sector": "Energy",
+    "avgReturn": 10,
+    "color": "bg-[#c9751d]"
+  },
+  {
+    "symbol": "CVX",
+    "name": "Chevron",
+    "type": "Stock",
+    "sector": "Energy",
+    "avgReturn": 8,
+    "color": "bg-[#009DD9]"
+  },
+  {
+    "symbol": "D",
+    "name": "Dominion Energy",
+    "type": "Stock",
+    "sector": "Energy",
+    "avgReturn": 3,
+    "color": "bg-[#e0248f]"
+  },
+  {
+    "symbol": "DUK",
+    "name": "Duke Energy",
+    "type": "Stock",
+    "sector": "Energy",
+    "avgReturn": 8,
+    "color": "bg-[#34b255]"
+  },
+  {
+    "symbol": "EOG",
+    "name": "EOG Resources",
+    "type": "Stock",
+    "sector": "Energy",
+    "avgReturn": 10,
+    "color": "bg-[#004F8B]"
+  },
+  {
+    "symbol": "MPC",
+    "name": "Marathon Petroleum",
+    "type": "Stock",
+    "sector": "Energy",
+    "avgReturn": 14,
+    "color": "bg-[#3dc7ac]"
+  },
+  {
+    "symbol": "NEE",
+    "name": "NextEra Energy",
+    "type": "Stock",
+    "sector": "Energy",
+    "avgReturn": 12,
+    "color": "bg-[#0077C8]"
+  },
+  {
+    "symbol": "OKE",
+    "name": "ONEOK",
+    "type": "Stock",
+    "sector": "Energy",
+    "avgReturn": 12,
+    "color": "bg-[#e43f44]"
+  },
+  {
+    "symbol": "OXY",
+    "name": "Occidental",
+    "type": "Stock",
+    "sector": "Energy",
+    "avgReturn": 8,
+    "color": "bg-[#6645de]"
+  },
+  {
+    "symbol": "PSX",
+    "name": "Phillips 66",
+    "type": "Stock",
+    "sector": "Energy",
+    "avgReturn": 13,
+    "color": "bg-[#E05206]"
+  },
+  {
+    "symbol": "SLB",
+    "name": "Schlumberger",
+    "type": "Stock",
+    "sector": "Energy",
+    "avgReturn": 4,
+    "color": "bg-[#84bd28]"
+  },
+  {
+    "symbol": "SO",
+    "name": "Southern Company",
+    "type": "Stock",
+    "sector": "Energy",
+    "avgReturn": 9,
+    "color": "bg-[#8a37cd]"
+  },
+  {
+    "symbol": "SRE",
+    "name": "Sempra",
+    "type": "Stock",
+    "sector": "Energy",
+    "avgReturn": 10,
+    "color": "bg-[#22adc3]"
+  },
+  {
+    "symbol": "VLO",
+    "name": "Valero",
+    "type": "Stock",
+    "sector": "Energy",
+    "avgReturn": 12,
+    "color": "bg-[#d350c7]"
+  },
+  {
+    "symbol": "WMB",
+    "name": "Williams",
+    "type": "Stock",
+    "sector": "Energy",
+    "avgReturn": 12,
+    "color": "bg-[#2b63da]"
+  },
+  {
+    "symbol": "XOM",
+    "name": "ExxonMobil",
+    "type": "Stock",
+    "sector": "Energy",
+    "avgReturn": 8,
+    "color": "bg-[#C0392B]"
+  },
+  {
+    "symbol": "ARKK",
+    "name": "ARK Innovation ETF",
+    "type": "ETF",
+    "sector": "ETF",
+    "avgReturn": 6,
+    "color": "bg-[#00B4D8]"
+  },
+  {
+    "symbol": "BND",
+    "name": "US Bond ETF",
+    "type": "ETF",
+    "sector": "ETF",
+    "avgReturn": 2,
+    "color": "bg-[#6C757D]"
+  },
+  {
+    "symbol": "EMB",
+    "name": "iShares JP Morgan USD Emerging Markets Bond",
+    "type": "ETF",
+    "sector": "ETF",
+    "avgReturn": 2.5,
+    "color": "bg-[#50b82e]"
+  },
+  {
+    "symbol": "GLD",
+    "name": "Gold ETF",
+    "type": "ETF",
+    "sector": "ETF",
+    "avgReturn": 7,
+    "color": "bg-[#D4AF37]"
+  },
+  {
+    "symbol": "IEMG",
+    "name": "Emerging Markets ETF",
+    "type": "ETF",
+    "sector": "ETF",
+    "avgReturn": 4,
+    "color": "bg-[#E76F51]"
+  },
+  {
+    "symbol": "IVV",
+    "name": "iShares Core S&P 500",
+    "type": "ETF",
+    "sector": "ETF",
+    "avgReturn": 13,
+    "color": "bg-[#b23434]"
+  },
+  {
+    "symbol": "IWM",
+    "name": "iShares Russell 2000",
+    "type": "ETF",
+    "sector": "ETF",
+    "avgReturn": 7.5,
+    "color": "bg-[#ce5596]"
+  },
+  {
+    "symbol": "QQQ",
+    "name": "Nasdaq 100 ETF",
+    "type": "ETF",
+    "sector": "ETF",
+    "avgReturn": 18,
+    "color": "bg-[#5865F2]"
+  },
+  {
+    "symbol": "SCHD",
+    "name": "Schwab Dividend ETF",
+    "type": "ETF",
+    "sector": "ETF",
+    "avgReturn": 12,
+    "color": "bg-[#0077B5]"
+  },
+  {
+    "symbol": "SPY",
+    "name": "S&P 500 ETF",
+    "type": "ETF",
+    "sector": "ETF",
+    "avgReturn": 13,
+    "color": "bg-[#1A8754]"
+  },
+  {
+    "symbol": "TLT",
+    "name": "iShares 20+ Year Treasury Bond",
+    "type": "ETF",
+    "sector": "ETF",
+    "avgReturn": 1.5,
+    "color": "bg-[#3831d3]"
+  },
+  {
+    "symbol": "VEU",
+    "name": "Vanguard FTSE All-World ex-US",
+    "type": "ETF",
+    "sector": "ETF",
+    "avgReturn": 5,
+    "color": "bg-[#9d4ad9]"
+  },
+  {
+    "symbol": "VIG",
+    "name": "Vanguard Dividend Appreciation",
+    "type": "ETF",
+    "sector": "ETF",
+    "avgReturn": 11.5,
+    "color": "bg-[#37cd63]"
+  },
+  {
+    "symbol": "VNQ",
+    "name": "Vanguard Real Estate",
+    "type": "ETF",
+    "sector": "ETF",
+    "avgReturn": 8,
+    "color": "bg-[#7B5EA7]"
+  },
+  {
+    "symbol": "VOO",
+    "name": "Vanguard S&P 500",
+    "type": "ETF",
+    "sector": "ETF",
+    "avgReturn": 13,
+    "color": "bg-[#1A6E3C]"
+  },
+  {
+    "symbol": "VTI",
+    "name": "Vanguard Total Market",
+    "type": "ETF",
+    "sector": "ETF",
+    "avgReturn": 12,
+    "color": "bg-[#2E6DA4]"
+  },
+  {
+    "symbol": "VTV",
+    "name": "Vanguard Value",
+    "type": "ETF",
+    "sector": "ETF",
+    "avgReturn": 9.5,
+    "color": "bg-[#c3af22]"
+  },
+  {
+    "symbol": "VUG",
+    "name": "Vanguard Growth",
+    "type": "ETF",
+    "sector": "ETF",
+    "avgReturn": 16,
+    "color": "bg-[#24c0e0]"
+  },
+  {
+    "symbol": "VWCE",
+    "name": "FTSE All-World ETF",
+    "type": "ETF",
+    "sector": "ETF",
+    "avgReturn": 8,
+    "color": "bg-[#BE3A34]"
+  },
+  {
+    "symbol": "VYM",
+    "name": "Vanguard Dividend ETF",
+    "type": "ETF",
+    "sector": "ETF",
+    "avgReturn": 11,
+    "color": "bg-[#1D5FAD]"
+  },
+  {
+    "symbol": "XLK",
+    "name": "Technology Select Sector SPDR",
+    "type": "ETF",
+    "sector": "ETF",
+    "avgReturn": 20.5,
+    "color": "bg-[#de7845]"
+  },
+  {
+    "symbol": "XLV",
+    "name": "Health Care Select Sector SPDR",
+    "type": "ETF",
+    "sector": "ETF",
+    "avgReturn": 14,
+    "color": "bg-[#1dc988]"
+  },
+  {
+    "symbol": "AIG",
+    "name": "American International Group",
+    "type": "Stock",
+    "sector": "Finance",
+    "avgReturn": 8,
+    "color": "bg-[#732eb8]"
+  },
+  {
+    "symbol": "AXP",
+    "name": "American Express",
+    "type": "Stock",
+    "sector": "Finance",
+    "avgReturn": 15,
+    "color": "bg-[#016FD0]"
+  },
+  {
+    "symbol": "BAC",
+    "name": "Bank of America",
+    "type": "Stock",
+    "sector": "Finance",
+    "avgReturn": 14,
+    "color": "bg-[#E31837]"
+  },
+  {
+    "symbol": "BK",
+    "name": "BNY Mellon",
+    "type": "Stock",
+    "sector": "Finance",
+    "avgReturn": 8,
+    "color": "bg-[#a1b234]"
+  },
+  {
+    "symbol": "BLK",
+    "name": "BlackRock",
+    "type": "Stock",
+    "sector": "Finance",
+    "avgReturn": 16,
+    "color": "bg-[#000000]"
+  },
+  {
+    "symbol": "BRK.B",
+    "name": "Berkshire Hathaway",
+    "type": "Stock",
+    "sector": "Finance",
+    "avgReturn": 13,
+    "color": "bg-[#6B3A2A]"
+  },
+  {
+    "symbol": "C",
+    "name": "Citigroup",
+    "type": "Stock",
+    "sector": "Finance",
+    "avgReturn": 7,
+    "color": "bg-[#e02433]"
+  },
+  {
+    "symbol": "CB",
+    "name": "Chubb",
+    "type": "Stock",
+    "sector": "Finance",
+    "avgReturn": 13,
+    "color": "bg-[#c91d87]"
+  },
+  {
+    "symbol": "COF",
+    "name": "Capital One",
+    "type": "Stock",
+    "sector": "Finance",
+    "avgReturn": 10,
+    "color": "bg-[#2bda8a]"
+  },
+  {
+    "symbol": "GS",
+    "name": "Goldman Sachs",
+    "type": "Stock",
+    "sector": "Finance",
+    "avgReturn": 11,
+    "color": "bg-[#7399C6]"
+  },
+  {
+    "symbol": "ICE",
+    "name": "Intercontinental Exchange",
+    "type": "Stock",
+    "sector": "Finance",
+    "avgReturn": 15,
+    "color": "bg-[#d94a73]"
+  },
+  {
+    "symbol": "JPM",
+    "name": "JPMorgan Chase",
+    "type": "Stock",
+    "sector": "Finance",
+    "avgReturn": 14,
+    "color": "bg-[#003087]"
+  },
+  {
+    "symbol": "MA",
+    "name": "Mastercard",
+    "type": "Stock",
+    "sector": "Finance",
+    "avgReturn": 20,
+    "color": "bg-[#EB001B]"
+  },
+  {
+    "symbol": "MMC",
+    "name": "Marsh & McLennan",
+    "type": "Stock",
+    "sector": "Finance",
+    "avgReturn": 14,
+    "color": "bg-[#d3b231]"
+  },
+  {
+    "symbol": "MS",
+    "name": "Morgan Stanley",
+    "type": "Stock",
+    "sector": "Finance",
+    "avgReturn": 12,
+    "color": "bg-[#55ce6f]"
+  },
+  {
+    "symbol": "PGR",
+    "name": "Progressive",
+    "type": "Stock",
+    "sector": "Finance",
+    "avgReturn": 18,
+    "color": "bg-[#45d1de]"
+  },
+  {
+    "symbol": "PNC",
+    "name": "PNC Financial",
+    "type": "Stock",
+    "sector": "Finance",
+    "avgReturn": 8,
+    "color": "bg-[#5054d3]"
+  },
+  {
+    "symbol": "SCHW",
+    "name": "Charles Schwab",
+    "type": "Stock",
+    "sector": "Finance",
+    "avgReturn": 12,
+    "color": "bg-[#c93fe4]"
+  },
+  {
+    "symbol": "SPGI",
+    "name": "S&P Global",
+    "type": "Stock",
+    "sector": "Finance",
+    "avgReturn": 22,
+    "color": "bg-[#1E3A5F]"
+  },
+  {
+    "symbol": "STT",
+    "name": "State Street",
+    "type": "Stock",
+    "sector": "Finance",
+    "avgReturn": 8,
+    "color": "bg-[#378ecd]"
+  },
+  {
+    "symbol": "TFC",
+    "name": "Truist Financial",
+    "type": "Stock",
+    "sector": "Finance",
+    "avgReturn": 5,
+    "color": "bg-[#bd4e28]"
+  },
+  {
+    "symbol": "USB",
+    "name": "U.S. Bancorp",
+    "type": "Stock",
+    "sector": "Finance",
+    "avgReturn": 6,
+    "color": "bg-[#6ac73d]"
+  },
+  {
+    "symbol": "V",
+    "name": "Visa",
+    "type": "Stock",
+    "sector": "Finance",
+    "avgReturn": 18,
+    "color": "bg-[#1A1F71]"
+  },
+  {
+    "symbol": "WFC",
+    "name": "Wells Fargo",
+    "type": "Stock",
+    "sector": "Finance",
+    "avgReturn": 8,
+    "color": "bg-[#D71E2B]"
+  },
+  {
+    "symbol": "ABBV",
+    "name": "AbbVie",
+    "type": "Stock",
+    "sector": "Healthcare",
+    "avgReturn": 15,
+    "color": "bg-[#071D49]"
+  },
+  {
+    "symbol": "ABT",
+    "name": "Abbott",
+    "type": "Stock",
+    "sector": "Healthcare",
+    "avgReturn": 12,
+    "color": "bg-[#de455d]"
+  },
+  {
+    "symbol": "ALGN",
+    "name": "Align Technology",
+    "type": "Stock",
+    "sector": "Healthcare",
+    "avgReturn": 12,
+    "color": "bg-[#9d22c3]"
+  },
+  {
+    "symbol": "AMGN",
+    "name": "Amgen",
+    "type": "Stock",
+    "sector": "Healthcare",
+    "avgReturn": 10,
+    "color": "bg-[#0060AE]"
+  },
+  {
+    "symbol": "BDX",
+    "name": "Becton Dickinson",
+    "type": "Stock",
+    "sector": "Healthcare",
+    "avgReturn": 7,
+    "color": "bg-[#d3ae50]"
+  },
+  {
+    "symbol": "BSX",
+    "name": "Boston Scientific",
+    "type": "Stock",
+    "sector": "Healthcare",
+    "avgReturn": 18,
+    "color": "bg-[#da2ba5]"
+  },
+  {
+    "symbol": "CI",
+    "name": "Cigna",
+    "type": "Stock",
+    "sector": "Healthcare",
+    "avgReturn": 12,
+    "color": "bg-[#3dd331]"
+  },
+  {
+    "symbol": "DXCM",
+    "name": "Dexcom",
+    "type": "Stock",
+    "sector": "Healthcare",
+    "avgReturn": 18,
+    "color": "bg-[#d6e024]"
+  },
+  {
+    "symbol": "EW",
+    "name": "Edwards Lifesciences",
+    "type": "Stock",
+    "sector": "Healthcare",
+    "avgReturn": 12,
+    "color": "bg-[#28bcbd]"
+  },
+  {
+    "symbol": "GILD",
+    "name": "Gilead",
+    "type": "Stock",
+    "sector": "Healthcare",
+    "avgReturn": 6,
+    "color": "bg-[#3442b2]"
+  },
+  {
+    "symbol": "HCA",
+    "name": "HCA Healthcare",
+    "type": "Stock",
+    "sector": "Healthcare",
+    "avgReturn": 16,
+    "color": "bg-[#b82e60]"
+  },
+  {
+    "symbol": "IDXX",
+    "name": "IDEXX",
+    "type": "Stock",
+    "sector": "Healthcare",
+    "avgReturn": 18,
+    "color": "bg-[#55a4ce]"
+  },
+  {
+    "symbol": "ISRG",
+    "name": "Intuitive Surgical",
+    "type": "Stock",
+    "sector": "Healthcare",
+    "avgReturn": 22,
+    "color": "bg-[#0066CC]"
+  },
+  {
+    "symbol": "JNJ",
+    "name": "Johnson & Johnson",
+    "type": "Stock",
+    "sector": "Healthcare",
+    "avgReturn": 5,
+    "color": "bg-[#D51900]"
+  },
+  {
+    "symbol": "LLY",
+    "name": "Eli Lilly",
+    "type": "Stock",
+    "sector": "Healthcare",
+    "avgReturn": 38,
+    "color": "bg-[#D52B1E]"
+  },
+  {
+    "symbol": "MDT",
+    "name": "Medtronic",
+    "type": "Stock",
+    "sector": "Healthcare",
+    "avgReturn": 5,
+    "color": "bg-[#1dc934]"
+  },
+  {
+    "symbol": "MRK",
+    "name": "Merck",
+    "type": "Stock",
+    "sector": "Healthcare",
+    "avgReturn": 10,
+    "color": "bg-[#82e43f]"
+  },
+  {
+    "symbol": "PFE",
+    "name": "Pfizer",
+    "type": "Stock",
+    "sector": "Healthcare",
+    "avgReturn": 3,
+    "color": "bg-[#0093D0]"
+  },
+  {
+    "symbol": "REGN",
+    "name": "Regeneron",
+    "type": "Stock",
+    "sector": "Healthcare",
+    "avgReturn": 16,
+    "color": "bg-[#4ad98d]"
+  },
+  {
+    "symbol": "SYK",
+    "name": "Stryker",
+    "type": "Stock",
+    "sector": "Healthcare",
+    "avgReturn": 15,
+    "color": "bg-[#783dc7]"
+  },
+  {
+    "symbol": "TMO",
+    "name": "Thermo Fisher",
+    "type": "Stock",
+    "sector": "Healthcare",
+    "avgReturn": 17,
+    "color": "bg-[#0059A0]"
+  },
+  {
+    "symbol": "UNH",
+    "name": "UnitedHealth",
+    "type": "Stock",
+    "sector": "Healthcare",
+    "avgReturn": 20,
+    "color": "bg-[#005B8E]"
+  },
+  {
+    "symbol": "VRTX",
+    "name": "Vertex",
+    "type": "Stock",
+    "sector": "Healthcare",
+    "avgReturn": 18,
+    "color": "bg-[#cd5237]"
+  },
+  {
+    "symbol": "BA",
+    "name": "Boeing",
+    "type": "Stock",
+    "sector": "Industrial",
+    "avgReturn": -4,
+    "color": "bg-[#1D5799]"
+  },
+  {
+    "symbol": "CAT",
+    "name": "Caterpillar",
+    "type": "Stock",
+    "sector": "Industrial",
+    "avgReturn": 16,
+    "color": "bg-[#FFCD11]"
+  },
+  {
+    "symbol": "CMI",
+    "name": "Cummins",
+    "type": "Stock",
+    "sector": "Industrial",
+    "avgReturn": 10,
+    "color": "bg-[#bd284b]"
+  },
+  {
+    "symbol": "CSX",
+    "name": "CSX",
+    "type": "Stock",
+    "sector": "Industrial",
+    "avgReturn": 12,
+    "color": "bg-[#37cdc3]"
+  },
+  {
+    "symbol": "DE",
+    "name": "Deere & Co.",
+    "type": "Stock",
+    "sector": "Industrial",
+    "avgReturn": 18,
+    "color": "bg-[#367C2B]"
+  },
+  {
+    "symbol": "EMR",
+    "name": "Emerson Electric",
+    "type": "Stock",
+    "sector": "Industrial",
+    "avgReturn": 10,
+    "color": "bg-[#aec73d]"
+  },
+  {
+    "symbol": "ETN",
+    "name": "Eaton",
+    "type": "Stock",
+    "sector": "Industrial",
+    "avgReturn": 20,
+    "color": "bg-[#5095d3]"
+  },
+  {
+    "symbol": "FDX",
+    "name": "FedEx",
+    "type": "Stock",
+    "sector": "Industrial",
+    "avgReturn": 7,
+    "color": "bg-[#b28434]"
+  },
+  {
+    "symbol": "GE",
+    "name": "GE Aerospace",
+    "type": "Stock",
+    "sector": "Industrial",
+    "avgReturn": 14,
+    "color": "bg-[#77ce55]"
+  },
+  {
+    "symbol": "GPC",
+    "name": "Genuine Parts",
+    "type": "Stock",
+    "sector": "Industrial",
+    "avgReturn": 10,
+    "color": "bg-[#45dea0]"
+  },
+  {
+    "symbol": "HON",
+    "name": "Honeywell",
+    "type": "Stock",
+    "sector": "Industrial",
+    "avgReturn": 11,
+    "color": "bg-[#E31837]"
+  },
+  {
+    "symbol": "ITW",
+    "name": "Illinois Tool Works",
+    "type": "Stock",
+    "sector": "Industrial",
+    "avgReturn": 11,
+    "color": "bg-[#d36231]"
+  },
+  {
+    "symbol": "LMT",
+    "name": "Lockheed Martin",
+    "type": "Stock",
+    "sector": "Industrial",
+    "avgReturn": 14,
+    "color": "bg-[#1C3B6E]"
+  },
+  {
+    "symbol": "MMM",
+    "name": "3M",
+    "type": "Stock",
+    "sector": "Industrial",
+    "avgReturn": -1,
+    "color": "bg-[#302eb8]"
+  },
+  {
+    "symbol": "PH",
+    "name": "Parker-Hannifin",
+    "type": "Stock",
+    "sector": "Industrial",
+    "avgReturn": 14,
+    "color": "bg-[#b61dc9]"
+  },
+  {
+    "symbol": "PWR",
+    "name": "Quanta Services",
+    "type": "Stock",
+    "sector": "Industrial",
+    "avgReturn": 22,
+    "color": "bg-[#2449e0]"
+  },
+  {
+    "symbol": "RSG",
+    "name": "Republic Services",
+    "type": "Stock",
+    "sector": "Industrial",
+    "avgReturn": 15,
+    "color": "bg-[#783fe4]"
+  },
+  {
+    "symbol": "RTX",
+    "name": "Raytheon",
+    "type": "Stock",
+    "sector": "Industrial",
+    "avgReturn": 10,
+    "color": "bg-[#003087]"
+  },
+  {
+    "symbol": "UNP",
+    "name": "Union Pacific",
+    "type": "Stock",
+    "sector": "Industrial",
+    "avgReturn": 12,
+    "color": "bg-[#d94ab9]"
+  },
+  {
+    "symbol": "UPS",
+    "name": "UPS",
+    "type": "Stock",
+    "sector": "Industrial",
+    "avgReturn": 8,
+    "color": "bg-[#351C15]"
+  },
+  {
+    "symbol": "URI",
+    "name": "United Rentals",
+    "type": "Stock",
+    "sector": "Industrial",
+    "avgReturn": 20,
+    "color": "bg-[#70c322]"
+  },
+  {
+    "symbol": "WM",
+    "name": "Waste Management",
+    "type": "Stock",
+    "sector": "Industrial",
+    "avgReturn": 15,
+    "color": "bg-[#2bda34]"
+  },
+  {
+    "symbol": "AAPL",
+    "name": "Apple",
+    "type": "Stock",
+    "sector": "Tech",
+    "avgReturn": 24,
+    "color": "bg-[#555555]"
+  },
+  {
+    "symbol": "ABNB",
+    "name": "Airbnb",
+    "type": "Stock",
+    "sector": "Tech",
+    "avgReturn": 15,
+    "color": "bg-[#3abd28]"
+  },
+  {
+    "symbol": "ADBE",
+    "name": "Adobe",
+    "type": "Stock",
+    "sector": "Tech",
+    "avgReturn": 22,
+    "color": "bg-[#FF0000]"
+  },
+  {
+    "symbol": "AMD",
+    "name": "AMD",
+    "type": "Stock",
+    "sector": "Tech",
+    "avgReturn": 48,
+    "color": "bg-[#ED1C24]"
+  },
+  {
+    "symbol": "AMZN",
+    "name": "Amazon",
+    "type": "Stock",
+    "sector": "Tech",
+    "avgReturn": 24,
+    "color": "bg-[#FF9900]"
+  },
+  {
+    "symbol": "ANET",
+    "name": "Arista Networks",
+    "type": "Stock",
+    "sector": "Tech",
+    "avgReturn": 26,
+    "color": "bg-[#cd37c6]"
+  },
+  {
+    "symbol": "ARM",
+    "name": "ARM Holdings",
+    "type": "Stock",
+    "sector": "Tech",
+    "avgReturn": 30,
+    "color": "bg-[#4ad9d3]"
+  },
+  {
+    "symbol": "ASML",
+    "name": "ASML Holding",
+    "type": "Stock",
+    "sector": "Tech",
+    "avgReturn": 20,
+    "color": "bg-[#b8d350]"
+  },
+  {
+    "symbol": "AVGO",
+    "name": "Broadcom",
+    "type": "Stock",
+    "sector": "Tech",
+    "avgReturn": 42,
+    "color": "bg-[#CC0000]"
+  },
+  {
+    "symbol": "CDNS",
+    "name": "Cadence",
+    "type": "Stock",
+    "sector": "Tech",
+    "avgReturn": 24,
+    "color": "bg-[#225ec3]"
+  },
+  {
+    "symbol": "CRM",
+    "name": "Salesforce",
+    "type": "Stock",
+    "sector": "Tech",
+    "avgReturn": 15,
+    "color": "bg-[#00A1E0]"
+  },
+  {
+    "symbol": "CRWD",
+    "name": "CrowdStrike",
+    "type": "Stock",
+    "sector": "Tech",
+    "avgReturn": 28,
+    "color": "bg-[#b83f2e]"
+  },
+  {
+    "symbol": "CSCO",
+    "name": "Cisco",
+    "type": "Stock",
+    "sector": "Tech",
+    "avgReturn": 9,
+    "color": "bg-[#c3229b]"
+  },
+  {
+    "symbol": "DDOG",
+    "name": "Datadog",
+    "type": "Stock",
+    "sector": "Tech",
+    "avgReturn": 18,
+    "color": "bg-[#c8c91d]"
+  },
+  {
+    "symbol": "GOOGL",
+    "name": "Alphabet (Google)",
+    "type": "Stock",
+    "sector": "Tech",
+    "avgReturn": 18,
+    "color": "bg-[#EA4335]"
+  },
+  {
+    "symbol": "INTC",
+    "name": "Intel",
+    "type": "Stock",
+    "sector": "Tech",
+    "avgReturn": 1,
+    "color": "bg-[#0068B5]"
+  },
+  {
+    "symbol": "KLAC",
+    "name": "KLA",
+    "type": "Stock",
+    "sector": "Tech",
+    "avgReturn": 22,
+    "color": "bg-[#6334b2]"
+  },
+  {
+    "symbol": "LRCX",
+    "name": "Lam Research",
+    "type": "Stock",
+    "sector": "Tech",
+    "avgReturn": 24,
+    "color": "bg-[#3fe44d]"
+  },
+  {
+    "symbol": "META",
+    "name": "Meta",
+    "type": "Stock",
+    "sector": "Tech",
+    "avgReturn": 20,
+    "color": "bg-[#0081FB]"
+  },
+  {
+    "symbol": "MRVL",
+    "name": "Marvell",
+    "type": "Stock",
+    "sector": "Tech",
+    "avgReturn": 18,
+    "color": "bg-[#cd9b37]"
+  },
+  {
+    "symbol": "MSFT",
+    "name": "Microsoft",
+    "type": "Stock",
+    "sector": "Tech",
+    "avgReturn": 28,
+    "color": "bg-[#F25022]"
+  },
+  {
+    "symbol": "MU",
+    "name": "Micron Technology",
+    "type": "Stock",
+    "sector": "Tech",
+    "avgReturn": 12,
+    "color": "bg-[#da2b4f]"
+  },
+  {
+    "symbol": "NET",
+    "name": "Cloudflare",
+    "type": "Stock",
+    "sector": "Tech",
+    "avgReturn": 22,
+    "color": "bg-[#3d9ec7]"
+  },
+  {
+    "symbol": "NFLX",
+    "name": "Netflix",
+    "type": "Stock",
+    "sector": "Tech",
+    "avgReturn": 26,
+    "color": "bg-[#E50914]"
+  },
+  {
+    "symbol": "NOW",
+    "name": "ServiceNow",
+    "type": "Stock",
+    "sector": "Tech",
+    "avgReturn": 25,
+    "color": "bg-[#7ae024]"
+  },
+  {
+    "symbol": "NVDA",
+    "name": "NVIDIA",
+    "type": "Stock",
+    "sector": "Tech",
+    "avgReturn": 65,
+    "color": "bg-[#76B900]"
+  },
+  {
+    "symbol": "ORCL",
+    "name": "Oracle",
+    "type": "Stock",
+    "sector": "Tech",
+    "avgReturn": 14,
+    "color": "bg-[#F80000]"
+  },
+  {
+    "symbol": "PANW",
+    "name": "Palo Alto Networks",
+    "type": "Stock",
+    "sector": "Tech",
+    "avgReturn": 20,
+    "color": "bg-[#5569ce]"
+  },
+  {
+    "symbol": "PINS",
+    "name": "Pinterest",
+    "type": "Stock",
+    "sector": "Tech",
+    "avgReturn": 8,
+    "color": "bg-[#e48b3f]"
+  },
+  {
+    "symbol": "PLTR",
+    "name": "Palantir",
+    "type": "Stock",
+    "sector": "Tech",
+    "avgReturn": 30,
+    "color": "bg-[#31d375]"
+  },
+  {
+    "symbol": "QCOM",
+    "name": "Qualcomm",
+    "type": "Stock",
+    "sector": "Tech",
+    "avgReturn": 14,
+    "color": "bg-[#3253DC]"
+  },
+  {
+    "symbol": "RDDT",
+    "name": "Reddit",
+    "type": "Stock",
+    "sector": "Tech",
+    "avgReturn": 20,
+    "color": "bg-[#482bda]"
+  },
+  {
+    "symbol": "SHOP",
+    "name": "Shopify",
+    "type": "Stock",
+    "sector": "Tech",
+    "avgReturn": 18,
+    "color": "bg-[#96BF48]"
+  },
+  {
+    "symbol": "SNOW",
+    "name": "Snowflake",
+    "type": "Stock",
+    "sector": "Tech",
+    "avgReturn": 12,
+    "color": "bg-[#b245de]"
+  },
+  {
+    "symbol": "SNPS",
+    "name": "Synopsys",
+    "type": "Stock",
+    "sector": "Tech",
+    "avgReturn": 22,
+    "color": "bg-[#a8d94a]"
+  },
+  {
+    "symbol": "TSLA",
+    "name": "Tesla",
+    "type": "Stock",
+    "sector": "Tech",
+    "avgReturn": 40,
+    "color": "bg-[#E31937]"
+  },
+  {
+    "symbol": "TSM",
+    "name": "TSMC",
+    "type": "Stock",
+    "sector": "Tech",
+    "avgReturn": 20,
+    "color": "bg-[#bc3dc7]"
+  },
+  {
+    "symbol": "TTD",
+    "name": "The Trade Desk",
+    "type": "Stock",
+    "sector": "Tech",
+    "avgReturn": 22,
+    "color": "bg-[#34b293]"
+  },
+  {
+    "symbol": "TXN",
+    "name": "Texas Instruments",
+    "type": "Stock",
+    "sector": "Tech",
+    "avgReturn": 10,
+    "color": "bg-[#2873bd]"
+  },
+  {
+    "symbol": "UBER",
+    "name": "Uber",
+    "type": "Stock",
+    "sector": "Tech",
+    "avgReturn": 18,
+    "color": "bg-[#d35086]"
+  }
+]

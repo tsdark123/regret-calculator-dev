@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "build:dev": "vite build --mode development",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "refresh:stocks": "node scripts/refresh-stocks.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
@@ -37,6 +38,8 @@
   "devDependencies": {
     "@types/node": "^22.14.0",
     "@vitejs/plugin-react": "^5.0.0",
+    "dotenv": "^16.4.7",
+    "firebase-admin": "^13.0.2",
     "typescript": "~5.8.2",
     "vite": "^6.2.0"
   }

@@ -12,6 +12,12 @@ dist
 dist-ssr
 *.local
 
+# Secrets and checkpoint files
+.env
+.env.*.local
+scripts/.checkpoint.json
+serviceAccount.json
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

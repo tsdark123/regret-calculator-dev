@@ -1,0 +1,560 @@
+{
+  "lastUpdated": "2026-08-06",
+  "source": "Alpha Vantage",
+  "returns": {
+    "QQQ": {
+      "avgReturn": 18,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "SPY": {
+      "avgReturn": 13,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "VOO": {
+      "avgReturn": 13,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "SCHD": {
+      "avgReturn": 12,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "VTI": {
+      "avgReturn": 12,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "VYM": {
+      "avgReturn": 11,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "GLD": {
+      "avgReturn": 7,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "VNQ": {
+      "avgReturn": 8,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "VWCE": {
+      "avgReturn": 8,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "ARKK": {
+      "avgReturn": 6,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "IEMG": {
+      "avgReturn": 4,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "BND": {
+      "avgReturn": 2,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "NVDA": {
+      "avgReturn": 65,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "AMD": {
+      "avgReturn": 48,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "AVGO": {
+      "avgReturn": 42,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "TSLA": {
+      "avgReturn": 40,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "MSFT": {
+      "avgReturn": 28,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "NFLX": {
+      "avgReturn": 26,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "AAPL": {
+      "avgReturn": 24,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "AMZN": {
+      "avgReturn": 24,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "ADBE": {
+      "avgReturn": 22,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "META": {
+      "avgReturn": 20,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "GOOGL": {
+      "avgReturn": 18,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "SHOP": {
+      "avgReturn": 18,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "CRM": {
+      "avgReturn": 15,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "ORCL": {
+      "avgReturn": 14,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "QCOM": {
+      "avgReturn": 14,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "INTC": {
+      "avgReturn": 1,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "SPGI": {
+      "avgReturn": 22,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "MA": {
+      "avgReturn": 20,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "V": {
+      "avgReturn": 18,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "BLK": {
+      "avgReturn": 16,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "AXP": {
+      "avgReturn": 15,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "JPM": {
+      "avgReturn": 14,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "BAC": {
+      "avgReturn": 14,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "BRK.B": {
+      "avgReturn": 13,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "GS": {
+      "avgReturn": 11,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "WFC": {
+      "avgReturn": 8,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "CMG": {
+      "avgReturn": 28,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "LULU": {
+      "avgReturn": 22,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "LOW": {
+      "avgReturn": 20,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "COST": {
+      "avgReturn": 20,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "HD": {
+      "avgReturn": 18,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "WMT": {
+      "avgReturn": 12,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "MCD": {
+      "avgReturn": 12,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "PEP": {
+      "avgReturn": 10,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "KO": {
+      "avgReturn": 9,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "NKE": {
+      "avgReturn": 8,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "TGT": {
+      "avgReturn": 8,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "SBUX": {
+      "avgReturn": 7,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "LLY": {
+      "avgReturn": 38,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "ISRG": {
+      "avgReturn": 22,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "UNH": {
+      "avgReturn": 20,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "TMO": {
+      "avgReturn": 17,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "ABBV": {
+      "avgReturn": 15,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "AMGN": {
+      "avgReturn": 10,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "JNJ": {
+      "avgReturn": 5,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "PFE": {
+      "avgReturn": 3,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "PSX": {
+      "avgReturn": 13,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "NEE": {
+      "avgReturn": 12,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "EOG": {
+      "avgReturn": 10,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "CVX": {
+      "avgReturn": 8,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "XOM": {
+      "avgReturn": 8,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "DE": {
+      "avgReturn": 18,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "CAT": {
+      "avgReturn": 16,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "LMT": {
+      "avgReturn": 14,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "HON": {
+      "avgReturn": 11,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "RTX": {
+      "avgReturn": 10,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "UPS": {
+      "avgReturn": 8,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "BA": {
+      "avgReturn": -4,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "SOL": {
+      "avgReturn": 72,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "BNB": {
+      "avgReturn": 65,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "AVAX": {
+      "avgReturn": 62,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "BTC": {
+      "avgReturn": 55,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "ETH": {
+      "avgReturn": 48,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "DOGE": {
+      "avgReturn": 42,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "ADA": {
+      "avgReturn": 25,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "XRP": {
+      "avgReturn": 12,
+      "asOf": "2024-01-01",
+      "windowYears": 10,
+      "startDate": "2014-01-01",
+      "endDate": "2024-01-01"
+    },
+    "AZO": {
+      "avgReturn": 14.2,
+      "windowYears": 10,
+      "asOf": "2026-08-06",
+      "startDate": "2016-07-29",
+      "endDate": "2026-08-06",
+      "source": "Alpha Vantage"
+    }
+  }
+}

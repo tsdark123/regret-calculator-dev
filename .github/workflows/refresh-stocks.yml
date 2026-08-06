@@ -1,0 +1,51 @@
+name: Refresh stock returns
+
+on:
+  schedule:
+    # Run daily at 06:15 UTC. With Alpha Vantage's 25 req/day free limit,
+    # this rolls through the full 200-asset universe over ~8 days.
+    - cron: '15 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Write Firebase service account (optional)
+        env:
+          FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
+        if: env.FIREBASE_SERVICE_ACCOUNT_JSON != ''
+        run: echo "$FIREBASE_SERVICE_ACCOUNT_JSON" > serviceAccount.json
+
+      - name: Run stock refresh
+        env:
+          ALPHA_VANTAGE_API_KEY: ${{ secrets.ALPHA_VANTAGE_API_KEY }}
+          FIREBASE_DATABASE_URL: ${{ secrets.FIREBASE_DATABASE_URL }}
+          FIREBASE_SERVICE_ACCOUNT_PATH: ./serviceAccount.json
+        run: node scripts/refresh-stocks.mjs
+
+      - name: Commit updated returns
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add src/data/stockReturns.json scripts/.checkpoint.json
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "chore: refresh stock returns [skip ci]"
+            git push
+          fi

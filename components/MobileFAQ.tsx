@@ -16,7 +16,7 @@ const FAQ_ITEMS = [
   },
   {
     question: "How accurate are the stock returns?",
-    answer: "Stock and ETF returns are manually curated, approximate historical CAGRs from public data. They are not live and do not update automatically. Windows vary by asset (10-year, since listing, or rolling multi-year). Past performance is not a guarantee of future results.",
+    answer: "Stock, ETF, and crypto returns are approximate historical CAGRs. The list is refreshed on a rolling schedule from Alpha Vantage (free tier, 25 tickers/day) using adjusted monthly closes, then deployed to the app. Until an asset is refreshed, it uses a manually-curated fallback. Windows vary by asset (10-year, since listing, or rolling multi-year). Past performance is not a guarantee of future results.",
   },
 ];
 
