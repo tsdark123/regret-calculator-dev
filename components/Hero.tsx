@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { ArrowDown, Zap, BookOpen, X, ChevronRight, Check } from 'lucide-react';
 import { BackgroundGraph } from './BackgroundGraph';
+import { Confetti, ConfettiRef } from '@/components/ui/confetti';
+import type { GlobalOptions as ConfettiGlobalOptions } from 'canvas-confetti';
 import { Expense, Theme } from '../types';
 
 interface HeroProps {
@@ -10,9 +12,10 @@ interface HeroProps {
   theme: Theme;
 }
 
-const StatCounter = ({ value, suffix = '', duration = 1100 }: { value: number, suffix?: string, duration?: number }) => {
+const StatCounter = ({ value, suffix = '', duration = 1100, glare = false }: { value: number, suffix?: string, duration?: number, glare?: boolean }) => {
   const ref = useRef<HTMLSpanElement>(null);
   const hasStarted = useRef(false);
+  const hasFinished = useRef(false);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const rafRef = useRef<number | null>(null);
   const targetRef = useRef(value);
@@ -22,63 +25,110 @@ const StatCounter = ({ value, suffix = '', duration = 1100 }: { value: number, s
   const suffixRef = useRef(suffix);
   const durationRef = useRef(duration);
 
+  const renderValue = useCallback((v: number) => {
+    const span = ref.current;
+    if (!span) return;
+    span.textContent = v.toLocaleString() + suffixRef.current;
+  }, []);
+
+  const show = useCallback(() => {
+    const span = ref.current;
+    if (!span) return;
+    span.classList.remove('opacity-0');
+    span.style.opacity = '1';
+  }, []);
+
+  const start = useCallback(() => {
+    if (hasStarted.current || !ref.current) return;
+    hasStarted.current = true;
+    hasFinished.current = false;
+    startValueRef.current = 0;
+    startTimeRef.current = performance.now();
+    lastTargetRef.current = targetRef.current;
+    show();
+
+    const target = targetRef.current;
+
+    if (target <= 0) {
+      renderValue(target);
+      hasStarted.current = false;
+      hasFinished.current = true;
+      return;
+    }
+
+    const step = (timestamp: number) => {
+      const target = targetRef.current;
+
+      if (target !== lastTargetRef.current) {
+        const currentText = ref.current?.textContent ?? '0';
+        startValueRef.current = parseInt(currentText.replace(/[^0-9-]/g, ''), 10) || 0;
+        startTimeRef.current = performance.now();
+        lastTargetRef.current = target;
+      }
+
+      const raw = Math.min((timestamp - startTimeRef.current) / durationRef.current, 1);
+      const ease = 1 - Math.pow(1 - raw, 3);
+      const current = Math.floor(startValueRef.current + (target - startValueRef.current) * ease);
+      renderValue(current);
+
+      if (raw < 1) {
+        rafRef.current = requestAnimationFrame(step);
+      } else {
+        rafRef.current = null;
+        hasStarted.current = false;
+        hasFinished.current = true;
+        renderValue(target);
+      }
+    };
+
+    rafRef.current = requestAnimationFrame(step);
+  }, [renderValue, show]);
+
   // Keep refs in sync with props without restarting the animation
   useEffect(() => { suffixRef.current = suffix; }, [suffix]);
   useEffect(() => { durationRef.current = duration; }, [duration]);
-  useEffect(() => { targetRef.current = value; }, [value]);
 
-  // Start the count-up once after a short delay so a late-loaded
-  // decisionCount (e.g. from Firebase) settles before we begin.
+  // Start/restart the count-up when the value is ready. Hide the initial `0`
+  // until counting begins so it doesn't flash while the fade-in delay runs.
   useEffect(() => {
     const span = ref.current;
     if (!span) return;
 
-    const renderValue = (v: number) => {
-      if (!ref.current) return;
-      ref.current.textContent = v.toLocaleString() + suffixRef.current;
-    };
+    targetRef.current = value;
 
-    renderValue(0);
+    if (hasFinished.current) {
+      if (value > 0 && lastTargetRef.current !== value) {
+        hasFinished.current = false;
+        start();
+      } else {
+        renderValue(value);
+      }
+      return;
+    }
+
+    if (hasStarted.current) {
+      // rAF is already running and will pick up targetRef each frame
+      return;
+    }
+
+    // Not started yet — hide and wait for the value to settle
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    span.classList.add('opacity-0');
+    span.style.opacity = '0';
 
     timeoutRef.current = setTimeout(() => {
-      if (hasStarted.current || !ref.current) return;
-      hasStarted.current = true;
-      startValueRef.current = 0;
-      startTimeRef.current = performance.now();
-      lastTargetRef.current = targetRef.current;
-
-      const step = (timestamp: number) => {
-        const target = targetRef.current;
-
-        if (target !== lastTargetRef.current) {
-          // value changed mid-animation — continue smoothly from current display
-          const currentText = ref.current?.textContent ?? '0';
-          startValueRef.current = parseInt(currentText.replace(/[^0-9-]/g, ''), 10) || 0;
-          startTimeRef.current = performance.now();
-          lastTargetRef.current = target;
-        }
-
-        const raw = Math.min((timestamp - startTimeRef.current) / durationRef.current, 1);
-        const ease = 1 - Math.pow(1 - raw, 3);
-
-        if (target <= 0) {
-          renderValue(0);
-        } else {
-          const current = Math.floor(startValueRef.current + (target - startValueRef.current) * ease);
-          renderValue(current);
-        }
-
-        if (raw < 1) {
-          rafRef.current = requestAnimationFrame(step);
-        } else {
-          rafRef.current = null;
-          renderValue(target);
-        }
-      };
-
-      rafRef.current = requestAnimationFrame(step);
+      start();
     }, 200);
 
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+    };
+  }, [value, start, renderValue]);
+
+  useEffect(() => {
     return () => {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
@@ -91,7 +141,7 @@ const StatCounter = ({ value, suffix = '', duration = 1100 }: { value: number, s
     };
   }, []);
 
-  return <span ref={ref} className="select-none">0{suffix}</span>;
+  return <span ref={ref} className={`select-none opacity-0 transition-opacity duration-150 ${glare ? 'text-glare' : ''}`}>0{suffix}</span>;
 };
 
 // --- Testimonial Component ---
@@ -279,17 +329,104 @@ const TheoryModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void
     );
 };
 
+const MILESTONE_START = 10000;
+const MILESTONE_END = 11000;
+
+// Keep this object stable so the Confetti component doesn't recreate its canvas
+// instance on every Hero re-render (which would reset the particles).
+const confettiGlobalOptions: ConfettiGlobalOptions = {
+  resize: true,
+  useWorker: true,
+  disableForReducedMotion: true,
+};
+
 export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount, theme }) => {
   const [showPreset, setShowPreset] = useState(false);
   const [showTheory, setShowTheory] = useState(false);
   const [animationComplete, setAnimationComplete] = useState(false);
+  const confettiRef = useRef<ConfettiRef>(null);
+  const confettiRafRef = useRef<number | null>(null);
+  const confettiLastBurstRef = useRef(0);
+
+  // Show the confetti canvas only while the live decision count is in the
+  // temporary 10k–11k milestone window. The canvas unmounts completely once
+  // we cross 11k, and it only fires once per mount when entering the window.
+  const showConfetti = decisionCount >= MILESTONE_START && decisionCount < MILESTONE_END;
 
   // Stagger the floating animation after the stat counters finish.
   useEffect(() => {
     const timer = setTimeout(() => setAnimationComplete(true), 1100);
     return () => clearTimeout(timer);
   }, []);
-  
+
+  // Temporary 10k–11k milestone celebration. Runs only while the live
+  // Firebase decisionCount is between 10,000 and 10,999. Confetti fires
+  // continuously from the top-left and top-right corners in a slower,
+  // longer-lasting side-cannon style. The canvas removes itself at 11k.
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    if (!showConfetti) {
+      if (confettiRafRef.current) {
+        cancelAnimationFrame(confettiRafRef.current);
+        confettiRafRef.current = null;
+      }
+      return;
+    }
+
+    if (confettiRafRef.current) return;
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) return;
+
+    const end = Date.now() + 4000; // 4s of active corner fire
+    const isMobile = window.innerWidth < 768;
+    const burstDelay = 100; // ms between bursts (fewer bursts ~ total ~25% fewer particles)
+    const particleCount = isMobile ? 2 : 3;
+    const colors = ['#a855f7', '#7c3aed', '#22c55e', '#3b82f6', '#f8fafc', '#facc15'];
+
+    const defaults = {
+      startVelocity: 30,
+      spread: 55,
+      ticks: 300,
+      gravity: 0.5,
+      decay: 0.96,
+      colors,
+    };
+
+    const fireCorner = (x: 0 | 1, angle: number) => {
+      confettiRef.current?.fire({
+        ...defaults,
+        particleCount,
+        angle,
+        origin: { x, y: 0 },
+      });
+    };
+
+    const frame = (now: number) => {
+      if (Date.now() > end) return;
+
+      if (now - confettiLastBurstRef.current >= burstDelay) {
+        confettiLastBurstRef.current = now;
+        // 315° and 225° are the 45° diagonals shooting down and inward from the
+        // top-left and top-right corners, respectively.
+        fireCorner(0, 315); // top-left → down-right
+        fireCorner(1, 225); // top-right → down-left
+      }
+
+      confettiRafRef.current = requestAnimationFrame(frame);
+    };
+
+    confettiRafRef.current = requestAnimationFrame(frame);
+
+    return () => {
+      if (confettiRafRef.current) {
+        cancelAnimationFrame(confettiRafRef.current);
+        confettiRafRef.current = null;
+      }
+    };
+  }, [showConfetti]);
+
   // Theme-aware glow color
   const getGlowColor = () => {
     switch(theme) {
@@ -302,7 +439,18 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
 
   return (
     <section className="min-h-dvh md:min-h-[90vh] flex flex-col items-center justify-center text-center px-4 relative overflow-hidden pt-8 md:pt-32 select-none" style={{ userSelect: 'none', WebkitUserSelect: 'none', MozUserSelect: 'none', msUserSelect: 'none' }}>
-      
+
+      {/* Temporary 10k–11k milestone confetti — pointer-events none, uses web worker.
+           absolute (not fixed) so it scrolls with the Hero instead of following the viewport. */}
+      {showConfetti && (
+        <Confetti
+          ref={confettiRef}
+          manualstart
+          className="absolute inset-0 z-[60] pointer-events-none size-full"
+          globalOptions={confettiGlobalOptions}
+        />
+      )}
+
       {/* --- Background Elements - Desktop only for performance --- */}
       <div className="hidden md:block">
         <BackgroundGraph />
@@ -380,7 +528,7 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
             <div className="grid grid-cols-3 gap-3">
               <div className={`flex flex-col items-center justify-center ${animationComplete ? 'animate-float' : ''}`}>
                 <span className="text-[clamp(1rem,_4.5vw,_1.25rem)] font-bold text-[var(--text-main)] tracking-tight mb-1 select-none">
-                  <StatCounter value={decisionCount} suffix="+" />
+                  <StatCounter value={decisionCount} suffix="+" glare />
                 </span>
                 <span className="text-[clamp(6px,_2vw,_8px)] text-[var(--text-muted)] font-semibold uppercase tracking-wider text-center leading-tight select-none">Decisions Analyzed</span>
               </div>
@@ -453,7 +601,7 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
             <div className={`flex flex-col items-center justify-center group ${animationComplete ? 'animate-float' : ''}`}>
                 <div className="flex items-center gap-2 mb-1">
                   <span className="text-3xl font-bold text-[var(--text-main)] tracking-tight group-hover:text-[var(--primary)] transition-colors select-none">
-                      <StatCounter value={decisionCount} suffix="+" />
+                      <StatCounter value={decisionCount} suffix="+" glare />
                   </span>
                 </div>
                 <span className="text-[10px] text-[var(--text-muted)] font-semibold uppercase tracking-widest select-none">Decisions Analyzed</span>

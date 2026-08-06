@@ -431,11 +431,11 @@
       }
 
       .animate-fade-in-up {
-        animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
       }
 
       .animate-fade-in-down {
-        animation: fadeInDown 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        animation: fadeInDown 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
       }
 
       .animate-float {
@@ -570,6 +570,89 @@
       .cube-left   { transform: rotateY(-90deg); }
       .cube-top    { transform: rotateX(90deg); }
       .cube-bottom { transform: rotateX(-90deg); }
+
+      /* 21st.dev glow-button styles + reusable text glare */
+      .glow-btn {
+        position: relative;
+        overflow: hidden;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.75rem;
+        font-weight: 600;
+        color: #fff;
+        background: linear-gradient(90deg, #111827, #1f2937);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        cursor: pointer;
+        transition: transform 150ms ease, box-shadow 300ms ease;
+        box-shadow: 0 0 20px rgba(168, 85, 247, 0.25);
+      }
+
+      .glow-btn:hover,
+      .glow-btn:focus-visible {
+        transform: translateY(-2px);
+        box-shadow: 0 0 30px rgba(168, 85, 247, 0.45);
+      }
+
+      .glow-btn[data-state="clicked"] {
+        transform: scale(0.97);
+      }
+
+      /* Subtle hover glare that slides across the button surface */
+      .glow-btn::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          120deg,
+          transparent 25%,
+          rgba(255, 255, 255, 0.35) 50%,
+          transparent 75%
+        );
+        transform: translateX(-100%);
+        transition: transform 0s;
+        pointer-events: none;
+      }
+
+      .glow-btn:hover::after,
+      .glow-btn:focus-visible::after {
+        transform: translateX(100%);
+        transition: transform 0.65s ease-in-out;
+      }
+
+      /* Text glare — one right-to-left sweep, then a pause, repeating every 4s */
+      .text-glare {
+        display: inline-block;
+        background: linear-gradient(
+          90deg,
+          var(--text-main) 0%,
+          var(--text-main) 42%,
+          var(--primary) 50%,
+          var(--text-main) 58%,
+          var(--text-main) 100%
+        );
+        background-size: 300% 100%;
+        background-repeat: no-repeat;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        color: transparent;
+        animation: textGlare 4s linear infinite;
+      }
+
+      @keyframes textGlare {
+        0% { background-position: 0% 0; }
+        30% { background-position: 0% 0; }
+        70% { background-position: 100% 0; }
+        100% { background-position: 100% 0; }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .text-glare {
+          animation: none;
+          background: none;
+          -webkit-text-fill-color: var(--text-main);
+          color: var(--text-main);
+        }
+      }
     </style>
   <script type="importmap">
 {
