@@ -618,7 +618,7 @@
         transition: transform 0.65s ease-in-out;
       }
 
-      /* Text glare — one right-to-left sweep, then a pause, repeating every 4s */
+      /* Text glare — one right-to-left sweep, then a 2.1s pause, repeating every 4s */
       .text-glare {
         display: inline-block;
         background: linear-gradient(
@@ -640,8 +640,8 @@
 
       @keyframes textGlare {
         0% { background-position: 0% 0; }
-        30% { background-position: 0% 0; }
-        70% { background-position: 100% 0; }
+        26.25% { background-position: 0% 0; }
+        73.75% { background-position: 100% 0; }
         100% { background-position: 100% 0; }
       }
 

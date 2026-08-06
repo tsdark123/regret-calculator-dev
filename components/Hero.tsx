@@ -346,7 +346,8 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
   const [animationComplete, setAnimationComplete] = useState(false);
   const confettiRef = useRef<ConfettiRef>(null);
   const confettiRafRef = useRef<number | null>(null);
-  const confettiLastBurstRef = useRef(0);
+  // Initialized far behind so the first rAF frame fires immediately.
+  const confettiLastBurstRef = useRef(-300);
 
   // Show the confetti canvas only while the live decision count is in the
   // temporary 10k–11k milestone window. The canvas unmounts completely once
