@@ -261,45 +261,6 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
       {/* 2. Animated Grid Pattern - Desktop only */}
       <div className="hidden md:block absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_70%_70%_at_50%_50%,black,transparent)] -z-20 pointer-events-none" />
 
-      {/* 3. Left Side: Bar Graph Decoration - Desktop only */}
-      <div className="absolute left-[5%] lg:left-[8%] top-[45vh] -translate-y-1/2 hidden xl:flex flex-col gap-4 opacity-60 -z-10 pointer-events-none select-none transition-opacity duration-700 hover:opacity-80">
-        <div className="w-56 p-5 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)]/80 backdrop-blur-sm transform -rotate-6 shadow-2xl select-none">
-            <div className="flex items-end gap-3 h-32 mb-3 px-2 border-b border-[var(--border)] pb-2">
-                <div className="w-1/4 bg-slate-800 rounded-t-sm h-[30%] animate-pulse"></div>
-                <div className="w-1/4 bg-slate-700 rounded-t-sm h-[50%] animate-pulse delay-75"></div>
-                <div className="w-1/4 bg-[var(--primary)] opacity-50 rounded-t-sm h-[40%] animate-pulse delay-150"></div>
-                <div className="w-1/4 bg-[var(--primary)] rounded-t-sm h-[85%] shadow-[0_0_15px_var(--primary)] animate-pulse delay-200"></div>
-            </div>
-            <div className="flex gap-2">
-               <div className="h-1.5 w-12 bg-slate-800 rounded-full"></div>
-               <div className="h-1.5 w-8 bg-slate-800 rounded-full"></div>
-            </div>
-        </div>
-      </div>
-
-      {/* 4. Right Side: Abstract Radial UI - Desktop only */}
-      <div className="absolute right-[5%] lg:right-[8%] top-[45vh] -translate-y-1/2 hidden xl:flex flex-col opacity-60 -z-10 pointer-events-none select-none transition-opacity duration-700 hover:opacity-80">
-        <div className="relative w-64 h-64 flex items-center justify-center transform rotate-12 select-none">
-            {/* Outer Ring */}
-            <div className="absolute inset-0 rounded-full border border-dashed border-[var(--border)] animate-[spin_20s_linear_infinite]"></div>
-
-            {/* Inner Floating Card */}
-            <div className="w-40 h-40 bg-[var(--bg-card)]/80 backdrop-blur-md rounded-2xl border border-[var(--border)] shadow-2xl flex items-center justify-center relative overflow-hidden select-none">
-                <div className="absolute inset-0 bg-[var(--primary)] opacity-10"></div>
-                <div className="text-center space-y-2 relative z-10 select-none">
-                   <div className="text-3xl font-bold text-[var(--text-main)] tracking-tight select-none">+124%</div>
-                   <div className="text-[10px] text-[var(--primary)] uppercase tracking-widest bg-[var(--bg-input)] px-2 py-1 rounded-full border border-[var(--primary)] select-none">Growth</div>
-                </div>
-            </div>
-
-            {/* Orbiting Dot */}
-            <div className="absolute w-full h-full animate-[spin_8s_linear_infinite]">
-                 <div className="w-3 h-3 bg-[var(--primary)] rounded-full shadow-[0_0_10px_var(--primary)] absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1.5"></div>
-            </div>
-        </div>
-      </div>
-
-
       {/* --- Main Content --- */}
 
       {/* Beta Notice - Mobile Only - Absolutely positioned */}
