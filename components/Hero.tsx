@@ -284,14 +284,14 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
           }}
         />
 
-        <p className="text-[clamp(0.9rem,_3.7vw,_1.1rem)] sm:text-2xl md:text-2xl text-[var(--text-muted)] max-w-3xl mb-6 md:mb-12 leading-relaxed font-light animate-fade-in-up delay-100 opacity-0 z-10 px-4 select-none">
+        <p className="text-[clamp(0.9rem,_3.7vw,_1.1rem)] sm:text-2xl md:text-2xl text-[var(--text-muted)] max-w-3xl mb-6 md:mb-12 leading-relaxed font-light animate-fade-in-down delay-100 z-10 px-4 select-none">
           See how the price of inaction grows over time. <br className="hidden md:block"/>
           Input your habits to see what waiting is <span className="text-[var(--text-main)] font-medium">really</span> costing you.
         </p>
       </div>
 
       {/* Button Cluster - Vertical list on mobile, horizontal on desktop */}
-      <div className="flex flex-col md:flex-row items-stretch md:items-center gap-3 md:gap-4 animate-fade-in-up delay-200 opacity-0 w-full max-w-[clamp(280px,_90vw,_448px)] md:max-w-none justify-center mb-6 md:mb-16 z-20 px-[clamp(12px,_4vw,_24px)] md:px-6">
+      <div className="flex flex-col md:flex-row items-stretch md:items-center gap-3 md:gap-4 animate-fade-in-down delay-200 w-full max-w-[clamp(280px,_90vw,_448px)] md:max-w-none justify-center mb-6 md:mb-16 z-20 px-[clamp(12px,_4vw,_24px)] md:px-6">
          
         {/* Mobile: Vertical list of wide buttons (Learn → Calculate → Presets) */}
         <div className="flex flex-col md:hidden gap-3 w-full">
@@ -395,7 +395,7 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
       </div>
 
       {/* Stats Bar (Desktop Only) */}
-      <div className="w-full max-w-4xl mx-auto hidden md:block animate-fade-in-up delay-300 opacity-0 z-10 select-none">
+      <div className="w-full max-w-4xl mx-auto hidden md:block animate-fade-in-down delay-300 z-10 select-none">
           <div className="grid grid-cols-3 divide-x divide-white/5 bg-[var(--bg-card)]/50 backdrop-blur-md border border-[var(--border)] rounded-full py-5 px-8 shadow-2xl">
             <div className={`flex flex-col items-center justify-center group ${animationComplete ? 'animate-float' : ''}`}>
                 <div className="flex items-center gap-2 mb-1">
