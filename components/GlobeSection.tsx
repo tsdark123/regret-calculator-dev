@@ -123,7 +123,7 @@ export const GlobeSection: React.FC<GlobeSectionProps> = ({ theme }) => {
           scheduleIfNeeded();
         });
       },
-      { threshold: 0.1, rootMargin: '100px' }
+      { threshold: 0.1, rootMargin: '0px' }
     );
     intersectionObserver.observe(section);
 
