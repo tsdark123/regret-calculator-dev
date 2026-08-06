@@ -534,13 +534,13 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
                 <span className="text-[clamp(6px,_2vw,_8px)] text-[var(--text-muted)] font-semibold uppercase tracking-wider text-center leading-tight select-none">Decisions Analyzed</span>
               </div>
               <div className={`flex flex-col items-center justify-center border-x border-white/5 ${animationComplete ? 'animate-float' : ''}`}>
-                <span className="text-[clamp(1rem,_4.5vw,_1.25rem)] font-bold text-[var(--text-main)] tracking-tight mb-1 select-none">
+                <span key={`m-waste-${decisionCount}`} className="text-[clamp(1rem,_4.5vw,_1.25rem)] font-bold text-[var(--text-main)] tracking-tight mb-1 select-none">
                   <StatCounter value={960} suffix="M+" />
                 </span>
                 <span className="text-[clamp(6px,_2vw,_8px)] text-[var(--text-muted)] font-semibold uppercase tracking-wider text-center leading-tight select-none">Total Capital Wasted</span>
               </div>
               <div className={`flex flex-col items-center justify-center ${animationComplete ? 'animate-float' : ''}`}>
-                <span className="text-[clamp(1rem,_4.5vw,_1.25rem)] font-bold text-[var(--text-main)] tracking-tight mb-1 select-none">
+                <span key={`m-yield-${decisionCount}`} className="text-[clamp(1rem,_4.5vw,_1.25rem)] font-bold text-[var(--text-main)] tracking-tight mb-1 select-none">
                   <StatCounter value={667} suffix="%+" />
                 </span>
                 <span className="text-[clamp(6px,_2vw,_8px)] text-[var(--text-muted)] font-semibold uppercase tracking-wider text-center leading-tight select-none">Avg. Annual Yield Missed</span>
@@ -609,7 +609,7 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
             </div>
             <div className={`flex flex-col items-center justify-center group ${animationComplete ? 'animate-float' : ''}`}>
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="text-3xl font-bold text-[var(--text-main)] tracking-tight group-hover:text-[var(--primary)] transition-colors select-none">
+                  <span key={`d-waste-${decisionCount}`} className="text-3xl font-bold text-[var(--text-main)] tracking-tight group-hover:text-[var(--primary)] transition-colors select-none">
                       <StatCounter value={960} suffix="M+" />
                   </span>
                 </div>
@@ -617,7 +617,7 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
             </div>
             <div className={`flex flex-col items-center justify-center group ${animationComplete ? 'animate-float' : ''}`}>
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="text-3xl font-bold text-[var(--text-main)] tracking-tight group-hover:text-[var(--primary)] transition-colors select-none">
+                  <span key={`d-yield-${decisionCount}`} className="text-3xl font-bold text-[var(--text-main)] tracking-tight group-hover:text-[var(--primary)] transition-colors select-none">
                       <StatCounter value={667} suffix="%+" />
                   </span>
                 </div>
