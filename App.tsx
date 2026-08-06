@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback, startTransition } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Hero } from './components/Hero';
 import { Navbar } from './components/Navbar';
@@ -9,6 +9,7 @@ import { MobileFinalWisdomStep } from './components/MobileFinalWisdomStep';
 import { SettingsPanel } from './components/SettingsPanel';
 import { StockSelector } from './components/StockSelector';
 import { Footer } from './components/Footer';
+import { MobileFAQ } from './components/MobileFAQ';
 import { TestimonialsSection } from './components/TestimonialsSection';
 import { FeaturesReveal } from './components/FeaturesReveal';
 import { GlobeSection } from './components/GlobeSection';
@@ -494,32 +495,30 @@ function MainApp() {
     setTimeout(() => {
       const calculated = calculateResults(expenses, assumptions);
 
-      // Schedule the heavy view switch as a transition so the loading screen
-      // can keep animating while the results render in the background.
-      startTransition(() => {
-        setResults(calculated);
-        setResultsKey(prev => prev + 1);
-        setIsLoading(false);
-        setViewMode('results');
+      setResults(calculated);
+      setResultsKey(prev => prev + 1);
+      setIsLoading(false);
+      setViewMode('results');
 
-        // 2. Log activity event with city, regret amount, and first expense name
-        const firstExpenseName = expenses[0]?.name || 'Expense';
-        logActivityEvent({
-          city: window.userCity || 'Unknown',
-          regretAmount: calculated.potentialValueUnlocked,
-          expenseName: firstExpenseName
-        });
+      // 2. Log activity event with city, regret amount, and first expense name
+      const firstExpenseName = expenses[0]?.name || 'Expense';
+      logActivityEvent({
+        city: window.userCity || 'Unknown',
+        regretAmount: calculated.potentialValueUnlocked,
+        expenseName: firstExpenseName
+      });
 
-        // Mobile: Navigate to /results route
+      // Navigate to /results on mobile and scroll to the top after the DOM has updated
+      if (window.innerWidth < 1024) {
+        window.history.pushState({}, '', '/results');
+        setCurrentPath('/results');
+      }
+
+      requestAnimationFrame(() => {
         if (window.innerWidth < 1024) {
-          window.history.pushState({}, '', '/results');
-          setCurrentPath('/results');
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        } else {
-          // Desktop: Just scroll
-          if (inputSectionRef.current) {
-            inputSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
+          window.scrollTo({ top: 0, behavior: 'instant' });
+        } else if (inputSectionRef.current) {
+          inputSectionRef.current.scrollIntoView({ behavior: 'instant', block: 'start' });
         }
       });
     }, 2000);
@@ -596,7 +595,7 @@ function MainApp() {
     <>
       {showMobileIntro && <MobileIntro onComplete={handleIntroComplete} />}
       <AnalyticsTracker />
-      <div className={`flex flex-col theme-${theme} min-h-screen font-sans selection:bg-[var(--primary)] selection:text-white relative bg-[var(--bg-main)] text-[var(--text-main)] transition-colors duration-500 ${(window.innerWidth < 1024 && (currentPath === '/roadmap' || currentPath.startsWith('/roadmap'))) ? 'overflow-hidden h-screen' : ''}`}>
+      <div className={`flex flex-col theme-${theme} min-h-screen font-sans selection:bg-[var(--primary)] selection:text-white relative bg-[var(--bg-main)] text-[var(--text-main)] transition-colors duration-500 ${(window.innerWidth < 1024 && (currentPath === '/roadmap' || currentPath.startsWith('/roadmap') || ((currentPath === '/' || currentPath === '') && viewMode === 'input'))) ? 'overflow-hidden h-screen' : ''}`}>
         {/* Full-Viewport Particle Background - Outside all containers */}
         <ParticleBackground theme={theme} active={!isLoading && viewMode === 'input'} />
         
@@ -637,20 +636,46 @@ function MainApp() {
             ) : (
               /* VIEW: CALCULATOR (HERO + MAIN) */
               <>
-                  {/* Hero Section - Hidden on /calculate and /results routes for mobile */}
-                  {viewMode === 'input' && !(window.innerWidth < 1024 && (currentPath === '/calculate' || currentPath.startsWith('/calculate') || currentPath === '/results' || currentPath.startsWith('/results'))) && (
+                  {/* MOBILE HOME: scroll-snap card-by-card experience (lg:hidden) */}
+                  {viewMode === 'input' && window.innerWidth < 1024 && (currentPath === '/' || currentPath === '') && (
+                    <div className="mobile-snap-container lg:hidden">
+                      <section className="mobile-snap-card">
+                        <Hero
+                          onStart={handleStart}
+                          onLoadPreset={handleLoadPreset}
+                          decisionCount={decisionCount}
+                          theme={theme}
+                        />
+                      </section>
+                      <section className="mobile-snap-card">
+                        <FeaturesReveal />
+                      </section>
+                      <section className="mobile-snap-card">
+                        <GlobeSection theme={theme} />
+                      </section>
+                      <section className="mobile-snap-card !justify-start">
+                        <TestimonialsSection />
+                      </section>
+                      <section className="mobile-snap-card">
+                        <MobileFAQ />
+                      </section>
+                    </div>
+                  )}
+
+                  {/* Hero Section - Hidden on /calculate and /results routes for mobile; also hidden on mobile home (handled by snap container above) */}
+                  {(window.innerWidth >= 1024 || (currentPath === '/' || currentPath === '')) && !(window.innerWidth < 1024 && (currentPath === '/results' || currentPath.startsWith('/results'))) && !(window.innerWidth < 1024 && (currentPath === '/' || currentPath === '')) && (
                     <>
                       {/* Theme-aware Beam for Hero Section - Fixed positioning so it stays with hero text */}
-                      <div
-                        className="hidden md:block fixed top-[20vh] left-[50%] -translate-x-1/2 w-[500px] h-[500px] blur-[100px] rounded-full pointer-events-none z-[5]"
+                      <div 
+                        className="fixed top-[20vh] left-[50%] -translate-x-1/2 w-[500px] h-[500px] blur-[100px] rounded-full pointer-events-none z-[5]"
                         style={{
                           backgroundColor: theme === 'green' ? 'rgba(20, 83, 45, 0.05)' : theme === 'blue' ? 'transparent' : 'rgba(88, 28, 135, 0.05)'
                         }}
                       />
-
-                      <Hero
-                          onStart={handleStart}
-                          onLoadPreset={handleLoadPreset}
+                      
+                      <Hero 
+                          onStart={handleStart} 
+                          onLoadPreset={handleLoadPreset} 
                           decisionCount={decisionCount}
                           theme={theme}
                       />
@@ -785,12 +810,12 @@ function MainApp() {
                       </div>
                   </main>
                   )}
-                  {viewMode === 'input' && (currentPath === '/' || currentPath === '') && (
+                  {!(window.innerWidth < 1024 && (currentPath === '/' || currentPath === '') && viewMode === 'input') && (
                     <>
-                      <FeaturesReveal />
-                      <GlobeSection theme={theme} />
-                      <TestimonialsSection />
-                      <Footer />
+                      {viewMode === 'input' && <FeaturesReveal />}
+                      {viewMode === 'input' && <GlobeSection theme={theme} />}
+                      {viewMode === 'input' && <TestimonialsSection />}
+                      {viewMode !== 'results' && <Footer />}
                     </>
                   )}
               </>

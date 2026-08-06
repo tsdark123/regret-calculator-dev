@@ -348,7 +348,7 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({
   const comparisonColor = selectedStock ? selectedStock.color.replace('bg-', 'text-') : 'text-[var(--primary)]';
 
   return (
-    <div ref={dashboardRef} className="w-full pb-12 pt-2 lg:pt-0">
+    <div ref={dashboardRef} className="w-full pb-12 pt-8 md:pt-12 lg:pt-16">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-6 lg:mb-8 gap-4 border-b border-[var(--border)] pb-4 lg:pb-6">
         <div className="max-w-full pr-2">
            <h2 className="text-3xl font-bold text-[var(--text-main)] mb-2">Your Results</h2>

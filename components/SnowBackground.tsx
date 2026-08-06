@@ -1,7 +1,7 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import Particles, { initParticlesEngine } from "@tsparticles/react";
 import { loadSlim } from "@tsparticles/slim";
-import type { Engine, ISourceOptions } from "@tsparticles/engine";
+import type { Engine, ISourceOptions, Container } from "@tsparticles/engine";
 import { Theme } from "../types";
 
 interface SnowBackgroundProps {
@@ -17,6 +17,7 @@ export const SnowBackground = React.memo(function SnowBackground({ theme, active
     }
     return false;
   });
+  const containerRef = useRef<Container | undefined>(undefined);
 
   // This effect is intentionally cheap on desktop: it only toggles isMobile on resize.
   useEffect(() => {
@@ -61,6 +62,15 @@ export const SnowBackground = React.memo(function SnowBackground({ theme, active
     }
     return { min: 0.5, max: 1.5 };
   }, [isMobile]);
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+    if (active) {
+      containerRef.current.play();
+    } else {
+      containerRef.current.pause();
+    }
+  }, [active]);
 
   const options: ISourceOptions = useMemo(
     () => ({
@@ -124,13 +134,13 @@ export const SnowBackground = React.memo(function SnowBackground({ theme, active
     [particleColor, particleOpacity, particleSize]
   );
 
-  if (!active || !init || !isMobile) {
+  if (!init || !isMobile) {
     return null;
   }
 
   return (
     <div
-      className="fixed inset-0 pointer-events-none"
+      className={`fixed inset-0 pointer-events-none transition-opacity duration-300 ${active ? 'opacity-100' : 'opacity-0'}`}
       style={{
         zIndex: 1,
         width: '100vw',
@@ -146,6 +156,11 @@ export const SnowBackground = React.memo(function SnowBackground({ theme, active
         style={{
           width: '100%',
           height: '100%'
+        }}
+        particlesLoaded={(container: Container | undefined) => {
+          if (!container) return;
+          containerRef.current = container;
+          if (!active) container.pause();
         }}
       />
     </div>

@@ -22,6 +22,7 @@ export const ParticleBackground: React.FC<ParticleBackgroundProps> = React.memo(
     const prefersReducedMotionRef = useRef(false);
     const isMobileRef = useRef(false);
     const activeRef = useRef(active);
+    const scheduleIfNeededRef = useRef<(() => void) | undefined>(undefined);
 
     // Theme-aware colors
     const getThemeColors = (theme: string) => {
@@ -246,7 +247,7 @@ export const ParticleBackground: React.FC<ParticleBackgroundProps> = React.memo(
             }
         };
 
-        // React to active prop changes
+        scheduleIfNeededRef.current = scheduleIfNeeded;
         activeRef.current = active;
         scheduleIfNeeded();
 
@@ -262,7 +263,12 @@ export const ParticleBackground: React.FC<ParticleBackgroundProps> = React.memo(
                 cancelAnimationFrame(animationRef.current);
             }
         };
-    }, [initParticles, theme, active]);
+    }, [initParticles, theme]);
+
+    useEffect(() => {
+        activeRef.current = active;
+        scheduleIfNeededRef.current?.();
+    }, [active]);
 
     return (
         <canvas
