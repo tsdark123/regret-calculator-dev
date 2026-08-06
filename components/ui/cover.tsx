@@ -8,40 +8,53 @@ export const Cover = ({
   className,
   lightMode = false,
   disableHover = false,
+  active,
 }: {
   children?: React.ReactNode;
   className?: string;
   lightMode?: boolean;
   disableHover?: boolean;
+  active?: boolean;
 }) => {
   const [hovered, setHovered] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = useState(0);
   const [beamPositions, setBeamPositions] = useState<number[]>([]);
 
+  const isActive = active !== undefined ? active : hovered;
+  const canHover = !disableHover && active === undefined;
+
   useEffect(() => {
-    if (ref.current) {
-      setContainerWidth(ref.current?.clientWidth ?? 0);
-      const height = ref.current?.clientHeight ?? 0;
-      const numberOfBeams = Math.floor(height / 10);
+    if (!ref.current) return;
+    const el = ref.current;
+
+    const update = () => {
+      const { clientWidth, clientHeight } = el;
+      setContainerWidth(clientWidth);
+      const numberOfBeams = Math.max(0, Math.floor(clientHeight / 10));
       const positions = Array.from(
         { length: numberOfBeams },
-        (_, i) => (i + 1) * (height / (numberOfBeams + 1))
+        (_, i) => (i + 1) * (clientHeight / (numberOfBeams + 1))
       );
       setBeamPositions(positions);
-    }
-  }, [ref.current]);
+    };
+
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   return (
     <div
-      onMouseEnter={disableHover ? undefined : () => setHovered(true)}
-      onMouseLeave={disableHover ? undefined : () => setHovered(false)}
+      onMouseEnter={canHover ? () => setHovered(true) : undefined}
+      onMouseLeave={canHover ? () => setHovered(false) : undefined}
       ref={ref}
       className="relative group/cover inline-block px-2 py-2 transition duration-200 rounded-sm"
       style={{ backgroundColor: lightMode ? '#ffffff' : '#171717' }}
     >
       <AnimatePresence>
-        {hovered && (
+        {isActive && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -58,7 +71,7 @@ export const Cover = ({
                 background="transparent"
                 minSize={0.4}
                 maxSize={1}
-                particleDensity={500}
+                particleDensity={120}
                 className="w-full h-full"
                 particleColor="#FFFFFF"
               />
@@ -66,7 +79,7 @@ export const Cover = ({
                 background="transparent"
                 minSize={0.4}
                 maxSize={1}
-                particleDensity={500}
+                particleDensity={120}
                 className="w-full h-full"
                 particleColor="#FFFFFF"
               />
@@ -77,19 +90,20 @@ export const Cover = ({
       {beamPositions.map((position, index) => (
         <Beam
           key={index}
-          hovered={hovered}
+          hovered={isActive}
           duration={Math.random() * 2 + 1}
           delay={Math.random() * 2 + 1}
-          width={containerWidth}
+          width={containerWidth || 600}
           style={{ top: `${position}px` }}
         />
       ))}
       <motion.span
-        key={String(hovered)}
+        key={String(isActive)}
+        initial={{ scale: 1, x: 0, y: 0 }}
         animate={{
-          scale: hovered ? 0.8 : 1,
-          x: hovered ? [0, -30, 30, -30, 30, 0] : 0,
-          y: hovered ? [0, 30, -30, 30, -30, 0] : 0,
+          scale: isActive ? 0.8 : 1,
+          x: isActive ? [0, -30, 30, -30, 30, 0] : 0,
+          y: isActive ? [0, 30, -30, 30, -30, 0] : 0,
         }}
         exit={{ filter: "none", scale: 1, x: 0, y: 0 }}
         transition={{
@@ -107,10 +121,10 @@ export const Cover = ({
       >
         {children}
       </motion.span>
-      <CircleIcon className="absolute -right-[2px] -top-[2px]" />
-      <CircleIcon className="absolute -bottom-[2px] -right-[2px]" delay={0.4} />
-      <CircleIcon className="absolute -left-[2px] -top-[2px]" delay={0.8} />
-      <CircleIcon className="absolute -bottom-[2px] -left-[2px]" delay={1.6} />
+      <CircleIcon active={isActive} className="absolute -right-[2px] -top-[2px]" />
+      <CircleIcon active={isActive} className="absolute -bottom-[2px] -right-[2px]" delay={0.4} />
+      <CircleIcon active={isActive} className="absolute -left-[2px] -top-[2px]" delay={0.8} />
+      <CircleIcon active={isActive} className="absolute -bottom-[2px] -left-[2px]" delay={1.6} />
     </div>
   );
 };
@@ -130,18 +144,19 @@ export const Beam = ({
   width?: number;
 } & React.ComponentProps<typeof motion.svg>) => {
   const id = useId();
+  const safeWidth = width > 0 ? width : 600;
 
   return (
     <motion.svg
-      width={width ?? "600"}
+      width={safeWidth}
       height="1"
-      viewBox={`0 0 ${width ?? "600"} 1`}
+      viewBox={`0 0 ${safeWidth} 1`}
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={cn("absolute inset-x-0 w-full", className)}
       {...svgProps}
     >
-      <motion.path d={`M0 0.5H${width ?? "600"}`} stroke={`url(#svgGradient-${id})`} />
+      <motion.path d={`M0 0.5H${safeWidth}`} stroke={`url(#svgGradient-${id})`} />
       <defs>
         <motion.linearGradient
           id={`svgGradient-${id}`}
@@ -179,14 +194,17 @@ export const Beam = ({
 export const CircleIcon = ({
   className,
   delay,
+  active,
 }: {
   className?: string;
   delay?: number;
+  active?: boolean;
 }) => {
   return (
     <div
       className={cn(
-        "pointer-events-none animate-pulse group-hover/cover:hidden group-hover/cover:opacity-100 group h-2 w-2 rounded-full bg-neutral-900 dark:bg-white opacity-20 group-hover/cover:bg-white",
+        "pointer-events-none h-2 w-2 rounded-full bg-neutral-900 dark:bg-white transition-opacity duration-200",
+        active ? "opacity-100" : "opacity-20",
         className
       )}
     />
