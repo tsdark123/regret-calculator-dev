@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { ArrowDown, Zap, BookOpen, X, ChevronRight, Check } from 'lucide-react';
 import { BackgroundGraph } from './BackgroundGraph';
 import { Expense, Theme } from '../types';
@@ -12,31 +12,84 @@ interface HeroProps {
 
 const StatCounter = ({ value, suffix = '', duration = 1100 }: { value: number, suffix?: string, duration?: number }) => {
   const ref = useRef<HTMLSpanElement>(null);
-  const hasAnimated = useRef(false);
+  const hasStarted = useRef(false);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const rafRef = useRef<number | null>(null);
+  const targetRef = useRef(value);
+  const lastTargetRef = useRef(value);
+  const startValueRef = useRef(0);
+  const startTimeRef = useRef(0);
+  const suffixRef = useRef(suffix);
+  const durationRef = useRef(duration);
 
+  // Keep refs in sync with props without restarting the animation
+  useEffect(() => { suffixRef.current = suffix; }, [suffix]);
+  useEffect(() => { durationRef.current = duration; }, [duration]);
+  useEffect(() => { targetRef.current = value; }, [value]);
+
+  // Start the count-up once after a short delay so a late-loaded
+  // decisionCount (e.g. from Firebase) settles before we begin.
   useEffect(() => {
     const span = ref.current;
     if (!span) return;
 
-    if (hasAnimated.current) {
-      span.textContent = value.toLocaleString() + suffix;
-      return;
-    }
+    const renderValue = (v: number) => {
+      if (!ref.current) return;
+      ref.current.textContent = v.toLocaleString() + suffixRef.current;
+    };
 
-    const start = performance.now();
-    const step = (timestamp: number) => {
-      const raw = Math.min((timestamp - start) / duration, 1);
-      const ease = 1 - Math.pow(1 - raw, 3);
-      const current = Math.floor(value * ease);
-      span.textContent = current.toLocaleString() + suffix;
-      if (raw < 1) {
-        requestAnimationFrame(step);
-      } else {
-        hasAnimated.current = true;
+    renderValue(0);
+
+    timeoutRef.current = setTimeout(() => {
+      if (hasStarted.current || !ref.current) return;
+      hasStarted.current = true;
+      startValueRef.current = 0;
+      startTimeRef.current = performance.now();
+      lastTargetRef.current = targetRef.current;
+
+      const step = (timestamp: number) => {
+        const target = targetRef.current;
+
+        if (target !== lastTargetRef.current) {
+          // value changed mid-animation — continue smoothly from current display
+          const currentText = ref.current?.textContent ?? '0';
+          startValueRef.current = parseInt(currentText.replace(/[^0-9-]/g, ''), 10) || 0;
+          startTimeRef.current = performance.now();
+          lastTargetRef.current = target;
+        }
+
+        const raw = Math.min((timestamp - startTimeRef.current) / durationRef.current, 1);
+        const ease = 1 - Math.pow(1 - raw, 3);
+
+        if (target <= 0) {
+          renderValue(0);
+        } else {
+          const current = Math.floor(startValueRef.current + (target - startValueRef.current) * ease);
+          renderValue(current);
+        }
+
+        if (raw < 1) {
+          rafRef.current = requestAnimationFrame(step);
+        } else {
+          rafRef.current = null;
+          renderValue(target);
+        }
+      };
+
+      rafRef.current = requestAnimationFrame(step);
+    }, 200);
+
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+        rafRef.current = null;
       }
     };
-    requestAnimationFrame(step);
-  }, [value, suffix, duration]);
+  }, []);
 
   return <span ref={ref} className="select-none">0{suffix}</span>;
 };

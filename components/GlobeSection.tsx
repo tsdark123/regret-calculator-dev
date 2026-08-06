@@ -204,26 +204,30 @@ export const GlobeSection: React.FC<GlobeSectionProps> = ({ theme }) => {
 
         {/* Globe — slightly right of center for symmetry */}
         <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[600px] h-[600px]">
-          <GlobePulse
-            markerColor={themeMarkerColors[theme]}
-            pulseColor={themePulseColors[theme]}
-            speed={0.008}
-            lightMode={theme === 'blue'}
-            active={isVisible}
-          />
+          {isVisible && (
+            <GlobePulse
+              markerColor={themeMarkerColors[theme]}
+              pulseColor={themePulseColors[theme]}
+              speed={0.008}
+              lightMode={theme === 'blue'}
+              active={isVisible}
+            />
+          )}
         </div>
       </div>
 
       {/* Mobile: centered globe only — non-interactive (touch passes through to scroll-snap) */}
       <div className="lg:hidden w-[400px] h-[400px] max-w-full relative z-10">
-        <GlobePulse
-          markerColor={themeMarkerColors[theme]}
-          pulseColor={themePulseColors[theme]}
-          speed={0.008}
-          lightMode={theme === 'blue'}
-          interactive={false}
-          active={isVisible}
-        />
+        {isVisible && (
+          <GlobePulse
+            markerColor={themeMarkerColors[theme]}
+            pulseColor={themePulseColors[theme]}
+            speed={0.008}
+            lightMode={theme === 'blue'}
+            interactive={false}
+            active={isVisible}
+          />
+        )}
       </div>
     </section>
   );

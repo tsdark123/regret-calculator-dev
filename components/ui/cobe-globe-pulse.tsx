@@ -157,6 +157,8 @@ export function GlobePulse({
       `}</style>
       <canvas
         ref={canvasRef}
+        width={600}
+        height={600}
         onPointerDown={interactive ? handlePointerDown : undefined}
         style={{
           width: "600px",
