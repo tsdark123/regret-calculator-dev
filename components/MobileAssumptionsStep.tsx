@@ -71,7 +71,7 @@ export const MobileAssumptionsStep: React.FC<MobileAssumptionsStepProps> = ({
                   {assumptions.selectedStock ? assumptions.selectedStock.name : 'Custom Return'}
                 </p>
                 <p className="text-xs text-[var(--text-muted)]">
-                  {assumptions.selectedStock ? `Historical Avg: ${assumptions.selectedStock.avgReturn}%` : 'Select a stock or fund'}
+                  {assumptions.selectedStock ? `Historical (10yr): ${assumptions.selectedStock.avgReturn}%` : 'Select a stock or fund'}
                 </p>
               </div>
             </div>

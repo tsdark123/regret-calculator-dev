@@ -16,7 +16,7 @@ const FAQ_ITEMS = [
   },
   {
     question: "How accurate are the stock returns?",
-    answer: "Historical CAGRs are sourced from verified financial data. They represent past performance and are not a guarantee of future results. We display the source period for full transparency.",
+    answer: "Stock and ETF returns are manually curated, approximate historical CAGRs from public data. They are not live and do not update automatically. Windows vary by asset (10-year, since listing, or rolling multi-year). Past performance is not a guarantee of future results.",
   },
 ];
 

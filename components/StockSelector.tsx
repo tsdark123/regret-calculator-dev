@@ -16,9 +16,19 @@ interface AssetEntry extends StockOption {
   sector: Exclude<Sector, 'All'>;
 }
 
-// ─── Returns = annualized CAGR, 10-yr (2014–2024) unless noted. ───────────────
-// Sources: Bloomberg, Macrotrends, Yahoo Finance historical data.
-// Newer stocks use CAGR since IPO. Crypto uses 5-yr avg. Pre-tax, price-return only.
+// ─── Returns are approximate annualized CAGRs, manually curated. ──────────────
+// Windows vary: most US stocks/ETFs use ~10-year historical data through
+// 2024–2026; newer stocks use CAGR since listing; crypto uses a rolling
+// multi-year window. Pre-tax; may include dividends for comparability.
+// NOT live market data. Past performance does not guarantee future results.
+// Last full review: 2024–2026.
+
+const DATA_VERSION = {
+  asOf: '2024–2026 (mixed windows)',
+  methodology:
+    'Approximate annualized CAGRs, manually curated from public historical data. Not live.',
+};
+
 const STOCK_DATA: AssetEntry[] = [
 
   // ── ETFs ──────────────────────────────────────────────────────────────────
@@ -154,7 +164,9 @@ export const StockSelector: React.FC<StockSelectorProps> = ({ isOpen, onClose, o
           <div className="flex items-center justify-between mb-3 lg:mb-4">
             <div>
               <h2 className="text-xl font-bold text-[var(--text-main)]">Select Investment</h2>
-              <p className="text-[10px] text-[var(--text-muted)] mt-0.5">{STOCK_DATA.length} assets · sorted by historical return</p>
+              <p className="text-[10px] text-[var(--text-muted)] mt-0.5">
+                {STOCK_DATA.length} assets · sorted by historical return · data as of {DATA_VERSION.asOf}
+              </p>
             </div>
             <button onClick={onClose} className="p-2 hover:bg-[var(--bg-hover)] rounded-full transition-colors">
               <X className="w-5 h-5 text-[var(--text-muted)]" />
@@ -237,8 +249,9 @@ export const StockSelector: React.FC<StockSelectorProps> = ({ isOpen, onClose, o
         {/* Footer */}
         <div className="px-4 py-3 border-t border-[var(--border)] bg-[var(--bg-card)]">
           <p className="text-[10px] text-[var(--text-muted)] text-center leading-relaxed">
-            *Annualized CAGR · US stocks & ETFs: 10-yr (2014–2024) · Newer IPOs: since listing · Crypto: 5-yr avg.
-            Pre-tax, price-return only. Past performance does not guarantee future results. Not financial advice.
+            *Annualized CAGR · Windows vary by asset (10-yr, since listing, or rolling multi-year).
+            Pre-tax; may include dividends for comparability. Manually curated, not live market data.
+            Past performance does not guarantee future results. Not financial advice.
           </p>
         </div>
 

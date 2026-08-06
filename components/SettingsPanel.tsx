@@ -173,7 +173,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                     {assumptions.selectedStock ? assumptions.selectedStock.name : 'Custom Return'}
                   </p>
                   <p className="text-[10px] text-[var(--text-muted)]">
-                    {assumptions.selectedStock ? `Historical Avg: ${assumptions.selectedStock.avgReturn}%` : 'Select a stock or fund'}
+                    {assumptions.selectedStock ? `Historical (10yr): ${assumptions.selectedStock.avgReturn}%` : 'Select a stock or fund'}
                   </p>
                 </div>
               </div>

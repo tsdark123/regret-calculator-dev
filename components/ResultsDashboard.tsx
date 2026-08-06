@@ -313,7 +313,7 @@ const MethodologySection = ({ assumptions, monthlyContribution }: { assumptions:
                     {isCustom ? (
                         <span> This is based on the custom rate you set in the slider.</span>
                     ) : (
-                        <span> This is based on <strong className="text-[var(--text-main)]">{assumptions.selectedStock?.name}</strong>'s historical average return over the last 5-10 years.</span>
+                        <span> This is based on <strong className="text-[var(--text-main)]">{assumptions.selectedStock?.name}</strong>'s approximate historical 10-year CAGR (manually curated, not live).</span>
                     )}
                 </p>
                 <p>
