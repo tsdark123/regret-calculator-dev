@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import {
   FaMicrosoft,
   FaApple,
@@ -23,6 +23,11 @@ const BRANDS = [
 ];
 
 export default function IntegrationHero() {
+  // index.html hides the page to prevent theme flash; reveal once the component mounts.
+  useEffect(() => {
+    document.documentElement.style.visibility = 'visible';
+  }, []);
+
   // Randomize order once per mount, then repeat the strip 4x for the marquee.
   const shuffled = useMemo(
     () => [...BRANDS].sort(() => Math.random() - 0.5),
