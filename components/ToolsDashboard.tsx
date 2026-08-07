@@ -4,7 +4,7 @@ import { formatCurrency, formatCurrencyShort } from '../utils/financials';
 import { CalculationResult, Assumptions, Theme } from '../types';
 import { FireProjection } from './FireProjection';
 import { ComparisonBattle } from './ComparisonBattle';
-import { SovereignMilestones } from './SovereignMilestones';
+import PriceTargetFan from './ui/price-target-fan';
 
 // Helper for slider background matching SettingsPanel
 const getBackgroundStyle = (value: number, min: number, max: number) => {
@@ -380,40 +380,10 @@ export const ToolsDashboard: React.FC<ToolsDashboardProps> = ({
                                 <div className="w-full">
                                     <ComparisonBattle results={results} assumptions={assumptions} theme={theme} />
                                 </div>
-                                {/* Row 2: Full-width Sovereign Milestones - Work in Progress */}
-                                <div className="w-full relative">
-                                    {/* Blur overlay */}
-                                    <div className="absolute inset-0 bg-[var(--bg-card)]/30 backdrop-blur-sm rounded-2xl z-10" />
-                                    
-                                    {/* Floating lock animation */}
-                                    <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
-                                        <div className="flex flex-col items-center gap-3 animate-float">
-                                            <div className="p-4 rounded-full bg-[var(--bg-hover)] border border-[var(--border)] shadow-lg">
-                                                <svg className="w-8 h-8 text-[var(--text-muted)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                                                    <path d="M7 11V7a5 5 0 0110 0v4"/>
-                                                </svg>
-                                            </div>
-                                            <div className="text-center">
-                                                <p className="text-sm font-semibold text-[var(--text-main)] mb-1">Work in Progress</p>
-                                                <p className="text-xs text-[var(--text-muted)]">Coming soon in next update</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    {/* Blurred component */}
-                                    <div className="blur-sm opacity-60">
-                                        <SovereignMilestones
-                                            monthlyContribution={results.totalMonthlyContribution}
-                                            investingYears={assumptions.timeHorizonYears}
-                                            annualReturn={assumptions.inflationAdjusted 
-                                                ? ((1 + assumptions.annualReturn / 100) / (1 + assumptions.inflationRate / 100) - 1)
-                                                : assumptions.annualReturn / 100
-                                            }
-                                            totalCapitalWasted={results.totalCapitalWasted}
-                                            habitName={results.expenseSummary || 'your habits'}
-                                            investmentName={assumptions.selectedStock?.name || 'S&P 500'}
-                                        />
+                                {/* Row 2: 12-Month Value Target Fan */}
+                                <div className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-3xl p-6 md:p-8 shadow-2xl overflow-x-auto">
+                                    <div className="min-w-[520px]">
+                                        <PriceTargetFan results={results} assumptions={assumptions} />
                                     </div>
                                 </div>
                             </div>
@@ -429,40 +399,10 @@ export const ToolsDashboard: React.FC<ToolsDashboardProps> = ({
                                         <ComparisonBattle results={results} assumptions={assumptions} theme={theme} />
                                     </div>
                                 </div>
-                                {/* Row 2: Full-width Sovereign Milestones - Work in Progress */}
-                                <div className="w-full relative">
-                                    {/* Blur overlay */}
-                                    <div className="absolute inset-0 bg-[var(--bg-card)]/30 backdrop-blur-sm rounded-2xl z-10" />
-                                    
-                                    {/* Floating lock animation */}
-                                    <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
-                                        <div className="flex flex-col items-center gap-3 animate-float">
-                                            <div className="p-4 rounded-full bg-[var(--bg-hover)] border border-[var(--border)] shadow-lg">
-                                                <svg className="w-8 h-8 text-[var(--text-muted)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                                                    <path d="M7 11V7a5 5 0 0110 0v4"/>
-                                                </svg>
-                                            </div>
-                                            <div className="text-center">
-                                                <p className="text-sm font-semibold text-[var(--text-main)] mb-1">Work in Progress</p>
-                                                <p className="text-xs text-[var(--text-muted)]">Coming soon in next update</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    {/* Blurred component */}
-                                    <div className="blur-sm opacity-60">
-                                        <SovereignMilestones
-                                            monthlyContribution={results.totalMonthlyContribution}
-                                            investingYears={assumptions.timeHorizonYears}
-                                            annualReturn={assumptions.inflationAdjusted 
-                                                ? ((1 + assumptions.annualReturn / 100) / (1 + assumptions.inflationRate / 100) - 1)
-                                                : assumptions.annualReturn / 100
-                                            }
-                                            totalCapitalWasted={results.totalCapitalWasted}
-                                            habitName={results.expenseSummary || 'your habits'}
-                                            investmentName={assumptions.selectedStock?.name || 'S&P 500'}
-                                        />
+                                {/* Row 2: 12-Month Value Target Fan */}
+                                <div className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-3xl p-6 md:p-8 shadow-2xl overflow-x-auto">
+                                    <div className="min-w-[520px]">
+                                        <PriceTargetFan results={results} assumptions={assumptions} />
                                     </div>
                                 </div>
                             </div>
