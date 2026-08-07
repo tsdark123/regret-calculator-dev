@@ -102,7 +102,7 @@ interface FIRadialChartProps {
 }
 
 function FIRadialChart({ progress, calculatedYears, isUnreachable, regretInjected, strategyColor }: FIRadialChartProps) {
-  const size = 200;
+  const size = 180;
   const center = size / 2;
   const strokeWidth = 16;
   const radius = center - strokeWidth / 2 - 8;
@@ -116,7 +116,7 @@ function FIRadialChart({ progress, calculatedYears, isUnreachable, regretInjecte
     : calculatedYears.toFixed(1);
 
   return (
-    <div className="relative flex items-center justify-center py-4">
+    <div className="relative flex items-center justify-center py-2">
       <svg width={size} height={size} className="transform -rotate-90">
         {/* Background track */}
         <circle
@@ -160,7 +160,7 @@ function FIRadialChart({ progress, calculatedYears, isUnreachable, regretInjecte
       
       {/* Center content */}
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className={`text-4xl font-bold transition-colors duration-300 ${
+        <span className={`text-3xl font-bold transition-colors duration-300 ${
           regretInjected ? 'text-emerald-400' : isUnreachable ? 'text-amber-400' : 'text-[var(--text-main)]'
         }`}>
           {displayValue}
@@ -189,7 +189,7 @@ function SliderInput({ label, value, onChange, min, max, step = 1, unit = '', co
   const percentage = ((value - min) * 100) / (max - min);
   
   return (
-    <div className="flex items-center justify-between py-2 group">
+    <div className="flex items-center justify-between py-1.5 group">
       <div className="flex items-center gap-3">
         <span 
           className="w-3 h-3 rounded-[3px]"
@@ -331,9 +331,9 @@ export const FireProjection: React.FC<FireProjectionProps> = ({ results, theme }
     : 0;
 
   return (
-    <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl p-6 h-full flex flex-col">
+    <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl p-5 h-full flex flex-col">
       {/* Header */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-3">
           {/* Info tooltip - Mobile: before title */}
           <div className="relative group sm:hidden">
@@ -367,7 +367,7 @@ export const FireProjection: React.FC<FireProjectionProps> = ({ results, theme }
       </div>
 
       {/* Portfolio Target & Strategy Row */}
-      <div className="flex items-start justify-between gap-4 mb-4">
+      <div className="flex items-start justify-between gap-4 mb-3">
         {/* Portfolio Target - Left */}
         <div>
           <p className="text-xs text-[var(--text-muted)] uppercase tracking-wider mb-1">Portfolio Target</p>
@@ -469,7 +469,7 @@ export const FireProjection: React.FC<FireProjectionProps> = ({ results, theme }
       </div>
 
       {/* Trajectory Clarity Text */}
-      <div className="text-center mb-4 px-2">
+      <div className="text-center mb-3 px-2">
         {isUnreachable ? (
           <p className="text-sm text-amber-500 font-medium">
             At ${monthlyContribution.toLocaleString()}/mo, reaching $1M isn't feasible within your lifetime. 
@@ -489,7 +489,7 @@ export const FireProjection: React.FC<FireProjectionProps> = ({ results, theme }
       </div>
 
       {/* Input Sliders */}
-      <div className="space-y-1 border-t border-[var(--border)] pt-4">
+      <div className="space-y-1 border-t border-[var(--border)] pt-3">
         <SliderInput
           label="Current Age"
           value={currentAge}
@@ -521,10 +521,10 @@ export const FireProjection: React.FC<FireProjectionProps> = ({ results, theme }
       </div>
 
       {/* Regret Injection Toggle */}
-      <div className="mt-4 pt-4 border-t border-[var(--border)]">
+      <div className="mt-3 pt-3 border-t border-[var(--border)]">
         <button
           onClick={() => setRegretInjected(!regretInjected)}
-          className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-300 ${
+          className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl transition-all duration-300 ${
             regretInjected 
               ? 'bg-emerald-500/20 border border-emerald-500/40' 
               : 'bg-[var(--bg-input)] border border-[var(--border)] hover:border-[var(--primary)]/30'
@@ -558,7 +558,7 @@ export const FireProjection: React.FC<FireProjectionProps> = ({ results, theme }
         
         {/* Impact message when toggled */}
         {regretInjected && yearsSaved > 0 && (
-          <div className="mt-3 px-4 py-2 bg-emerald-500/10 rounded-lg border border-emerald-500/20">
+          <div className="mt-2 px-4 py-2 bg-emerald-500/10 rounded-lg border border-emerald-500/20">
             <p className="text-sm text-emerald-400 font-medium">
               🚀 Recycling your regrets saves you <span className="font-bold">{yearsSaved.toFixed(1)} years</span>!
             </p>

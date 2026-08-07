@@ -172,9 +172,9 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
   };
 
   return (
-    <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl p-6 h-full flex flex-col">
+    <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl p-5 h-full flex flex-col">
       {/* Header - Matching Reference Style */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-3">
           {/* Info tooltip - Mobile: before title */}
           <div className="relative group sm:hidden">
@@ -208,7 +208,7 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
       </div>
 
       {/* Status Badge */}
-      <div className="flex items-center gap-3 mb-4">
+      <div className="flex items-center gap-3 mb-3">
         <span 
           className="px-3 py-1 rounded-full text-xs font-medium bg-transparent border border-[var(--border)] text-[var(--text-muted)]"
         >
@@ -217,7 +217,7 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
       </div>
 
       {/* Segmented Distribution Bar */}
-      <div className="mb-6">
+      <div className="mb-4">
         <div className="flex h-2 rounded-full overflow-hidden">
           <div 
             className="h-full transition-all duration-500"
@@ -251,7 +251,7 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
       </div>
 
       {/* Legend */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full bg-[var(--primary)]" />
@@ -272,7 +272,7 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
       </div>
 
       {/* Challenger Dropdown - Rounded Pill Style */}
-      <div className="mb-4" ref={dropdownRef}>
+      <div className="mb-3" ref={dropdownRef}>
         <div className="relative inline-block">
           <button
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
@@ -358,7 +358,7 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
       </div>
 
       {/* Line Chart - Competing Lines */}
-      <div className="w-full h-[220px] md:flex-1 md:min-h-[180px] outline-none focus:outline-none [&_.recharts-wrapper]:!outline-none [&_.recharts-surface]:!outline-none [&_*:focus]:!outline-none" tabIndex={-1}>
+      <div className="w-full h-[180px] md:flex-1 md:min-h-[160px] outline-none focus:outline-none [&_.recharts-wrapper]:!outline-none [&_.recharts-surface]:!outline-none [&_*:focus]:!outline-none" tabIndex={-1}>
         <ResponsiveContainer width="100%" height="100%" style={{ outline: 'none' }}>
           <LineChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }} tabIndex={-1} style={{ outline: 'none' }}>
             <XAxis 
@@ -403,7 +403,7 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
       </div>
 
       {/* Footer - Verdict */}
-      <div className="mt-4 pt-4 border-t border-[var(--border)]">
+      <div className="mt-3 pt-3 border-t border-[var(--border)]">
         <p className="text-sm text-[var(--text-muted)] leading-relaxed">
           Over{' '}
           <span className="text-[var(--text-main)] font-medium">
