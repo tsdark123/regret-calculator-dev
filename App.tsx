@@ -282,11 +282,11 @@ function MainApp() {
 
   // Removed auto-expand ProDashboard - users should manually expand if they want to see advanced analysis
 
-  // Disable scroll on /roadmap for mobile. Home / uses scroll-snap container.
-  // /calculate, /results and /tools can scroll normally.
+  // Disable body scroll on mobile home only. Home uses a fixed scroll-snap container.
+  // /roadmap, /calculate, /results and /tools can scroll normally.
   useEffect(() => {
     if (window.innerWidth < 1024) {
-      const isScrollLocked = currentPath === '/roadmap' || currentPath.startsWith('/roadmap');
+      const isScrollLocked = currentPath === '/' || currentPath === '';
       if (isScrollLocked) {
         // Lock scroll completely - Safari-compatible fix
         document.documentElement.classList.add('scroll-locked');
