@@ -579,6 +579,15 @@ function MainApp() {
       }
   };
 
+  const isMobileCalculate = typeof window !== 'undefined' && window.innerWidth < 1024 && (currentPath === '/calculate' || currentPath.startsWith('/calculate'));
+  const isMobileResults = typeof window !== 'undefined' && window.innerWidth < 1024 && (currentPath === '/results' || currentPath.startsWith('/results'));
+
+  const mainClasses = isMobileCalculate
+    ? 'px-4 md:px-8 w-full relative min-h-0 pt-28 pb-4'
+    : isMobileResults
+      ? 'px-4 md:px-8 w-full min-h-[600px] relative pt-20 pb-24'
+      : 'px-4 md:px-8 w-full min-h-[600px] relative py-8';
+
   return (
     <>
       <AnalyticsTracker />
@@ -670,7 +679,7 @@ function MainApp() {
                   )}
                   
                   {!(window.innerWidth < 1024 && (currentPath === '/' || currentPath === '') && viewMode === 'input') && (
-                  <main className={`px-4 md:px-8 w-full min-h-[600px] relative ${(window.innerWidth < 1024 && (currentPath === '/calculate' || currentPath.startsWith('/calculate'))) ? 'pt-28 pb-24' : (window.innerWidth < 1024 && (currentPath === '/results' || currentPath.startsWith('/results'))) ? 'pt-20 pb-24' : 'py-8'}`} ref={inputSectionRef}>
+                  <main className={mainClasses} ref={inputSectionRef}>
                       <AmbientBackground />
                       {/* Theme-aware backgrounds for /calculate on mobile only */}
                       {(currentPath === '/calculate' || currentPath.startsWith('/calculate')) && (
@@ -798,7 +807,7 @@ function MainApp() {
                       </div>
                   </main>
                   )}
-                  {!(window.innerWidth < 1024 && (currentPath === '/' || currentPath === '') && viewMode === 'input') && (
+                  {!(window.innerWidth < 1024 && (currentPath === '/' || currentPath === '') && viewMode === 'input') && !isMobileCalculate && (
                     <>
                       {viewMode === 'input' && <FeaturesReveal />}
                       {viewMode === 'input' && <GlobeSection theme={theme} />}
