@@ -29,7 +29,7 @@ const STEPS: PlanStep[] = [
     id: "v2",
     title: "v2.0.0 — Mobile & Retirement Update",
     status: "success",
-    duration: "Jun 2025",
+    duration: "Jun 2026",
     icon: <Smartphone className="w-3.5 h-3.5" />,
     defaultExpanded: true,
     content: (
@@ -55,7 +55,7 @@ const STEPS: PlanStep[] = [
     id: "v1.2",
     title: "v1.2.0 — Theming & Export Update",
     status: "success",
-    duration: "Jun 2025",
+    duration: "Mar 2026",
     icon: <TerminalSquare className="w-3.5 h-3.5" />,
     content: (
       <div className="space-y-3 font-mono text-[14px] mt-2">
@@ -84,7 +84,7 @@ const STEPS: PlanStep[] = [
     id: "v1",
     title: "v1.0.0 — Genesis Update",
     status: "success",
-    duration: "May 2025",
+    duration: "Jan 2026",
     icon: <Zap className="w-3.5 h-3.5" />,
     content: (
       <div className="space-y-2 font-mono text-[14px] text-[var(--text-muted)] mt-2">
@@ -105,36 +105,36 @@ const STEPS: PlanStep[] = [
   },
   {
     id: "v3",
-    title: "v3.0 — The Social Compound",
-    status: "active",
-    duration: "In Progress",
-    icon: <BrainCircuit className="w-3.5 h-3.5" />,
+    title: "v3.0 — 10K Users, New Tools & API Update",
+    status: "success",
+    duration: "Aug 2026",
+    icon: <Code className="w-3.5 h-3.5" />,
+    defaultExpanded: true,
     content: (
       <div className="space-y-3 font-mono text-[14px] mt-2">
-        <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400 font-medium">
-          <Loader2 className="w-3.5 h-3.5 animate-spin" />
-          <span>Building social features...</span>
+        <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-medium">
+          <Check className="w-3.5 h-3.5" />
+          <span>10,000 users and a major tooling milestone.</span>
         </div>
-        <div className="relative rounded-md overflow-hidden bg-black dark:bg-black/80 p-3.5 shadow-inner">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-indigo-500 opacity-50" />
-          <div className="text-zinc-400 space-y-1.5 leading-relaxed">
-            <div><span className="text-purple-400">deploy</span> <span className="text-blue-300">socialModule</span></div>
-            <div className="pl-4">- Leaderboards & user profiles</div>
-            <div className="pl-4">- Regret sharing & challenges</div>
-            <div className="pl-4 text-zinc-300 font-medium animate-pulse flex items-center gap-1">
-              <ChevronRight className="w-3 h-3 text-blue-400" />
-              Community regret feed |
-            </div>
-          </div>
+        <div className="p-3 rounded-md bg-[var(--bg-main)]/40 text-[var(--text-muted)]">
+          <div className="text-emerald-600 dark:text-emerald-400 mb-2 font-semibold">All features deployed</div>
+          <ul className="space-y-1.5 list-disc list-inside">
+            <li>12-Month Value Target Fan (new projections tool)</li>
+            <li>200+ stock options powered by a new formula and API-backed calculations</li>
+            <li>10,000 user celebration — mobile & desktop UI/UX refinements</li>
+            <li>Unified top-tool frame and mobile calculate page cleanup</li>
+            <li>Responsive auto-scaling charts and info tooltips</li>
+            <li className="hidden md:block">Cross-device compatibility improvements</li>
+          </ul>
         </div>
       </div>
     ),
   },
   {
     id: "v4",
-    title: "v4.0 — Automated Reality",
+    title: "v4.0 — The Social Compound",
     status: "pending",
-    icon: <Code className="w-3.5 h-3.5" />,
+    icon: <Lock className="w-3.5 h-3.5" />,
   },
 ];
 
@@ -257,7 +257,7 @@ export const Roadmap: React.FC<{ cardClassName?: string }> = ({ cardClassName })
     setExpandedSteps((prev) => {
       const isCurrentlyExpanded = prev[id];
       const expandedCount = Object.values(prev).filter(Boolean).length;
-      const maxExpanded = isMobile ? 1 : 2;
+      const maxExpanded = 2;
 
       if (!isCurrentlyExpanded && expandedCount >= maxExpanded) {
         // Find the first expanded step that's not the one being toggled and close it
