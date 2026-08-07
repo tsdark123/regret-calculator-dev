@@ -276,7 +276,7 @@ export const Roadmap: React.FC<{ cardClassName?: string }> = ({ cardClassName })
   const allSuccess = STEPS.every((s) => s.status === "success");
 
   return (
-    <div className="w-full h-full flex items-center justify-center px-4 py-6 overflow-hidden relative select-none">
+    <div className="w-full h-full flex items-start md:items-center justify-center px-4 py-6 overflow-y-auto relative select-none">
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none opacity-100" />
       <div className="w-full max-w-4xl mx-auto my-4 font-sans text-[var(--text-main)] relative z-10 select-none">
         {/* Outer Card */}

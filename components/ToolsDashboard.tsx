@@ -351,6 +351,10 @@ export const ToolsDashboard: React.FC<ToolsDashboardProps> = ({
         }
     }, [activeView]);
 
+    // The near-black projection card background only applies to desktop
+    // projection tools in the purple and green themes.
+    const projectionsBoxBg = theme === 'blue' ? 'bg-[var(--bg-card)]' : 'bg-[#0d0e0f]';
+
     return (
         <div className="w-full animate-fade-in-up pb-12 relative overflow-y-auto select-none" style={{ background: 'transparent' }}>
             {/* Header */}
@@ -389,7 +393,7 @@ export const ToolsDashboard: React.FC<ToolsDashboardProps> = ({
                             {/* Desktop Layout - 2-Up, 1-Down Architecture */}
                             <div className="hidden md:flex md:flex-col gap-6 max-w-5xl mx-auto">
                                 {/* Row 1: Combined top tools frame */}
-                                <div className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-3xl shadow-2xl overflow-hidden">
+                                <div className={`w-full ${projectionsBoxBg} border border-[var(--border)] rounded-3xl shadow-2xl overflow-hidden`}>
                                     <div className="grid grid-cols-2 divide-x divide-[var(--border)]">
                                         <div className="p-6">
                                             <FireProjection noCard results={results} theme={theme} />
@@ -400,7 +404,7 @@ export const ToolsDashboard: React.FC<ToolsDashboardProps> = ({
                                     </div>
                                 </div>
                                 {/* Row 2: 12-Month Value Target Fan */}
-                                <div className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-3xl p-6 md:p-8 shadow-2xl">
+                                <div className={`w-full ${projectionsBoxBg} border border-[var(--border)] rounded-3xl p-6 md:p-8 shadow-2xl`}>
                                     <PriceTargetFan results={results} assumptions={assumptions} />
                                 </div>
                             </div>

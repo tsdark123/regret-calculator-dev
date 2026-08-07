@@ -108,7 +108,7 @@ function RoadmapLayout() {
         </div>
       </div>
       {/* Mobile: roadmap only */}
-      <div className="md:hidden w-full h-full">
+      <div className="md:hidden w-full h-full overflow-y-auto">
         <Roadmap />
       </div>
     </div>
@@ -591,7 +591,7 @@ function MainApp() {
   return (
     <>
       <AnalyticsTracker />
-      <div className={`flex flex-col theme-${theme} min-h-screen font-sans selection:bg-[var(--primary)] selection:text-white relative bg-[var(--bg-main)] text-[var(--text-main)] transition-colors duration-500 ${(window.innerWidth < 1024 && (currentPath === '/roadmap' || currentPath.startsWith('/roadmap') || ((currentPath === '/' || currentPath === '') && viewMode === 'input'))) ? 'overflow-hidden h-screen' : ''}`}>
+      <div className={`flex flex-col theme-${theme} min-h-screen font-sans selection:bg-[var(--primary)] selection:text-white relative bg-[var(--bg-main)] text-[var(--text-main)] transition-colors duration-500 ${(window.innerWidth < 1024 && ((currentPath === '/' || currentPath === '') && viewMode === 'input')) ? 'overflow-hidden h-screen' : ''}`}>
         {/* Full-Viewport Particle Background - Outside all containers */}
         <ParticleBackground theme={theme} active={!isLoading && viewMode === 'input'} />
         

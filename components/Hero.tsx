@@ -417,18 +417,18 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
       particleCount: 3,
     };
 
-    // Mobile confetti registry — much less intense.
+    // Mobile confetti registry — bigger bursts, more frequent, same 2s duration.
     const mobileDefaults = {
-      startVelocity: 18,
-      spread: 30,
-      ticks: 180,
-      gravity: 0.3,
-      decay: 0.93,
-      particleCount: 3,
+      startVelocity: 24,
+      spread: 52,
+      ticks: 240,
+      gravity: 0.4,
+      decay: 0.94,
+      particleCount: 6,
     };
 
     const defaults = isMobile ? mobileDefaults : desktopDefaults;
-    const burstDelay = isMobile ? 400 : 100; // ms between bursts
+    const burstDelay = isMobile ? 120 : 100; // ms between bursts
 
     const fireCorner = (x: 0 | 1, angle: number) => {
       confettiRef.current?.fire({
