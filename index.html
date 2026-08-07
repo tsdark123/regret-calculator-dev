@@ -188,7 +188,10 @@
           top: 64px; /* below navbar */
           left: 0;
           right: 0;
-          bottom: 0;
+          /* Use the same dynamic viewport unit as the snap cards so the
+             container height always matches one card and later cards stay reachable. */
+          height: calc(100svh - 64px);
+          height: calc(100dvh - 64px);
           width: 100%;
           overflow-y: scroll;
           overflow-x: hidden;

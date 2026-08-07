@@ -44,7 +44,7 @@ const FAQRow: React.FC<{ question: string; answer: string }> = ({ question, answ
 };
 
 export const MobileFAQ: React.FC = () => (
-  <div className="w-full flex flex-col justify-between px-5 py-8 select-none" style={{ minHeight: 'calc(100dvh - 64px)' }}>
+  <div className="w-full flex flex-col justify-between px-5 py-8 select-none" style={{ minHeight: '100%' }}>
     <div className="flex-1 flex flex-col justify-center">
       <h2 className="text-2xl font-semibold text-[var(--text-main)] mb-1">Common Questions</h2>
       <p className="text-sm text-[var(--text-muted)] mb-6">Everything you need to know.</p>
