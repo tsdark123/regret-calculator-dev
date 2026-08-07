@@ -649,9 +649,6 @@ function MainApp() {
                       <section className="mobile-snap-card">
                         <GlobeSection theme={theme} />
                       </section>
-                      <section className="mobile-snap-card !justify-start">
-                        <TestimonialsSection />
-                      </section>
                       <section className="mobile-snap-card">
                         <MobileFAQ />
                       </section>
@@ -811,7 +808,11 @@ function MainApp() {
                     <>
                       {viewMode === 'input' && <FeaturesReveal />}
                       {viewMode === 'input' && <GlobeSection theme={theme} />}
-                      {viewMode === 'input' && <TestimonialsSection />}
+                      {viewMode === 'input' && (
+                        <div className="hidden md:block">
+                          <TestimonialsSection />
+                        </div>
+                      )}
                       {viewMode !== 'results' && <Footer />}
                     </>
                   )}
