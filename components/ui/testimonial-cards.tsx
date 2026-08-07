@@ -57,7 +57,7 @@ export function TestimonialCard({
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
       transition={{ duration: 0.35 }}
-      className={`absolute left-0 top-0 grid h-[360px] w-[280px] sm:h-[450px] sm:w-[350px] select-none place-content-center space-y-5 sm:space-y-6 rounded-2xl border-2 border-[var(--border)] bg-[var(--bg-card)] sm:bg-[var(--bg-card)]/90 p-5 sm:p-6 shadow-xl backdrop-blur-none sm:backdrop-blur-md ${
+      className={`absolute left-0 top-0 grid h-[360px] w-[280px] sm:h-[450px] sm:w-[350px] select-none place-content-center space-y-5 sm:space-y-6 rounded-2xl border-2 border-[var(--border)] bg-[var(--bg-card)] p-5 sm:p-6 shadow-xl overflow-hidden ${
         isFront ? 'cursor-grab active:cursor-grabbing' : ''
       }`}
     >
