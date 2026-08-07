@@ -18,13 +18,9 @@ const TEXT_MUTED = "var(--text-muted)";
 
 /** #78 Price Target Fan — adapted for the Regret Calculator.
  *
- *  Takes the user's monthly spending (or total capital wasted for one-time
- *  expenses) as the "now" value and fans out three 12-month value targets:
- *  optimistic, expected and conservative. The history line is drawn like a live
- *  ticker, a dot travels to the present, and the three targets pop in.
- *
- *  Message: "We know the regret — here is what this month's money could become
- *  if you redirect it." */
+ *  The SVG uses a fixed viewBox and width="100%" so it auto-scales to any
+ *  container width. The High/Mean/Low labels move below the chart on compact
+ *  widths to avoid clipping. */
 
 interface PriceTargetFanProps {
   results?: CalculationResult | null;
@@ -33,6 +29,7 @@ interface PriceTargetFanProps {
 
 type Target = { key: string; price: number; rate: number; color: string };
 
+const W = 520; // viewBox width (design width)
 const H = 236;
 const PAD = { l: 30, t: 16, b: 28 };
 const CARD_W = 120;
@@ -59,19 +56,19 @@ export default function PriceTargetFan({ results, assumptions }: PriceTargetFanP
   const containerRef = useRef<HTMLDivElement>(null);
   const historyPathRef = useRef<SVGPathElement>(null);
 
-  const [W, setW] = useState(0);
+  const [containerWidth, setContainerWidth] = useState(0);
   const [scrub, setScrub] = useState<number | null>(null);
   const [hotT, setHotT] = useState<number | null>(null);
   const [dotReady, setDotReady] = useState(false);
 
   const dotProgress = useMotionValue(0);
 
-  // Measure the container width as soon as the DOM is available, then keep it in sync.
+  // Measure the rendered width of the chart container.
   useLayoutEffect(() => {
     const el = containerRef.current;
     if (!el) return;
     const width = el.clientWidth;
-    if (width) setW(Math.max(320, width));
+    if (width) setContainerWidth(Math.max(280, width));
   }, []);
 
   useEffect(() => {
@@ -79,7 +76,7 @@ export default function PriceTargetFan({ results, assumptions }: PriceTargetFanP
     if (!el) return;
     const update = (entry?: ResizeObserverEntry) => {
       const width = entry ? entry.contentRect.width : el.clientWidth;
-      if (width) setW(Math.max(320, width));
+      if (width) setContainerWidth(Math.max(280, width));
     };
     update();
     const obs = new ResizeObserver((entries) => update(entries[0]));
@@ -115,7 +112,7 @@ export default function PriceTargetFan({ results, assumptions }: PriceTargetFanP
     padR,
     isCompact,
   } = useMemo(() => {
-    const isCompact = W > 0 && W < COMPACT_THRESHOLD;
+    const isCompact = containerWidth > 0 && containerWidth < COMPACT_THRESHOLD;
     const padR = isCompact ? 44 : Math.max(80, Math.min(120, W * 0.22));
 
     // Fallback to the prompt's example numbers when rendered without data (Demo).
@@ -240,7 +237,7 @@ export default function PriceTargetFan({ results, assumptions }: PriceTargetFanP
       padR,
       isCompact,
     };
-  }, [results, assumptions, W]);
+  }, [results, assumptions, containerWidth]);
 
   // Animate a "live ticker" dot along the history path as it draws.
   useEffect(() => {
@@ -266,9 +263,11 @@ export default function PriceTargetFan({ results, assumptions }: PriceTargetFanP
 
   const onMove = (e: PointerEvent<SVGSVGElement>) => {
     const el = svgRef.current;
-    if (!el) return;
+    if (!el || !containerWidth) return;
     const r = el.getBoundingClientRect();
-    const px = ((e.clientX - r.left) / r.width) * W;
+    if (!r.width) return;
+    const scale = W / r.width;
+    const px = (e.clientX - r.left) * scale;
     if (px > geo.nowX + 6) {
       setScrub(null);
       return;
@@ -279,7 +278,7 @@ export default function PriceTargetFan({ results, assumptions }: PriceTargetFanP
     );
   };
 
-  // The overlay card — target hover wins over scrub; flips to the side that keeps it in view.
+  // Overlay: viewBox coordinates scaled to CSS px.
   const overlay = (() => {
     if (hotT !== null) {
       const p = geo.proj[hotT];
@@ -305,17 +304,20 @@ export default function PriceTargetFan({ results, assumptions }: PriceTargetFanP
     return null;
   })();
 
+  const scalePx = containerWidth / W;
+  const containerHeight = containerWidth ? (containerWidth * H) / W : H;
+
   return (
     <div ref={containerRef} className="w-full" style={{ fontFamily: SANS }}>
       {/* Title + context */}
-      <div className="flex items-center gap-3 mb-4 px-1">
+      <div className="relative flex items-center gap-3 mb-4 px-1">
         <div className="p-2 rounded-lg bg-[var(--primary)]/10">
           <TrendingUp className="w-5 h-5 text-[var(--primary)]" />
         </div>
         <h3 className="text-lg font-semibold text-[var(--text-main)]">12-Month Value Target</h3>
 
-        {/* Info tooltip - Mobile */}
-        <div className="relative group sm:hidden">
+        {/* Mobile info tooltip — anchored to the left corner of the tool */}
+        <div className="group sm:hidden">
           <HelpCircle className="w-4 h-4 text-[var(--text-muted)] cursor-help opacity-60 hover:opacity-100 transition-opacity" />
           <div className="absolute left-0 top-full mt-2 px-3 py-3
                         bg-[var(--bg-card)] border border-[var(--border)] rounded-lg
@@ -326,8 +328,8 @@ export default function PriceTargetFan({ results, assumptions }: PriceTargetFanP
           </div>
         </div>
 
-        {/* Info tooltip - Desktop */}
-        <div className="relative group hidden sm:block">
+        {/* Desktop info tooltip */}
+        <div className="group hidden sm:block">
           <HelpCircle className="w-4 h-4 text-[var(--text-muted)] cursor-help opacity-60 hover:opacity-100 transition-opacity" />
           <div className="absolute left-0 top-full mt-2 px-3 py-3
                         bg-[var(--bg-card)] border border-[var(--border)] rounded-lg
@@ -345,9 +347,9 @@ export default function PriceTargetFan({ results, assumptions }: PriceTargetFanP
           <div className="text-[10px] uppercase tracking-[0.14em] text-[var(--text-muted)]">Value target · 12mo</div>
           <div className="mt-1 flex items-baseline gap-2">
             <span className="text-[22px] font-semibold tabular-nums tracking-[-0.02em] text-[var(--text-main)]">
-              {W > 0 ? fmtValue(meanTarget) : "--"}
+              {containerWidth > 0 ? fmtValue(meanTarget) : "--"}
             </span>
-            {W > 0 && (
+            {containerWidth > 0 && (
               <span className="text-[12px] font-medium tabular-nums" style={{ color: GREEN }}>
                 {`${meanTarget >= current ? "+" : ""}${pct(meanTarget).toFixed(1)}%`}
               </span>
@@ -355,16 +357,16 @@ export default function PriceTargetFan({ results, assumptions }: PriceTargetFanP
           </div>
         </div>
         <div className="text-right text-[11px] tabular-nums" style={{ color: TEXT_MUTED }}>
-          {W > 0 ? `Now ${fmtValue(current)}` : "Now --"}
+          {containerWidth > 0 ? `Now ${fmtValue(current)}` : "Now --"}
         </div>
       </div>
 
-      {W === 0 ? (
+      {containerWidth === 0 ? (
         <div className="relative mx-auto" style={{ height: H }} />
       ) : (
         <>
-          <div className="relative mx-auto" style={{ width: W, height: H }}>
-            <svg ref={svgRef} width={W} height={H} viewBox={`0 0 ${W} ${H}`} className="block cursor-crosshair" onPointerMove={onMove} onPointerLeave={() => setScrub(null)}>
+          <div className="relative mx-auto w-full">
+            <svg ref={svgRef} width="100%" viewBox={`0 0 ${W} ${H}`} className="block cursor-crosshair" onPointerMove={onMove} onPointerLeave={() => setScrub(null)}>
               {/* faint gridlines + left price axis */}
               {axisTicks.map((v) => (
                 <g key={v}>
@@ -528,10 +530,10 @@ export default function PriceTargetFan({ results, assumptions }: PriceTargetFanP
                 style={{
                   width: CARD_W,
                   left:
-                    overlay.px < W / 2
-                      ? Math.min(W - CARD_W - 4, overlay.px + 14)
-                      : Math.max(4, overlay.px - CARD_W - 14),
-                  top: Math.max(2, Math.min(H - 44, overlay.py - 18)),
+                    overlay.px * scalePx < containerWidth / 2
+                      ? Math.min(containerWidth - CARD_W - 4, overlay.px * scalePx + 14)
+                      : Math.max(4, overlay.px * scalePx - CARD_W - 14),
+                  top: Math.max(2, Math.min(containerHeight - 44, overlay.py * scalePx - 18)),
                   background: SURFACE_RAISED,
                   borderColor: HAIRLINE,
                 }}

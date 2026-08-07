@@ -381,7 +381,7 @@ export const ToolsDashboard: React.FC<ToolsDashboardProps> = ({
                                     <ComparisonBattle results={results} assumptions={assumptions} theme={theme} />
                                 </div>
                                 {/* Row 2: 12-Month Value Target Fan */}
-                                <div className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-3xl p-6 md:p-8 shadow-2xl overflow-x-auto">
+                                <div className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-3xl p-6 md:p-8 shadow-2xl">
                                     <PriceTargetFan results={results} assumptions={assumptions} />
                                 </div>
                             </div>
@@ -400,7 +400,7 @@ export const ToolsDashboard: React.FC<ToolsDashboardProps> = ({
                                     </div>
                                 </div>
                                 {/* Row 2: 12-Month Value Target Fan */}
-                                <div className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-3xl p-6 md:p-8 shadow-2xl overflow-x-auto">
+                                <div className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-3xl p-6 md:p-8 shadow-2xl">
                                     <PriceTargetFan results={results} assumptions={assumptions} />
                                 </div>
                             </div>
