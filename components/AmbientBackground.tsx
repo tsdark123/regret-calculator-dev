@@ -29,7 +29,7 @@ const MiniChart3 = ({ className }: { className?: string }) => (
 
 export const AmbientBackground: React.FC = () => {
   return (
-    <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none -z-0">
+    <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none">
       {/* 1. Floating Chart Top Left - Desktop only */}
       <div className="hidden md:block absolute top-[5vh] left-[5%] w-64 h-32 text-purple-500/10 rotate-[-8deg] animate-float">
          <MiniChart1 className="w-full h-full" />
@@ -41,7 +41,7 @@ export const AmbientBackground: React.FC = () => {
       </div>
       
       {/* 3. Center Abstract Donut - Desktop only */}
-      <div className="hidden md:block absolute top-[70vh] left-[10%] w-24 h-24 text-slate-600/10 animate-spin-slow duration-[20s]">
+      <div className="hidden md:block absolute top-[70vh] left-[10%] w-24 h-24 text-slate-600/10 animate-spin-slow duration-[20s] z-20 pointer-events-none">
           <MiniChart3 className="w-full h-full" />
       </div>
 

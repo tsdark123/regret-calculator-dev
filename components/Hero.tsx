@@ -28,7 +28,9 @@ const StatCounter = ({ value, suffix = '', duration = 1100, glare = false }: { v
   const renderValue = useCallback((v: number) => {
     const span = ref.current;
     if (!span) return;
-    span.textContent = v.toLocaleString() + suffixRef.current;
+    // Truncate so a tiny fractional value (used as a sync signal) still
+    // renders the intended integer (e.g. 960.000123 => "960").
+    span.textContent = Math.trunc(v).toLocaleString() + suffixRef.current;
   }, []);
 
   const show = useCallback(() => {
@@ -380,7 +382,7 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReducedMotion) return;
 
-    const end = Date.now() + 4000; // 4s of active corner fire
+    const end = Date.now() + 3000; // 3s of active corner fire
     const isMobile = window.innerWidth < 768;
     const burstDelay = 100; // ms between bursts (fewer bursts ~ total ~25% fewer particles)
     const particleCount = isMobile ? 2 : 3;
@@ -437,6 +439,12 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
       default: return 'rgba(88, 28, 135, 0.2)';
     }
   };
+
+  // Tiny fractional values that change with decisionCount so the fake StatCounters
+  // see a value update and sync their count-up timing with the real one, while
+  // still rendering the intended integer (960 / 667) thanks to Math.trunc.
+  const fakeWaste = 960 + (decisionCount % 1_000_000) * 1e-9;
+  const fakeYield = 667 + (decisionCount % 1_000_000) * 1e-9;
 
   return (
     <section className="min-h-dvh md:min-h-[90vh] flex flex-col items-center justify-center text-center px-4 relative overflow-hidden pt-8 md:pt-32 select-none" style={{ userSelect: 'none', WebkitUserSelect: 'none', MozUserSelect: 'none', msUserSelect: 'none' }}>
@@ -534,14 +542,14 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
                 <span className="text-[clamp(6px,_2vw,_8px)] text-[var(--text-muted)] font-semibold uppercase tracking-wider text-center leading-tight select-none">Decisions Analyzed</span>
               </div>
               <div className={`flex flex-col items-center justify-center border-x border-white/5 ${animationComplete ? 'animate-float' : ''}`}>
-                <span key={`m-waste-${decisionCount}`} className="text-[clamp(1rem,_4.5vw,_1.25rem)] font-bold text-[var(--text-main)] tracking-tight mb-1 select-none">
-                  <StatCounter value={960} suffix="M+" />
+                <span className="text-[clamp(1rem,_4.5vw,_1.25rem)] font-bold text-[var(--text-main)] tracking-tight mb-1 select-none">
+                  <StatCounter value={fakeWaste} suffix="M+" />
                 </span>
                 <span className="text-[clamp(6px,_2vw,_8px)] text-[var(--text-muted)] font-semibold uppercase tracking-wider text-center leading-tight select-none">Total Capital Wasted</span>
               </div>
               <div className={`flex flex-col items-center justify-center ${animationComplete ? 'animate-float' : ''}`}>
-                <span key={`m-yield-${decisionCount}`} className="text-[clamp(1rem,_4.5vw,_1.25rem)] font-bold text-[var(--text-main)] tracking-tight mb-1 select-none">
-                  <StatCounter value={667} suffix="%+" />
+                <span className="text-[clamp(1rem,_4.5vw,_1.25rem)] font-bold text-[var(--text-main)] tracking-tight mb-1 select-none">
+                  <StatCounter value={fakeYield} suffix="%+" />
                 </span>
                 <span className="text-[clamp(6px,_2vw,_8px)] text-[var(--text-muted)] font-semibold uppercase tracking-wider text-center leading-tight select-none">Avg. Annual Yield Missed</span>
               </div>
@@ -609,16 +617,16 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
             </div>
             <div className={`flex flex-col items-center justify-center group ${animationComplete ? 'animate-float' : ''}`}>
                 <div className="flex items-center gap-2 mb-1">
-                  <span key={`d-waste-${decisionCount}`} className="text-3xl font-bold text-[var(--text-main)] tracking-tight group-hover:text-[var(--primary)] transition-colors select-none">
-                      <StatCounter value={960} suffix="M+" />
+                  <span className="text-3xl font-bold text-[var(--text-main)] tracking-tight group-hover:text-[var(--primary)] transition-colors select-none">
+                      <StatCounter value={fakeWaste} suffix="M+" />
                   </span>
                 </div>
                 <span className="text-[10px] text-[var(--text-muted)] font-semibold uppercase tracking-widest select-none">Total Capital Wasted</span>
             </div>
             <div className={`flex flex-col items-center justify-center group ${animationComplete ? 'animate-float' : ''}`}>
                 <div className="flex items-center gap-2 mb-1">
-                  <span key={`d-yield-${decisionCount}`} className="text-3xl font-bold text-[var(--text-main)] tracking-tight group-hover:text-[var(--primary)] transition-colors select-none">
-                      <StatCounter value={667} suffix="%+" />
+                  <span className="text-3xl font-bold text-[var(--text-main)] tracking-tight group-hover:text-[var(--primary)] transition-colors select-none">
+                      <StatCounter value={fakeYield} suffix="%+" />
                   </span>
                 </div>
                 <span className="text-[10px] text-[var(--text-muted)] font-semibold uppercase tracking-widest select-none">Avg. Annual Yield Missed</span>
