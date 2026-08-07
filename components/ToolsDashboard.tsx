@@ -374,16 +374,11 @@ export const ToolsDashboard: React.FC<ToolsDashboardProps> = ({
                         <div className="w-full pb-4 md:pb-12 space-y-10 overflow-x-hidden">
                             {/* Mobile Layout - Vertically Stacked */}
                             <div className="flex flex-col md:hidden gap-6 max-w-[430px] mx-auto">
-                                {/* Row 1: Combined top tools frame */}
-                                <div className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-3xl shadow-2xl overflow-hidden">
-                                    <div className="grid grid-cols-1 divide-y divide-[var(--border)]">
-                                        <div className="p-5">
-                                            <FireProjection noCard results={results} theme={theme} />
-                                        </div>
-                                        <div className="p-5">
-                                            <ComparisonBattle noCard results={results} assumptions={assumptions} theme={theme} />
-                                        </div>
-                                    </div>
+                                <div className="w-full">
+                                    <FireProjection results={results} theme={theme} />
+                                </div>
+                                <div className="w-full">
+                                    <ComparisonBattle results={results} assumptions={assumptions} theme={theme} />
                                 </div>
                                 {/* Row 2: 12-Month Value Target Fan */}
                                 <div className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-3xl p-6 md:p-8 shadow-2xl overflow-x-auto">
