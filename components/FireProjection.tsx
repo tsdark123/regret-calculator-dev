@@ -25,6 +25,7 @@ const INVESTMENT_STRATEGIES = [
 interface FireProjectionProps {
   results: CalculationResult;
   theme: Theme;
+  noCard?: boolean;
 }
 
 // FI calculation parameters
@@ -218,7 +219,7 @@ function SliderInput({ label, value, onChange, min, max, step = 1, unit = '', co
   );
 }
 
-export const FireProjection: React.FC<FireProjectionProps> = ({ results, theme }) => {
+export const FireProjection: React.FC<FireProjectionProps> = ({ results, theme, noCard }) => {
   // Input state - using regular useState for immediate updates
   const [currentAge, setCurrentAge] = useState(30);
   const [targetAge, setTargetAge] = useState(55);
@@ -331,7 +332,7 @@ export const FireProjection: React.FC<FireProjectionProps> = ({ results, theme }
     : 0;
 
   return (
-    <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl p-5 h-full flex flex-col">
+    <div className={`h-full flex flex-col ${noCard ? '' : 'bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl p-5'}`}>
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-3">

@@ -95,9 +95,10 @@ interface ComparisonBattleProps {
   results: CalculationResult;
   assumptions: Assumptions;
   theme: Theme;
+  noCard?: boolean;
 }
 
-export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, assumptions, theme }) => {
+export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, assumptions, theme, noCard }) => {
   // Default to Cigarettes (index 3)
   const [selectedChallenger, setSelectedChallenger] = useState(CHALLENGER_OPTIONS[3]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -172,7 +173,7 @@ export const ComparisonBattle: React.FC<ComparisonBattleProps> = ({ results, ass
   };
 
   return (
-    <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl p-5 h-full flex flex-col">
+    <div className={`h-full flex flex-col ${noCard ? '' : 'bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl p-5'}`}>
       {/* Header - Matching Reference Style */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-3">
