@@ -178,7 +178,7 @@ export const GlobeSection: React.FC<GlobeSectionProps> = ({ theme }) => {
         <h2 className="md:hidden text-[clamp(1.5rem,_7vw,_2rem)] font-semibold mx-auto text-center relative z-20 py-2 text-[var(--text-main)] leading-tight">
           Regret Calculator has been<br />
           used in over{" "}
-          <Cover className="font-bold" lightMode={theme === 'blue'} disableHover>42 countries</Cover>
+          <Cover className="font-bold" lightMode={theme === 'blue'} active={isVisible}>42 countries</Cover>
         </h2>
         {/* Desktop heading: original single-line flow */}
         <h2 className="hidden md:block text-3xl md:text-4xl lg:text-5xl font-semibold max-w-3xl mx-auto text-center relative z-20 py-2 text-[var(--text-main)]">
