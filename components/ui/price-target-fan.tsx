@@ -81,8 +81,21 @@ export default function PriceTargetFan({ results, assumptions }: PriceTargetFanP
   const [hotT, setHotT] = useState<number | null>(null);
   const [isHovering, setIsHovering] = useState(false);
   const [revealComplete, setRevealComplete] = useState(false);
+  const leaveTimerRef = useRef<number | null>(null);
+  const cycleIdxRef = useRef(0);
 
   const isInView = useInView(containerRef, { once: true, amount: 0.4 });
+
+  const clearLeaveTimer = () => {
+    if (leaveTimerRef.current) {
+      window.clearTimeout(leaveTimerRef.current);
+      leaveTimerRef.current = null;
+    }
+  };
+  const scheduleHoverOff = (cb: () => void) => {
+    clearLeaveTimer();
+    leaveTimerRef.current = window.setTimeout(cb, 80);
+  };
 
   useLayoutEffect(() => {
     const el = containerRef.current;
@@ -107,13 +120,13 @@ export default function PriceTargetFan({ results, assumptions }: PriceTargetFanP
   // Auto-cycle the spotlight across High/Mean/Low when in view and not hovered.
   useEffect(() => {
     if (reduced || !isInView || isHovering) return;
-    let idx = 0;
+    if (revealComplete) setHotT(cycleIdxRef.current);
     const timer = setInterval(() => {
-      setHotT(idx);
-      idx = (idx + 1) % 3;
+      setHotT(cycleIdxRef.current);
+      cycleIdxRef.current = (cycleIdxRef.current + 1) % 3;
     }, 2600);
     return () => clearInterval(timer);
-  }, [reduced, isInView, isHovering]);
+  }, [reduced, isInView, isHovering, revealComplete]);
 
   // Once the initial staggered entrance has played, remove the per-item delays
   // so that subsequent auto-cycle/hover spotlight changes stay in sync with the overlay.
@@ -330,36 +343,41 @@ export default function PriceTargetFan({ results, assumptions }: PriceTargetFanP
       return;
     }
     const histW = geo.nowX - PAD.l;
-    setScrub(
-      Math.max(0, Math.min(history.length - 1, Math.round(((px - PAD.l) / histW) * (history.length - 1)))),
-    );
+    const idx = Math.max(0, Math.min(history.length - 1, Math.round(((px - PAD.l) / histW) * (history.length - 1))));
+    setScrub(idx);
   };
 
-  // Overlay card — target hover wins over scrub; flips to the side that keeps it in view.
-  const overlay = (() => {
-    if (hotT !== null) {
-      const p = geo.proj[hotT];
-      const up = p.price >= current;
-      return {
-        px: geo.endX,
-        py: p.ty,
-        value: fmtValue(p.price),
-        context: `${p.key} · ${up ? "+" : ""}${pct(p.price).toFixed(1)}% · ${p.rate}% annual return`,
-        color: p.color,
-      };
-    }
-    if (scrub !== null) {
-      const ago = history.length - 1 - scrub;
-      return {
-        px: geo.hx(scrub),
-        py: y(history[scrub]),
-        value: fmtValue(history[scrub]),
-        context: ago === 0 ? "now" : `${ago}w ago`,
-        color: undefined as string | undefined,
-      };
-    }
-    return null;
-  })();
+  // Overlay cards — history scrub and fan-line spotlight can appear together.
+  const fanOverlay =
+    hotT !== null
+      ? (() => {
+          const p = geo.proj[hotT];
+          const up = p.price >= current;
+          return {
+            px: geo.endX,
+            py: p.ty,
+            value: fmtValue(p.price),
+            context: `${p.key} · ${up ? "+" : ""}${pct(p.price).toFixed(1)}% · ${p.rate}% annual return`,
+            color: p.color,
+          };
+        })()
+      : null;
+
+  const historyOverlay =
+    scrub !== null
+      ? (() => {
+          const ago = history.length - 1 - scrub;
+          return {
+            px: geo.hx(scrub),
+            py: y(history[scrub]),
+            value: fmtValue(history[scrub]),
+            context: ago === 0 ? "now" : `${ago}w ago`,
+            color: undefined as string | undefined,
+          };
+        })()
+      : null;
+
+  const overlays = [fanOverlay, historyOverlay].filter(Boolean);
 
   return (
     <div ref={containerRef} className="w-full" style={{ fontFamily: SANS }}>
@@ -429,8 +447,7 @@ export default function PriceTargetFan({ results, assumptions }: PriceTargetFanP
               className="block cursor-crosshair"
               onPointerMove={onMove}
               onPointerLeave={() => setScrub(null)}
-              onMouseEnter={() => setIsHovering(true)}
-              onMouseLeave={() => { setIsHovering(false); setHotT(null); }}
+              onMouseLeave={() => { setScrub(null); setIsHovering(false); setHotT(null); clearLeaveTimer(); }}
             >
               {/* faint gridlines + left price axis */}
               {axisTicks.map((v) => (
@@ -516,7 +533,8 @@ export default function PriceTargetFan({ results, assumptions }: PriceTargetFanP
                     initial={{ opacity: reduced ? 1 : 0 }}
                     animate={{ opacity: reduced ? 1 : (isInView ? (dim ? 0.26 : 1) : 0) }}
                     transition={reduced ? { duration: 0 } : { duration: 0.5, ease: EASE, delay: revealComplete ? 0 : 0.9 + i * 0.12 }}
-                    onMouseEnter={() => setHotT(i)}
+                    onMouseEnter={() => { clearLeaveTimer(); setIsHovering(true); setHotT(i); }}
+                    onMouseLeave={() => scheduleHoverOff(() => { setIsHovering(false); })}
                     style={{ cursor: "default" }}
                   >
                     <path d={p.d} fill="none" stroke="transparent" strokeWidth={16} />
@@ -599,8 +617,8 @@ export default function PriceTargetFan({ results, assumptions }: PriceTargetFanP
               )}
             </svg>
 
-            {/* overlay — value big, context muted (KPI-card read) */}
-            {overlay && (() => {
+            {/* overlay cards — fan spotlight + history scrub can appear together */}
+            {overlays.map((overlay, i) => {
               const renderedW = svgRef.current?.getBoundingClientRect().width ?? geo.chartW;
               const renderedH = svgRef.current?.getBoundingClientRect().height ?? chartH;
               const sx = renderedW / geo.chartW;
@@ -609,6 +627,7 @@ export default function PriceTargetFan({ results, assumptions }: PriceTargetFanP
               const pyCss = overlay.py * sy;
               return (
                 <div
+                  key={i}
                   className="pointer-events-none absolute z-10 rounded-lg border px-2.5 py-1.5"
                   style={{
                     width: CARD_W,
@@ -629,7 +648,7 @@ export default function PriceTargetFan({ results, assumptions }: PriceTargetFanP
                   </div>
                 </div>
               );
-            })()}
+            })}
           </div>
 
           {/* Compact target legend below chart */}
