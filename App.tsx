@@ -23,6 +23,7 @@ import { TermsOfService } from './components/TermsOfService';
 import { ParticleBackground } from './components/ParticleBackground';
 import { ThemeBackground } from './components/ThemeBackground';
 import { SnowBackground } from './components/SnowBackground';
+import { BrandScroller } from './components/ui/brand-scroller';
 // Mobile maintenance removed - full responsive support enabled
 import { AdminStats } from './components/AdminStats';
 import { AnalyticsTracker } from './components/AnalyticsTracker';
@@ -681,7 +682,7 @@ function MainApp() {
                                 {/* Desktop: Side-by-side layout */}
                                 <div className="hidden lg:grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch animate-fade-in-up">
                                     {/* Left Block: Inputs */}
-                                    <div className="lg:col-span-7 xl:col-span-8">
+                                    <div className="lg:col-span-7 xl:col-span-8 flex flex-col gap-6">
                                         <QueueModule
                                             expenses={expenses}
                                             onAdd={addExpense}
@@ -690,6 +691,7 @@ function MainApp() {
                                             onAnalyze={handleAnalyze}
                                             initialMobileExpenseIndex={queueInitialIndex}
                                         />
+                                        <BrandScroller />
                                     </div>
                                     
                                     {/* Right Block: Assumptions + Fun Fact */}

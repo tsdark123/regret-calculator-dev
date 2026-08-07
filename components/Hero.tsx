@@ -647,6 +647,7 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
           </div>
 
           <TestimonialTicker />
+
       </div>
 
       <PresetModal isOpen={showPreset} onClose={() => setShowPreset(false)} onSelect={onLoadPreset} />
