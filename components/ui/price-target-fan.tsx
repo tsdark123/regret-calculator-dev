@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState, type PointerEvent } from "react";
 import { motion, useMotionValue, useReducedMotion, useTransform, animate } from "framer-motion";
-import { TrendingUp } from "lucide-react";
+import { TrendingUp, HelpCircle } from "lucide-react";
 import type { CalculationResult, Assumptions } from "../../types";
 
 const AMBER = "var(--chart-amber, #e8b45a)";
@@ -294,15 +294,35 @@ export default function PriceTargetFan({ results, assumptions }: PriceTargetFanP
   return (
     <div ref={containerRef} className="w-full" style={{ fontFamily: SANS }}>
       {/* Title + context */}
-      <div className="mb-4 px-1">
-        <div className="flex items-center gap-2 mb-1">
+      <div className="flex items-center gap-3 mb-4 px-1">
+        <div className="p-2 rounded-lg bg-[var(--primary)]/10">
           <TrendingUp className="w-5 h-5 text-[var(--primary)]" />
-          <h3 className="text-lg font-semibold text-[var(--text-main)]">12-Month Value Target</h3>
         </div>
-        <p className="text-sm text-[var(--text-muted)] leading-relaxed">
-          Redirect this month&apos;s spending into your chosen investment and see where it could land one
-          year from now across optimistic, expected, and conservative scenarios.
-        </p>
+        <h3 className="text-lg font-semibold text-[var(--text-main)]">12-Month Value Target</h3>
+
+        {/* Info tooltip - Mobile */}
+        <div className="relative group sm:hidden">
+          <HelpCircle className="w-4 h-4 text-[var(--text-muted)] cursor-help opacity-60 hover:opacity-100 transition-opacity" />
+          <div className="absolute left-0 top-full mt-2 px-3 py-3
+                        bg-[var(--bg-card)] border border-[var(--border)] rounded-lg
+                        text-xs text-[var(--text-muted)] w-[200px] leading-relaxed
+                        opacity-0 pointer-events-none group-hover:opacity-100
+                        transition-opacity duration-200 z-50 shadow-xl">
+            Redirect this month&apos;s spending into your chosen investment and see where it could land one year from now across optimistic, expected, and conservative scenarios.
+          </div>
+        </div>
+
+        {/* Info tooltip - Desktop */}
+        <div className="relative group hidden sm:block">
+          <HelpCircle className="w-4 h-4 text-[var(--text-muted)] cursor-help opacity-60 hover:opacity-100 transition-opacity" />
+          <div className="absolute left-0 top-full mt-2 px-3 py-3
+                        bg-[var(--bg-card)] border border-[var(--border)] rounded-lg
+                        text-xs text-[var(--text-muted)] w-[320px] leading-relaxed
+                        opacity-0 pointer-events-none group-hover:opacity-100
+                        transition-opacity duration-200 z-50 shadow-xl">
+            Redirect this month&apos;s spending into your chosen investment and see where it could land one year from now across optimistic, expected, and conservative scenarios.
+          </div>
+        </div>
       </div>
 
       {/* header — mean target + upside vs current spend */}
