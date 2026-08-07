@@ -218,6 +218,10 @@
           flex-direction: column;
           justify-content: center;
           position: relative;
+          /* Each snap card must be its own stacking context so that positioned
+             children (canvas, globes, beams) from one card cannot paint over
+             siblings in the next card. */
+          z-index: 0;
           flex-shrink: 0;
           overflow: hidden;
         }
