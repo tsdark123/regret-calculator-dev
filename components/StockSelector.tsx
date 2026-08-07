@@ -110,7 +110,7 @@ export const StockSelector: React.FC<StockSelectorProps> = ({ isOpen, onClose, o
           </div>
 
           {/* Sector filter tabs */}
-          <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+          <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-hide md:flex-wrap md:overflow-visible">
             {SECTORS.map(sector => (
               <button
                 key={sector}

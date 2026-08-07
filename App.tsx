@@ -27,7 +27,7 @@ import { SnowBackground } from './components/SnowBackground';
 import { AdminStats } from './components/AdminStats';
 import { AnalyticsTracker } from './components/AnalyticsTracker';
 import { MobileBottomNav } from './components/MobileBottomNav';
-import { MobileIntro } from './components/MobileIntro';
+
 import { StatusPanel } from './components/StatusPanel';
 
 
@@ -117,20 +117,6 @@ function RoadmapLayout() {
 function MainApp() {
   const { decisionCount, incrementDecisionCount, logActivityEvent } = useAnalytics();
   
-  // Mobile intro state - only show on first visit for mobile users
-  const [showMobileIntro, setShowMobileIntro] = useState(() => {
-    if (typeof window === 'undefined') return false;
-    const isMobile = window.innerWidth < 768;
-    const hasSeenIntro = sessionStorage.getItem('hasSeenIntro');
-    const isHomePath = window.location.pathname === '/' || window.location.pathname === '';
-    return isMobile && !hasSeenIntro && isHomePath;
-  });
-
-  const handleIntroComplete = () => {
-    sessionStorage.setItem('hasSeenIntro', 'true');
-    setShowMobileIntro(false);
-  };
-
   const [theme, setTheme] = useState<Theme>(() => getStoredTheme());
   const [expenses, setExpenses] = useState<Expense[]>([
     { id: '1', name: 'Subscription', amount: 15, frequency: 'Monthly', isWant: true },
@@ -593,7 +579,6 @@ function MainApp() {
 
   return (
     <>
-      {showMobileIntro && <MobileIntro onComplete={handleIntroComplete} />}
       <AnalyticsTracker />
       <div className={`flex flex-col theme-${theme} min-h-screen font-sans selection:bg-[var(--primary)] selection:text-white relative bg-[var(--bg-main)] text-[var(--text-main)] transition-colors duration-500 ${(window.innerWidth < 1024 && (currentPath === '/roadmap' || currentPath.startsWith('/roadmap') || ((currentPath === '/' || currentPath === '') && viewMode === 'input'))) ? 'overflow-hidden h-screen' : ''}`}>
         {/* Full-Viewport Particle Background - Outside all containers */}

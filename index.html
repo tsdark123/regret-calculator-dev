@@ -41,7 +41,12 @@
     <!-- Prevent flash of default theme by reading localStorage synchronously -->
     <script>
       (function() {
-        var theme = localStorage.getItem('regret-calc-theme') || 'purple';
+        var theme = 'purple';
+        try {
+          theme = localStorage.getItem('regret-calc-theme') || 'purple';
+        } catch (e) {
+          // Storage may be blocked in sandboxed previews
+        }
         document.documentElement.classList.add('theme-' + theme);
         document.documentElement.style.visibility = 'hidden';
       })();

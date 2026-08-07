@@ -382,25 +382,38 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReducedMotion) return;
 
-    const end = Date.now() + 3000; // 3s of active corner fire
     const isMobile = window.innerWidth < 768;
-    const burstDelay = 100; // ms between bursts (fewer bursts ~ total ~25% fewer particles)
-    const particleCount = isMobile ? 2 : 3;
+    const end = Date.now() + (isMobile ? 2000 : 3000); // 2s mobile, 3s desktop
     const colors = ['#a855f7', '#7c3aed', '#22c55e', '#3b82f6', '#f8fafc', '#facc15'];
 
-    const defaults = {
+    // Desktop/tablet confetti registry — keep exactly as before.
+    const desktopDefaults = {
       startVelocity: 30,
       spread: 55,
       ticks: 300,
       gravity: 0.5,
       decay: 0.96,
       colors,
+      particleCount: 3,
     };
+
+    // Mobile confetti registry — same colors, much less intense.
+    const mobileDefaults = {
+      startVelocity: 18,
+      spread: 30,
+      ticks: 180,
+      gravity: 0.3,
+      decay: 0.93,
+      colors,
+      particleCount: 3,
+    };
+
+    const defaults = isMobile ? mobileDefaults : desktopDefaults;
+    const burstDelay = isMobile ? 400 : 100; // ms between bursts
 
     const fireCorner = (x: 0 | 1, angle: number) => {
       confettiRef.current?.fire({
         ...defaults,
-        particleCount,
         angle,
         origin: { x, y: 0 },
       });
