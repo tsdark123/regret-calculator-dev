@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, type PointerEvent } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type PointerEvent } from "react";
 import { motion, useMotionValue, useReducedMotion, useTransform, animate } from "framer-motion";
 import { TrendingUp, HelpCircle } from "lucide-react";
 import type { CalculationResult, Assumptions } from "../../types";
@@ -36,6 +36,7 @@ type Target = { key: string; price: number; rate: number; color: string };
 const H = 236;
 const PAD = { l: 30, t: 16, b: 28 };
 const CARD_W = 120;
+const COMPACT_THRESHOLD = 640;
 
 const fmtValue = (p: number) => `$${p.toFixed(2)}`;
 
@@ -58,20 +59,30 @@ export default function PriceTargetFan({ results, assumptions }: PriceTargetFanP
   const containerRef = useRef<HTMLDivElement>(null);
   const historyPathRef = useRef<SVGPathElement>(null);
 
-  const [W, setW] = useState(520);
+  const [W, setW] = useState(0);
   const [scrub, setScrub] = useState<number | null>(null);
   const [hotT, setHotT] = useState<number | null>(null);
   const [dotReady, setDotReady] = useState(false);
 
   const dotProgress = useMotionValue(0);
 
-  // Keep the chart width in sync with its card so it fills the available space.
+  // Measure the container width as soon as the DOM is available, then keep it in sync.
+  useLayoutEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const width = el.clientWidth;
+    if (width) setW(Math.max(320, width));
+  }, []);
+
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
-    const update = () => setW(Math.max(320, el.clientWidth));
+    const update = (entry?: ResizeObserverEntry) => {
+      const width = entry ? entry.contentRect.width : el.clientWidth;
+      if (width) setW(Math.max(320, width));
+    };
     update();
-    const obs = new ResizeObserver(update);
+    const obs = new ResizeObserver((entries) => update(entries[0]));
     obs.observe(el);
     return () => obs.disconnect();
   }, []);
@@ -102,8 +113,10 @@ export default function PriceTargetFan({ results, assumptions }: PriceTargetFanP
     nowX,
     endX,
     padR,
+    isCompact,
   } = useMemo(() => {
-    const padR = Math.max(80, Math.min(120, W * 0.22));
+    const isCompact = W > 0 && W < COMPACT_THRESHOLD;
+    const padR = isCompact ? 44 : Math.max(80, Math.min(120, W * 0.22));
 
     // Fallback to the prompt's example numbers when rendered without data (Demo).
     const fallbackCurrent = 178.52;
@@ -209,7 +222,7 @@ export default function PriceTargetFan({ results, assumptions }: PriceTargetFanP
       { x: hx(0), t: formatDateLabel(start), a: "start" as const },
       { x: hx(26), t: formatDateLabel(mid), a: "middle" as const },
       { x: nowX, t: "Now", a: "middle" as const },
-      { x: endX, t: formatDateLabel(end), a: "middle" as const },
+      { x: endX, t: formatDateLabel(end), a: isCompact ? ("end" as const) : ("middle" as const) },
     ];
 
     return {
@@ -225,6 +238,7 @@ export default function PriceTargetFan({ results, assumptions }: PriceTargetFanP
       nowX,
       endX,
       padR,
+      isCompact,
     };
   }, [results, assumptions, W]);
 
@@ -331,196 +345,229 @@ export default function PriceTargetFan({ results, assumptions }: PriceTargetFanP
           <div className="text-[10px] uppercase tracking-[0.14em] text-[var(--text-muted)]">Value target · 12mo</div>
           <div className="mt-1 flex items-baseline gap-2">
             <span className="text-[22px] font-semibold tabular-nums tracking-[-0.02em] text-[var(--text-main)]">
-              {fmtValue(meanTarget)}
+              {W > 0 ? fmtValue(meanTarget) : "--"}
             </span>
-            <span className="text-[12px] font-medium tabular-nums" style={{ color: GREEN }}>
-              {`${meanTarget >= current ? "+" : ""}${pct(meanTarget).toFixed(1)}%`}
-            </span>
+            {W > 0 && (
+              <span className="text-[12px] font-medium tabular-nums" style={{ color: GREEN }}>
+                {`${meanTarget >= current ? "+" : ""}${pct(meanTarget).toFixed(1)}%`}
+              </span>
+            )}
           </div>
         </div>
         <div className="text-right text-[11px] tabular-nums" style={{ color: TEXT_MUTED }}>
-          Now {fmtValue(current)}
+          {W > 0 ? `Now ${fmtValue(current)}` : "Now --"}
         </div>
       </div>
 
-      <div className="relative mx-auto" style={{ width: W, height: H }}>
-        <svg ref={svgRef} width={W} height={H} viewBox={`0 0 ${W} ${H}`} className="block cursor-crosshair" onPointerMove={onMove} onPointerLeave={() => setScrub(null)}>
-          {/* faint gridlines + left price axis */}
-          {axisTicks.map((v) => (
-            <g key={v}>
-              <line
-                x1={PAD.l}
-                y1={y(v)}
-                x2={geo.endX}
-                y2={y(v)}
-                stroke="color-mix(in srgb, var(--text-main) 4%, transparent)"
-                strokeDasharray="2 5"
-              />
-              <text
-                x={PAD.l - 7}
-                y={y(v) + 3}
-                textAnchor="end"
-                fontSize={8.5}
-                fill="color-mix(in srgb, var(--text-main) 32%, transparent)"
-                className="tabular-nums"
-              >
-                {fmtAxis(v)}
-              </text>
-            </g>
-          ))}
+      {W === 0 ? (
+        <div className="relative mx-auto" style={{ height: H }} />
+      ) : (
+        <>
+          <div className="relative mx-auto" style={{ width: W, height: H }}>
+            <svg ref={svgRef} width={W} height={H} viewBox={`0 0 ${W} ${H}`} className="block cursor-crosshair" onPointerMove={onMove} onPointerLeave={() => setScrub(null)}>
+              {/* faint gridlines + left price axis */}
+              {axisTicks.map((v) => (
+                <g key={v}>
+                  <line
+                    x1={PAD.l}
+                    y1={y(v)}
+                    x2={geo.endX}
+                    y2={y(v)}
+                    stroke="color-mix(in srgb, var(--text-main) 4%, transparent)"
+                    strokeDasharray="2 5"
+                  />
+                  <text
+                    x={PAD.l - 7}
+                    y={y(v) + 3}
+                    textAnchor="end"
+                    fontSize={8.5}
+                    fill="color-mix(in srgb, var(--text-main) 32%, transparent)"
+                    className="tabular-nums"
+                  >
+                    {fmtAxis(v)}
+                  </text>
+                </g>
+              ))}
 
-          {/* bottom date axis — history → now → 12mo target horizon */}
-          {dateLabels.map((d) => (
-            <text
-              key={d.t}
-              x={d.x}
-              y={H - 8}
-              textAnchor={d.a}
-              fontSize={8.5}
-              fill="color-mix(in srgb, var(--text-main) 30%, transparent)"
-            >
-              {d.t}
-            </text>
-          ))}
+              {/* bottom date axis — history → now → 12mo target horizon */}
+              {dateLabels.map((d, i) => (
+                <text
+                  key={d.t + i}
+                  x={d.x}
+                  y={H - 8}
+                  textAnchor={d.a}
+                  fontSize={8.5}
+                  fill="color-mix(in srgb, var(--text-main) 30%, transparent)"
+                >
+                  {d.t}
+                </text>
+              ))}
 
-          {/* projection band */}
-          <motion.path
-            d={geo.band}
-            fill={`color-mix(in srgb, ${BLUE} 6%, transparent)`}
-            initial={{ opacity: reduced ? 1 : 0 }}
-            animate={{ opacity: hotT === null ? 1 : 0.22 }}
-            transition={reduced ? { duration: 0 } : { duration: 0.5, ease: EASE, delay: 0.9 }}
-          />
-
-          {/* now marker */}
-          <line
-            x1={geo.nowX}
-            y1={PAD.t}
-            x2={geo.nowX}
-            y2={H - PAD.b}
-            stroke="color-mix(in srgb, var(--text-main) 12%, transparent)"
-            strokeWidth={1}
-            strokeDasharray="3 3"
-          />
-
-          {/* history */}
-          <motion.path
-            ref={historyPathRef}
-            d={geo.line}
-            fill="none"
-            stroke="color-mix(in srgb, var(--text-main) 78%, transparent)"
-            strokeWidth={1.5}
-            vectorEffect="non-scaling-stroke"
-            initial={{ pathLength: reduced ? 1 : 0 }}
-            animate={{ pathLength: 1 }}
-            transition={reduced ? { duration: 0 } : { duration: 1.8, ease: EASE }}
-          />
-
-          {/* projections + target labels */}
-          {geo.proj.map((p, i) => {
-            const on = hotT === i;
-            const dim = hotT !== null && !on;
-            return (
-              <motion.g
-                key={p.key}
+              {/* projection band */}
+              <motion.path
+                d={geo.band}
+                fill={`color-mix(in srgb, ${BLUE} 6%, transparent)`}
                 initial={{ opacity: reduced ? 1 : 0 }}
-                animate={{ opacity: dim ? 0.26 : 1 }}
-                transition={reduced ? { duration: 0 } : { duration: 0.5, ease: EASE, delay: 0.9 + i * 0.12 }}
-                onMouseEnter={() => setHotT(i)}
-                onMouseLeave={() => setHotT(null)}
-                style={{ cursor: "default" }}
+                animate={{ opacity: hotT === null ? 1 : 0.22 }}
+                transition={reduced ? { duration: 0 } : { duration: 0.5, ease: EASE, delay: 0.9 }}
+              />
+
+              {/* now marker */}
+              <line
+                x1={geo.nowX}
+                y1={PAD.t}
+                x2={geo.nowX}
+                y2={H - PAD.b}
+                stroke="color-mix(in srgb, var(--text-main) 12%, transparent)"
+                strokeWidth={1}
+                strokeDasharray="3 3"
+              />
+
+              {/* history */}
+              <motion.path
+                ref={historyPathRef}
+                d={geo.line}
+                fill="none"
+                stroke="color-mix(in srgb, var(--text-main) 78%, transparent)"
+                strokeWidth={1.5}
+                vectorEffect="non-scaling-stroke"
+                initial={{ pathLength: reduced ? 1 : 0 }}
+                animate={{ pathLength: 1 }}
+                transition={reduced ? { duration: 0 } : { duration: 1.8, ease: EASE }}
+              />
+
+              {/* projections + target labels */}
+              {geo.proj.map((p, i) => {
+                const on = hotT === i;
+                const dim = hotT !== null && !on;
+                return (
+                  <motion.g
+                    key={p.key}
+                    initial={{ opacity: reduced ? 1 : 0 }}
+                    animate={{ opacity: dim ? 0.26 : 1 }}
+                    transition={reduced ? { duration: 0 } : { duration: 0.5, ease: EASE, delay: 0.9 + i * 0.12 }}
+                    onMouseEnter={() => setHotT(i)}
+                    onMouseLeave={() => setHotT(null)}
+                    style={{ cursor: "default" }}
+                  >
+                    <path d={p.d} fill="none" stroke="transparent" strokeWidth={16} />
+                    <path d={p.d} fill="none" stroke={p.color} strokeWidth={on ? 2.2 : 1.4} strokeOpacity={on ? 1 : 0.7} strokeDasharray="2 4" vectorEffect="non-scaling-stroke" />
+                    <motion.circle
+                      cx={geo.endX}
+                      cy={p.ty}
+                      initial={{ r: 0, opacity: 0 }}
+                      animate={{ r: on ? 4 : 3.2, opacity: 1 }}
+                      transition={reduced ? { duration: 0 } : { duration: 0.4, ease: EASE, delay: 0.9 + i * 0.12 }}
+                      fill={SURFACE}
+                      stroke={p.color}
+                      strokeWidth={1.6}
+                    />
+                    {!isCompact && (
+                      <>
+                        <text x={geo.endX + 10} y={p.ty - 2.5} fontSize={8} fill="color-mix(in srgb, var(--text-main) 40%, transparent)">
+                          {p.key}
+                        </text>
+                        <text x={geo.endX + 10} y={p.ty + 8} fontSize={10.5} fontWeight={600} fill={p.color} className="tabular-nums">
+                          {fmtAxis(p.price)}
+                        </text>
+                      </>
+                    )}
+                  </motion.g>
+                );
+              })}
+
+              {/* now dot + live pulse */}
+              <motion.circle
+                cx={geo.nowX}
+                cy={geo.nowY}
+                r={3.2}
+                fill="var(--text-main)"
+                initial={{ opacity: reduced ? 1 : 0 }}
+                animate={{ opacity: 1 }}
+                transition={reduced ? { duration: 0 } : { delay: 0.85 }}
+              />
+              <motion.circle
+                cx={geo.nowX}
+                cy={geo.nowY}
+                r={3.2}
+                fill="none"
+                stroke="var(--text-main)"
+                strokeWidth={1}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: [0.5, 0], r: [3.2, 10] }}
+                transition={reduced ? { duration: 0 } : { duration: 1.5, repeat: Infinity, repeatDelay: 0.5, delay: 2 }}
+              />
+
+              {/* traveling ticker dot */}
+              <motion.circle
+                cx={dotX as any}
+                cy={dotY as any}
+                r={3.2}
+                fill="var(--primary)"
+                stroke="var(--bg-card)"
+                strokeWidth={1.5}
+                pointerEvents="none"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: dotReady ? 1 : 0 }}
+                transition={{ duration: 0.2 }}
+              />
+
+              {/* scrub crosshair */}
+              {scrub !== null && (
+                <g pointerEvents="none">
+                  <line x1={geo.hx(scrub)} y1={PAD.t} x2={geo.hx(scrub)} y2={H - PAD.b} stroke="color-mix(in srgb, var(--text-main) 22%, transparent)" strokeWidth={1} />
+                  <circle cx={geo.hx(scrub)} cy={y(history[scrub])} r={3.2} fill="var(--text-main)" stroke={SURFACE} strokeWidth={1.5} />
+                </g>
+              )}
+            </svg>
+
+            {/* overlay — value big, context muted (KPI-card read) */}
+            {overlay && (
+              <div
+                className="pointer-events-none absolute z-10 rounded-lg border px-2.5 py-1.5"
+                style={{
+                  width: CARD_W,
+                  left:
+                    overlay.px < W / 2
+                      ? Math.min(W - CARD_W - 4, overlay.px + 14)
+                      : Math.max(4, overlay.px - CARD_W - 14),
+                  top: Math.max(2, Math.min(H - 44, overlay.py - 18)),
+                  background: SURFACE_RAISED,
+                  borderColor: HAIRLINE,
+                }}
               >
-                <path d={p.d} fill="none" stroke="transparent" strokeWidth={16} />
-                <path d={p.d} fill="none" stroke={p.color} strokeWidth={on ? 2.2 : 1.4} strokeOpacity={on ? 1 : 0.7} strokeDasharray="2 4" vectorEffect="non-scaling-stroke" />
-                <motion.circle
-                  cx={geo.endX}
-                  cy={p.ty}
-                  initial={{ r: 0, opacity: 0 }}
-                  animate={{ r: on ? 4 : 3.2, opacity: 1 }}
-                  transition={reduced ? { duration: 0 } : { duration: 0.4, ease: EASE, delay: 0.9 + i * 0.12 }}
-                  fill={SURFACE}
-                  stroke={p.color}
-                  strokeWidth={1.6}
-                />
-                <text x={geo.endX + 10} y={p.ty - 2.5} fontSize={8} fill="color-mix(in srgb, var(--text-main) 40%, transparent)">
-                  {p.key}
-                </text>
-                <text x={geo.endX + 10} y={p.ty + 8} fontSize={10.5} fontWeight={600} fill={p.color} className="tabular-nums">
-                  {fmtAxis(p.price)}
-                </text>
-              </motion.g>
-            );
-          })}
-
-          {/* now dot + live pulse */}
-          <motion.circle
-            cx={geo.nowX}
-            cy={geo.nowY}
-            r={3.2}
-            fill="var(--text-main)"
-            initial={{ opacity: reduced ? 1 : 0 }}
-            animate={{ opacity: 1 }}
-            transition={reduced ? { duration: 0 } : { delay: 0.85 }}
-          />
-          <motion.circle
-            cx={geo.nowX}
-            cy={geo.nowY}
-            r={3.2}
-            fill="none"
-            stroke="var(--text-main)"
-            strokeWidth={1}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: [0.5, 0], r: [3.2, 10] }}
-            transition={reduced ? { duration: 0 } : { duration: 1.5, repeat: Infinity, repeatDelay: 0.5, delay: 2 }}
-          />
-
-          {/* traveling ticker dot */}
-          <motion.circle
-            cx={dotX as any}
-            cy={dotY as any}
-            r={3.2}
-            fill="var(--primary)"
-            stroke="var(--bg-card)"
-            strokeWidth={1.5}
-            pointerEvents="none"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: dotReady ? 1 : 0 }}
-            transition={{ duration: 0.2 }}
-          />
-
-          {/* scrub crosshair */}
-          {scrub !== null && (
-            <g pointerEvents="none">
-              <line x1={geo.hx(scrub)} y1={PAD.t} x2={geo.hx(scrub)} y2={H - PAD.b} stroke="color-mix(in srgb, var(--text-main) 22%, transparent)" strokeWidth={1} />
-              <circle cx={geo.hx(scrub)} cy={y(history[scrub])} r={3.2} fill="var(--text-main)" stroke={SURFACE} strokeWidth={1.5} />
-            </g>
-          )}
-        </svg>
-
-        {/* overlay — value big, context muted (KPI-card read) */}
-        {overlay && (
-          <div
-            className="pointer-events-none absolute z-10 rounded-lg border px-2.5 py-1.5"
-            style={{
-              width: CARD_W,
-              left:
-                overlay.px < W / 2
-                  ? Math.min(W - CARD_W - 4, overlay.px + 14)
-                  : Math.max(4, overlay.px - CARD_W - 14),
-              top: Math.max(2, Math.min(H - 44, overlay.py - 18)),
-              background: SURFACE_RAISED,
-              borderColor: HAIRLINE,
-            }}
-          >
-            <div className="text-[13px] font-semibold tabular-nums" style={{ color: overlay.color ?? TEXT }}>
-              {overlay.value}
-            </div>
-            <div className="mt-0.5 text-[10px]" style={{ color: TEXT_MUTED }}>
-              {overlay.context}
-            </div>
+                <div className="text-[13px] font-semibold tabular-nums" style={{ color: overlay.color ?? TEXT }}>
+                  {overlay.value}
+                </div>
+                <div className="mt-0.5 text-[10px]" style={{ color: TEXT_MUTED }}>
+                  {overlay.context}
+                </div>
+              </div>
+            )}
           </div>
-        )}
-      </div>
+
+          {/* Compact target legend below chart */}
+          {isCompact && (
+            <div className="mt-3 flex flex-wrap items-center justify-center gap-3 px-1">
+              {targets.map((t) => {
+                const pctValue = pct(t.price);
+                return (
+                  <div key={t.key} className="flex items-center gap-1.5 text-xs">
+                    <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: t.color }} />
+                    <span className="text-[var(--text-muted)]">{t.key}</span>
+                    <span className="font-semibold tabular-nums" style={{ color: t.color }}>
+                      {fmtValue(t.price)}
+                    </span>
+                    <span className="text-[var(--text-muted)] tabular-nums">
+                      ({t.price >= current ? "+" : ""}{pctValue.toFixed(0)}%)
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </>
+      )}
     </div>
   );
 }
