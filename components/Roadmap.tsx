@@ -26,12 +26,38 @@ export interface PlanStep {
 
 const STEPS: PlanStep[] = [
   {
+    id: "v3",
+    title: "v3.0 — 10K Users, New Tools & API Update",
+    status: "success",
+    duration: "Aug 2026",
+    icon: <Code className="w-3.5 h-3.5" />,
+    defaultExpanded: true,
+    content: (
+      <div className="space-y-3 font-mono text-[14px] mt-2">
+        <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-medium">
+          <Check className="w-3.5 h-3.5" />
+          <span>10,000 users and a major tooling milestone.</span>
+        </div>
+        <div className="p-3 rounded-md bg-[var(--bg-main)]/40 text-[var(--text-muted)]">
+          <div className="text-emerald-600 dark:text-emerald-400 mb-2 font-semibold">All features deployed</div>
+          <ul className="space-y-1.5 list-disc list-inside">
+            <li>12-Month Value Target Fan (new projections tool)</li>
+            <li>200+ stock options powered by a new formula and API-backed calculations</li>
+            <li>10,000 user celebration — mobile & desktop UI/UX refinements</li>
+            <li>Unified top-tool frame and mobile calculate page cleanup</li>
+            <li>Responsive auto-scaling charts and info tooltips</li>
+            <li className="hidden md:block">Cross-device compatibility improvements</li>
+          </ul>
+        </div>
+      </div>
+    ),
+  },
+  {
     id: "v2",
     title: "v2.0.0 — Mobile & Retirement Update",
     status: "success",
     duration: "Jun 2026",
     icon: <Smartphone className="w-3.5 h-3.5" />,
-    defaultExpanded: true,
     content: (
       <div className="space-y-3 font-mono text-[14px] mt-2">
         <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-medium">
@@ -99,33 +125,6 @@ const STEPS: PlanStep[] = [
           <span className="text-[var(--text-main)]">Market Data Hooks, Real-Time Analytics</span>
           <span className="text-[var(--text-muted)] font-medium">Perf:</span>
           <span className="text-amber-600 dark:text-amber-400">Latency reduced 40%, Dark Mode</span>
-        </div>
-      </div>
-    ),
-  },
-  {
-    id: "v3",
-    title: "v3.0 — 10K Users, New Tools & API Update",
-    status: "success",
-    duration: "Aug 2026",
-    icon: <Code className="w-3.5 h-3.5" />,
-    defaultExpanded: true,
-    content: (
-      <div className="space-y-3 font-mono text-[14px] mt-2">
-        <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-medium">
-          <Check className="w-3.5 h-3.5" />
-          <span>10,000 users and a major tooling milestone.</span>
-        </div>
-        <div className="p-3 rounded-md bg-[var(--bg-main)]/40 text-[var(--text-muted)]">
-          <div className="text-emerald-600 dark:text-emerald-400 mb-2 font-semibold">All features deployed</div>
-          <ul className="space-y-1.5 list-disc list-inside">
-            <li>12-Month Value Target Fan (new projections tool)</li>
-            <li>200+ stock options powered by a new formula and API-backed calculations</li>
-            <li>10,000 user celebration — mobile & desktop UI/UX refinements</li>
-            <li>Unified top-tool frame and mobile calculate page cleanup</li>
-            <li>Responsive auto-scaling charts and info tooltips</li>
-            <li className="hidden md:block">Cross-device compatibility improvements</li>
-          </ul>
         </div>
       </div>
     ),
