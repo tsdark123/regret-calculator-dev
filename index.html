@@ -295,7 +295,7 @@
         -moz-appearance: textfield;
       }
       
-      /* Custom Scrollbar */
+      /* Custom Scrollbar — theme aware using the active primary color */
       ::-webkit-scrollbar {
         width: 8px;
       }
@@ -303,11 +303,11 @@
         background: var(--bg-main); 
       }
       ::-webkit-scrollbar-thumb {
-        background: #27272a; 
+        background: color-mix(in srgb, var(--primary) 70%, var(--bg-main)); 
         border-radius: 4px;
       }
       ::-webkit-scrollbar-thumb:hover {
-        background: #3f3f46; 
+        background: color-mix(in srgb, var(--primary) 90%, var(--bg-main)); 
       }
 
       /* Animations */
