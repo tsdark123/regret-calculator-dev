@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo, useRef, useState, type PointerEvent } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { useEffect, useMemo, useRef, useState, type PointerEvent } from "react";
+import { motion, useMotionValue, useReducedMotion, useTransform, animate } from "framer-motion";
+import { TrendingUp } from "lucide-react";
 import type { CalculationResult, Assumptions } from "../../types";
 
 const AMBER = "var(--chart-amber, #e8b45a)";
@@ -17,21 +18,23 @@ const TEXT_MUTED = "var(--text-muted)";
 
 /** #78 Price Target Fan — adapted for the Regret Calculator.
  *
- *  Takes the user's monthly spending (or total capital wasted) as the "now"
- *  value and fans out three 12-month value targets: optimistic, expected and
- *  conservative. The message is: "We know the regret — here is what this
- *  month's money could become if you redirect it." */
+ *  Takes the user's monthly spending (or total capital wasted for one-time
+ *  expenses) as the "now" value and fans out three 12-month value targets:
+ *  optimistic, expected and conservative. The history line is drawn like a live
+ *  ticker, a dot travels to the present, and the three targets pop in.
+ *
+ *  Message: "We know the regret — here is what this month's money could become
+ *  if you redirect it." */
 
 interface PriceTargetFanProps {
   results?: CalculationResult | null;
   assumptions?: Assumptions | null;
 }
 
-type Target = { key: string; price: number; analysts: number; color: string };
+type Target = { key: string; price: number; rate: number; color: string };
 
-const W = 520;
 const H = 236;
-const PAD = { l: 30, r: 104, t: 16, b: 28 };
+const PAD = { l: 30, t: 16, b: 28 };
 const CARD_W = 120;
 
 const fmtValue = (p: number) => `$${p.toFixed(2)}`;
@@ -52,10 +55,56 @@ const formatDateLabel = (d: Date) => {
 export default function PriceTargetFan({ results, assumptions }: PriceTargetFanProps) {
   const reduced = useReducedMotion();
   const svgRef = useRef<SVGSVGElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const historyPathRef = useRef<SVGPathElement>(null);
+
+  const [W, setW] = useState(520);
   const [scrub, setScrub] = useState<number | null>(null);
   const [hotT, setHotT] = useState<number | null>(null);
+  const [dotReady, setDotReady] = useState(false);
 
-  const { current, targets, history, y, pct, axisTicks, dateLabels, geo, meanTarget, nowX, endX } = useMemo(() => {
+  const dotProgress = useMotionValue(0);
+
+  // Keep the chart width in sync with its card so it fills the available space.
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const update = () => setW(Math.max(320, el.clientWidth));
+    update();
+    const obs = new ResizeObserver(update);
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
+  const dotX = useTransform(dotProgress, (p) => {
+    const path = historyPathRef.current;
+    if (!path) return 0;
+    const length = path.getTotalLength() || 0;
+    return path.getPointAtLength(Math.max(0, Math.min(1, p)) * length).x;
+  });
+  const dotY = useTransform(dotProgress, (p) => {
+    const path = historyPathRef.current;
+    if (!path) return 0;
+    const length = path.getTotalLength() || 0;
+    return path.getPointAtLength(Math.max(0, Math.min(1, p)) * length).y;
+  });
+
+  const {
+    current,
+    targets,
+    history,
+    y,
+    pct,
+    axisTicks,
+    dateLabels,
+    geo,
+    meanTarget,
+    nowX,
+    endX,
+    padR,
+  } = useMemo(() => {
+    const padR = Math.max(80, Math.min(120, W * 0.22));
+
     // Fallback to the prompt's example numbers when rendered without data (Demo).
     const fallbackCurrent = 178.52;
     const fallbackReturn = 0.148;
@@ -78,9 +127,9 @@ export default function PriceTargetFan({ results, assumptions }: PriceTargetFanP
       const i = assumptions.inflationRate / 100;
       r = (1 + nominalR) / (1 + i) - 1;
     }
-    if (!isFinite(r)) r = 0.1; // sane fallback for malformed inputs
+    if (!isFinite(r)) r = 0.1;
 
-    // 12-month targets: optimistic, expected and conservative scenarios.
+    // 12-month targets: optimistic (2x return), expected (1x), conservative (-0.4x).
     // Scenarios are sorted descending so High/Mean/Low always map correctly even
     // when the selected investment has a negative expected return.
     const scenarios = [r * 2, r, -r * 0.4].sort((a, b) => b - a);
@@ -89,7 +138,7 @@ export default function PriceTargetFan({ results, assumptions }: PriceTargetFanP
     const targets: Target[] = scenarios.map((ret, i) => ({
       key: targetKeys[i],
       price: Math.max(0, current * (1 + ret)),
-      analysts: Math.round(ret * 100),
+      rate: Math.round(ret * 100),
       color: targetColors[i],
     }));
 
@@ -125,11 +174,11 @@ export default function PriceTargetFan({ results, assumptions }: PriceTargetFanP
 
     const pct = (p: number) => (current > 0 ? ((p - current) / current) * 100 : 0);
 
-    const histW = (W - PAD.l - PAD.r) * 0.56;
+    const histW = (W - PAD.l - padR) * 0.56;
     const hx = (i: number) => PAD.l + (i / (history.length - 1)) * histW;
     const nowX = hx(history.length - 1);
     const nowY = y(current);
-    const endX = W - PAD.r;
+    const endX = W - padR;
 
     const line = history
       .map((val, i) => `${i === 0 ? "M" : "L"}${hx(i).toFixed(1)},${y(val).toFixed(1)}`)
@@ -175,8 +224,31 @@ export default function PriceTargetFan({ results, assumptions }: PriceTargetFanP
       meanTarget: targets[1].price,
       nowX,
       endX,
+      padR,
     };
-  }, [results, assumptions]);
+  }, [results, assumptions, W]);
+
+  // Animate a "live ticker" dot along the history path as it draws.
+  useEffect(() => {
+    const path = historyPathRef.current;
+    if (!path || reduced) {
+      setDotReady(false);
+      return;
+    }
+    const length = path.getTotalLength();
+    if (!length) return;
+
+    dotProgress.set(0);
+    setDotReady(true);
+
+    const controls = animate(dotProgress, 1, {
+      duration: 1.8,
+      ease: EASE,
+      delay: 0.2,
+    });
+
+    return () => controls.stop();
+  }, [geo.line, history.length, dotProgress, reduced]);
 
   const onMove = (e: PointerEvent<SVGSVGElement>) => {
     const el = svgRef.current;
@@ -193,6 +265,7 @@ export default function PriceTargetFan({ results, assumptions }: PriceTargetFanP
     );
   };
 
+  // The overlay card — target hover wins over scrub; flips to the side that keeps it in view.
   const overlay = (() => {
     if (hotT !== null) {
       const p = geo.proj[hotT];
@@ -201,7 +274,7 @@ export default function PriceTargetFan({ results, assumptions }: PriceTargetFanP
         px: geo.endX,
         py: p.ty,
         value: fmtValue(p.price),
-        context: `${p.key} · ${up ? "+" : ""}${pct(p.price).toFixed(1)}% · ${p.analysts}% annual return`,
+        context: `${p.key} · ${up ? "+" : ""}${pct(p.price).toFixed(1)}% · ${p.rate}% annual return`,
         color: p.color,
       };
     }
@@ -219,7 +292,19 @@ export default function PriceTargetFan({ results, assumptions }: PriceTargetFanP
   })();
 
   return (
-    <div className="mx-auto w-[520px]" style={{ fontFamily: SANS }}>
+    <div ref={containerRef} className="w-full" style={{ fontFamily: SANS }}>
+      {/* Title + context */}
+      <div className="mb-4 px-1">
+        <div className="flex items-center gap-2 mb-1">
+          <TrendingUp className="w-5 h-5 text-[var(--primary)]" />
+          <h3 className="text-lg font-semibold text-[var(--text-main)]">12-Month Value Target</h3>
+        </div>
+        <p className="text-sm text-[var(--text-muted)] leading-relaxed">
+          Redirect this month&apos;s spending into your chosen investment and see where it could land one
+          year from now across optimistic, expected, and conservative scenarios.
+        </p>
+      </div>
+
       {/* header — mean target + upside vs current spend */}
       <div className="mb-1 flex items-end justify-between px-1">
         <div>
@@ -238,16 +323,8 @@ export default function PriceTargetFan({ results, assumptions }: PriceTargetFanP
         </div>
       </div>
 
-      <div className="relative mx-auto w-[520px]">
-        <svg
-          ref={svgRef}
-          width={W}
-          height={H}
-          viewBox={`0 0 ${W} ${H}`}
-          className="block cursor-crosshair"
-          onPointerMove={onMove}
-          onPointerLeave={() => setScrub(null)}
-        >
+      <div className="relative mx-auto" style={{ width: W, height: H }}>
+        <svg ref={svgRef} width={W} height={H} viewBox={`0 0 ${W} ${H}`} className="block cursor-crosshair" onPointerMove={onMove} onPointerLeave={() => setScrub(null)}>
           {/* faint gridlines + left price axis */}
           {axisTicks.map((v) => (
             <g key={v}>
@@ -308,6 +385,7 @@ export default function PriceTargetFan({ results, assumptions }: PriceTargetFanP
 
           {/* history */}
           <motion.path
+            ref={historyPathRef}
             d={geo.line}
             fill="none"
             stroke="color-mix(in srgb, var(--text-main) 78%, transparent)"
@@ -315,7 +393,7 @@ export default function PriceTargetFan({ results, assumptions }: PriceTargetFanP
             vectorEffect="non-scaling-stroke"
             initial={{ pathLength: reduced ? 1 : 0 }}
             animate={{ pathLength: 1 }}
-            transition={reduced ? { duration: 0 } : { duration: 0.9, ease: EASE }}
+            transition={reduced ? { duration: 0 } : { duration: 1.8, ease: EASE }}
           />
 
           {/* projections + target labels */}
@@ -333,46 +411,28 @@ export default function PriceTargetFan({ results, assumptions }: PriceTargetFanP
                 style={{ cursor: "default" }}
               >
                 <path d={p.d} fill="none" stroke="transparent" strokeWidth={16} />
-                <path
-                  d={p.d}
-                  fill="none"
-                  stroke={p.color}
-                  strokeWidth={on ? 2.2 : 1.4}
-                  strokeOpacity={on ? 1 : 0.7}
-                  strokeDasharray="2 4"
-                  vectorEffect="non-scaling-stroke"
-                />
-                <circle
+                <path d={p.d} fill="none" stroke={p.color} strokeWidth={on ? 2.2 : 1.4} strokeOpacity={on ? 1 : 0.7} strokeDasharray="2 4" vectorEffect="non-scaling-stroke" />
+                <motion.circle
                   cx={geo.endX}
                   cy={p.ty}
-                  r={on ? 4 : 3.2}
+                  initial={{ r: 0, opacity: 0 }}
+                  animate={{ r: on ? 4 : 3.2, opacity: 1 }}
+                  transition={reduced ? { duration: 0 } : { duration: 0.4, ease: EASE, delay: 0.9 + i * 0.12 }}
                   fill={SURFACE}
                   stroke={p.color}
                   strokeWidth={1.6}
                 />
-                <text
-                  x={geo.endX + 10}
-                  y={p.ty - 2.5}
-                  fontSize={8}
-                  fill="color-mix(in srgb, var(--text-main) 40%, transparent)"
-                >
+                <text x={geo.endX + 10} y={p.ty - 2.5} fontSize={8} fill="color-mix(in srgb, var(--text-main) 40%, transparent)">
                   {p.key}
                 </text>
-                <text
-                  x={geo.endX + 10}
-                  y={p.ty + 8}
-                  fontSize={10.5}
-                  fontWeight={600}
-                  fill={p.color}
-                  className="tabular-nums"
-                >
+                <text x={geo.endX + 10} y={p.ty + 8} fontSize={10.5} fontWeight={600} fill={p.color} className="tabular-nums">
                   {fmtAxis(p.price)}
                 </text>
               </motion.g>
             );
           })}
 
-          {/* now dot */}
+          {/* now dot + live pulse */}
           <motion.circle
             cx={geo.nowX}
             cy={geo.nowY}
@@ -382,26 +442,37 @@ export default function PriceTargetFan({ results, assumptions }: PriceTargetFanP
             animate={{ opacity: 1 }}
             transition={reduced ? { duration: 0 } : { delay: 0.85 }}
           />
+          <motion.circle
+            cx={geo.nowX}
+            cy={geo.nowY}
+            r={3.2}
+            fill="none"
+            stroke="var(--text-main)"
+            strokeWidth={1}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: [0.5, 0], r: [3.2, 10] }}
+            transition={reduced ? { duration: 0 } : { duration: 1.5, repeat: Infinity, repeatDelay: 0.5, delay: 2 }}
+          />
+
+          {/* traveling ticker dot */}
+          <motion.circle
+            cx={dotX as any}
+            cy={dotY as any}
+            r={3.2}
+            fill="var(--primary)"
+            stroke="var(--bg-card)"
+            strokeWidth={1.5}
+            pointerEvents="none"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: dotReady ? 1 : 0 }}
+            transition={{ duration: 0.2 }}
+          />
 
           {/* scrub crosshair */}
           {scrub !== null && (
             <g pointerEvents="none">
-              <line
-                x1={geo.hx(scrub)}
-                y1={PAD.t}
-                x2={geo.hx(scrub)}
-                y2={H - PAD.b}
-                stroke="color-mix(in srgb, var(--text-main) 22%, transparent)"
-                strokeWidth={1}
-              />
-              <circle
-                cx={geo.hx(scrub)}
-                cy={y(history[scrub])}
-                r={3.2}
-                fill="var(--text-main)"
-                stroke={SURFACE}
-                strokeWidth={1.5}
-              />
+              <line x1={geo.hx(scrub)} y1={PAD.t} x2={geo.hx(scrub)} y2={H - PAD.b} stroke="color-mix(in srgb, var(--text-main) 22%, transparent)" strokeWidth={1} />
+              <circle cx={geo.hx(scrub)} cy={y(history[scrub])} r={3.2} fill="var(--text-main)" stroke={SURFACE} strokeWidth={1.5} />
             </g>
           )}
         </svg>

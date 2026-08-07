@@ -382,9 +382,7 @@ export const ToolsDashboard: React.FC<ToolsDashboardProps> = ({
                                 </div>
                                 {/* Row 2: 12-Month Value Target Fan */}
                                 <div className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-3xl p-6 md:p-8 shadow-2xl overflow-x-auto">
-                                    <div className="min-w-[520px]">
-                                        <PriceTargetFan results={results} assumptions={assumptions} />
-                                    </div>
+                                    <PriceTargetFan results={results} assumptions={assumptions} />
                                 </div>
                             </div>
                             
@@ -401,9 +399,7 @@ export const ToolsDashboard: React.FC<ToolsDashboardProps> = ({
                                 </div>
                                 {/* Row 2: 12-Month Value Target Fan */}
                                 <div className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-3xl p-6 md:p-8 shadow-2xl overflow-x-auto">
-                                    <div className="min-w-[520px]">
-                                        <PriceTargetFan results={results} assumptions={assumptions} />
-                                    </div>
+                                    <PriceTargetFan results={results} assumptions={assumptions} />
                                 </div>
                             </div>
                             
