@@ -19,14 +19,6 @@ const MiniChart2 = ({ className }: { className?: string }) => (
   </svg>
 );
 
-// Abstract donut chart
-const MiniChart3 = ({ className }: { className?: string }) => (
-    <svg viewBox="0 0 50 50" className={className} fill="none" stroke="currentColor" strokeWidth="8">
-        <circle cx="25" cy="25" r="15" strokeOpacity="0.2" />
-        <path d="M25 10 A 15 15 0 0 1 40 25" strokeLinecap="round" />
-    </svg>
-);
-
 export const AmbientBackground: React.FC = () => {
   return (
     <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none">
@@ -40,12 +32,7 @@ export const AmbientBackground: React.FC = () => {
          <MiniChart2 className="w-full h-full" />
       </div>
       
-      {/* 3. Center Abstract Donut - Desktop only */}
-      <div className="hidden md:block absolute top-[70vh] left-[10%] w-24 h-24 text-slate-600/10 animate-spin-slow duration-[20s] z-20 pointer-events-none">
-          <MiniChart3 className="w-full h-full" />
-      </div>
-
-      {/* 4. Deep Background Ticker Lines - Desktop only */}
+      {/* 3. Deep Background Ticker Lines - Desktop only */}
       <div className="hidden md:block absolute top-[15vh] left-0 right-0 w-[100vw] h-px bg-gradient-to-r from-transparent via-purple-500/10 to-transparent" style={{ marginLeft: 'calc(-50vw + 50%)' }} />
       <div className="hidden md:block absolute top-[85vh] left-0 right-0 w-[100vw] h-px bg-gradient-to-r from-transparent via-white/5 to-transparent" style={{ marginLeft: 'calc(-50vw + 50%)' }} />
       
