@@ -36,7 +36,7 @@ export const AmbientBackground: React.FC = () => {
       </div>
 
       {/* 2. Floating Bar Chart Right - Desktop only */}
-      <div className="hidden md:block absolute top-[25vh] right-[2%] w-48 h-48 text-slate-700/20 rotate-[12deg] animate-float-delayed">
+      <div className="hidden md:block absolute top-[25vh] right-[2%] w-48 h-48 text-slate-700/20 animate-float-delayed">
          <MiniChart2 className="w-full h-full" />
       </div>
       

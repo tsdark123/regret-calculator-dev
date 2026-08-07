@@ -6,11 +6,10 @@ export const OceanBackground: React.FC = () => {
   return (
     <div 
       className="md:hidden fixed inset-0 pointer-events-none overflow-hidden"
-      style={{ zIndex: -1 }}
     >
       {/* Bioluminescent gradient orbs */}
       <motion.div
-        className="absolute w-[300px] h-[300px] rounded-full"
+        className="absolute w-[300px] h-[300px] rounded-full z-20 pointer-events-none"
         style={{
           background: 'radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%)',
           filter: 'blur(60px)',
