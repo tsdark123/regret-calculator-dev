@@ -16,7 +16,7 @@ interface QueueModuleProps {
 // Internal Debounced Name Input Component
 const NameInput = ({ value, onChange }: { value: string; onChange: (val: string) => void }) => {
   const [localValue, setLocalValue] = useState(value);
-  const debounceTimer = useRef<NodeJS.Timeout>();
+  const debounceTimer = useRef<NodeJS.Timeout | undefined>(undefined);
 
   // Update local value when prop changes (e.g., switching expenses)
   useEffect(() => {
@@ -72,7 +72,7 @@ const NameInput = ({ value, onChange }: { value: string; onChange: (val: string)
 // Internal Custom Amount Input Component - Simplified direct pattern like NameInput
 const AmountInput = ({ value, onChange }: { value: number; onChange: (val: number) => void }) => {
   const [localValue, setLocalValue] = useState(value);
-  const debounceTimer = useRef<NodeJS.Timeout>();
+  const debounceTimer = useRef<NodeJS.Timeout | undefined>(undefined);
 
   // Sync local value when prop changes (component remount handles expense switching)
   useEffect(() => {

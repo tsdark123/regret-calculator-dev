@@ -22,7 +22,7 @@ export const DebouncedSlider = ({
 }) => {
   const [localValue, setLocalValue] = React.useState(value);
   const [isDragging, setIsDragging] = React.useState(false);
-  const debounceTimer = React.useRef<NodeJS.Timeout>();
+  const debounceTimer = React.useRef<NodeJS.Timeout | undefined>(undefined);
 
   // Sync local state with parent value ONLY when not dragging
   React.useEffect(() => {

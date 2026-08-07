@@ -157,7 +157,7 @@ export const SnowBackground = React.memo(function SnowBackground({ theme, active
           width: '100%',
           height: '100%'
         }}
-        particlesLoaded={(container: Container | undefined) => {
+        particlesLoaded={async (container: Container | undefined) => {
           if (!container) return;
           containerRef.current = container;
           if (!active) container.pause();
