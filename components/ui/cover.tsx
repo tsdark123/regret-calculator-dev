@@ -9,12 +9,14 @@ export const Cover = ({
   lightMode = false,
   disableHover = false,
   active,
+  shake = 30,
 }: {
   children?: React.ReactNode;
   className?: string;
   lightMode?: boolean;
   disableHover?: boolean;
   active?: boolean;
+  shake?: number;
 }) => {
   const [hovered, setHovered] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -102,8 +104,8 @@ export const Cover = ({
         initial={{ scale: 1, x: 0, y: 0 }}
         animate={{
           scale: isActive ? 0.8 : 1,
-          x: isActive ? [0, -30, 30, -30, 30, 0] : 0,
-          y: isActive ? [0, 30, -30, 30, -30, 0] : 0,
+          x: isActive ? [0, -shake, shake, -shake, shake, 0] : 0,
+          y: isActive ? [0, shake, -shake, shake, -shake, 0] : 0,
         }}
         exit={{ filter: "none", scale: 1, x: 0, y: 0 }}
         transition={{
