@@ -5,6 +5,7 @@ const tosSections = [
   { id: 'not-advice', label: 'Not Financial Advice' },
   { id: 'use', label: 'Use of the Site' },
   { id: 'accuracy', label: 'Accuracy of Calculations' },
+  { id: 'data-sources', label: 'Data Sources' },
   { id: 'ip', label: 'Intellectual Property' },
   { id: 'liability', label: 'Limitation of Liability' },
   { id: 'modifications', label: 'Modifications' },
@@ -57,7 +58,7 @@ export const TermsOfService: React.FC = () => {
           {/* RIGHT: Content */}
           <div className="flex-1 min-w-0">
             <h1 className="text-3xl md:text-4xl font-bold mb-1">Terms of Service</h1>
-            <p className="text-[var(--text-muted)] text-xs mb-10">Last updated: June 2026</p>
+            <p className="text-[var(--text-muted)] text-xs mb-10">Last updated: August 2026</p>
 
             <div className="space-y-10 text-sm text-[var(--text-muted)] leading-relaxed">
 
@@ -85,6 +86,11 @@ export const TermsOfService: React.FC = () => {
               <section id="accuracy">
                 <h2 className="text-[var(--text-main)] font-semibold text-lg mb-3">Accuracy of Calculations</h2>
                 <p>While we strive to ensure our calculations are mathematically sound, we make no warranty that results are error-free or suitable for any particular purpose. Calculations assume constant rates of return and do not account for taxes, fees, market volatility, or other real-world factors.</p>
+              </section>
+
+              <section id="data-sources">
+                <h2 className="text-[var(--text-main)] font-semibold text-lg mb-3">Data Sources</h2>
+                <p>Stock, ETF, and crypto return figures are approximate historical CAGRs derived from publicly available data. The list is refreshed on a rolling schedule from Alpha Vantage using adjusted monthly closes, and un-refreshed assets use manually curated fallbacks. Windows vary by asset (e.g., 10-year, since listing, or rolling multi-year) and data may not reflect live market prices. Past performance is not a guarantee of future results.</p>
               </section>
 
               <section id="ip">

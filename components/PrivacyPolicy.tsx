@@ -4,6 +4,7 @@ const privacySections = [
   { id: 'overview', label: 'Overview' },
   { id: 'no-collect', label: 'Data We Do Not Collect' },
   { id: 'do-track', label: 'What We Do Track' },
+  { id: 'market-data', label: 'Market Data' },
   { id: 'local-storage', label: 'Local Storage' },
   { id: 'third-party', label: 'Third-Party Services' },
   { id: 'children', label: "Children's Privacy" },
@@ -57,7 +58,7 @@ export const PrivacyPolicy: React.FC = () => {
           {/* RIGHT: Content */}
           <div className="flex-1 min-w-0">
             <h1 className="text-3xl md:text-4xl font-bold mb-1">Privacy Policy</h1>
-            <p className="text-[var(--text-muted)] text-xs mb-10">Last updated: June 2026</p>
+            <p className="text-[var(--text-muted)] text-xs mb-10">Last updated: August 2026</p>
 
             <div className="space-y-10 text-sm text-[var(--text-muted)] leading-relaxed">
 
@@ -82,6 +83,11 @@ export const PrivacyPolicy: React.FC = () => {
                 <p>We track a <span className="text-[var(--text-main)]">global, anonymous counter</span> of how many analyses have been run across all users. Additionally, for locations that have not previously used the site, we may store one anonymous city/country entry to map usage geography. No personal identifiers, expense data, or calculation results are ever collected or stored.</p>
               </section>
 
+              <section id="market-data">
+                <h2 className="text-[var(--text-main)] font-semibold text-lg mb-3">Market Data</h2>
+                <p>Stock, ETF, and crypto return data is bundled with the app so calculations can run instantly in your browser. The bundled data is derived from publicly available historical prices and may include approximate historical CAGRs. The app can optionally fetch live return overrides from Firebase, but only the asset symbol and return value are transmitted; no personal data or search queries are sent. We do not collect or store your searches, selections, or portfolio information.</p>
+              </section>
+
               <section id="local-storage">
                 <h2 className="text-[var(--text-main)] font-semibold text-lg mb-3">Local Storage</h2>
                 <p>We store your selected color theme (purple, green, or blue) in your browser's <code className="text-[var(--primary)] text-xs bg-[var(--bg-card)] px-1 py-0.5 rounded">localStorage</code> so your preference persists across visits. No personal data is stored here.</p>
@@ -89,7 +95,7 @@ export const PrivacyPolicy: React.FC = () => {
 
               <section id="third-party">
                 <h2 className="text-[var(--text-main)] font-semibold text-lg mb-3">Third-Party Services</h2>
-                <p>We use <span className="text-[var(--text-main)]">Firebase</span> (by Google) solely to maintain the global analysis counter. Firebase may log standard request metadata (e.g. IP address) per their own privacy policy. We do not use Google Analytics, advertising networks, or any tracking pixels.</p>
+                <p>We use <span className="text-[var(--text-main)]">Firebase</span> (by Google) to maintain the global analysis counter, store the optional live market data override, and record one anonymous city/country entry for new usage locations. Firebase may log standard request metadata (e.g. IP address) per their own privacy policy. We do not use Google Analytics, advertising networks, or any tracking pixels.</p>
               </section>
 
               <section id="children">
