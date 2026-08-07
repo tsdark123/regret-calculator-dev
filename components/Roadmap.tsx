@@ -233,19 +233,20 @@ export const Roadmap: React.FC<{ cardClassName?: string }> = ({ cardClassName })
     };
   }, []);
 
-  const [expandedSteps, setExpandedSteps] = useState<Record<string, boolean>>(
-    STEPS.reduce((acc, step) => {
-      // On both mobile and desktop, use defaultExpanded
-      acc[step.id] = step.defaultExpanded || false;
+  const [expandedSteps, setExpandedSteps] = useState<Record<string, boolean>>(() => {
+    const mobile = typeof window !== 'undefined' && window.innerWidth < 768;
+    return STEPS.reduce((acc, step) => {
+      // Expand default steps on desktop only; keep everything compressed on mobile
+      acc[step.id] = !mobile && step.defaultExpanded ? true : false;
       return acc;
-    }, {} as Record<string, boolean>)
-  );
+    }, {} as Record<string, boolean>);
+  });
 
   // Update expandedSteps when isMobile changes
   useEffect(() => {
     setExpandedSteps(
       STEPS.reduce((acc, step) => {
-        acc[step.id] = step.defaultExpanded || false;
+        acc[step.id] = !isMobile && step.defaultExpanded ? true : false;
         return acc;
       }, {} as Record<string, boolean>)
     );
