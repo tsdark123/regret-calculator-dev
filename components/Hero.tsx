@@ -384,7 +384,28 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
 
     const isMobile = window.innerWidth < 768;
     const end = Date.now() + (isMobile ? 2000 : 3000); // 2s mobile, 3s desktop
-    const colors = ['#a855f7', '#7c3aed', '#22c55e', '#3b82f6', '#f8fafc', '#facc15'];
+
+    // Vibrant real-confetti palette. Each burst shuffles a subset so the
+    // colors on screen keep changing while the animation stays identical.
+    const palette = [
+      '#ef4444', // red
+      '#f97316', // orange
+      '#f59e0b', // amber
+      '#eab308', // yellow
+      '#84cc16', // lime
+      '#22c55e', // green
+      '#14b8a6', // teal
+      '#06b6d4', // cyan
+      '#3b82f6', // blue
+      '#6366f1', // indigo
+      '#8b5cf6', // violet
+      '#a855f7', // purple
+      '#d946ef', // fuchsia
+      '#ec4899', // pink
+      '#f43f5e', // rose
+      '#f8fafc', // white
+    ];
+    const shuffleColors = () => [...palette].sort(() => Math.random() - 0.5);
 
     // Desktop/tablet confetti registry — keep exactly as before.
     const desktopDefaults = {
@@ -393,18 +414,16 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
       ticks: 300,
       gravity: 0.5,
       decay: 0.96,
-      colors,
       particleCount: 3,
     };
 
-    // Mobile confetti registry — same colors, much less intense.
+    // Mobile confetti registry — much less intense.
     const mobileDefaults = {
       startVelocity: 18,
       spread: 30,
       ticks: 180,
       gravity: 0.3,
       decay: 0.93,
-      colors,
       particleCount: 3,
     };
 
@@ -414,6 +433,7 @@ export const Hero: React.FC<HeroProps> = ({ onStart, onLoadPreset, decisionCount
     const fireCorner = (x: 0 | 1, angle: number) => {
       confettiRef.current?.fire({
         ...defaults,
+        colors: shuffleColors(),
         angle,
         origin: { x, y: 0 },
       });

@@ -24,6 +24,7 @@ import { ParticleBackground } from './components/ParticleBackground';
 import { ThemeBackground } from './components/ThemeBackground';
 import { SnowBackground } from './components/SnowBackground';
 import { BrandScroller } from './components/ui/brand-scroller';
+import IntegrationHero from './components/ui/integration-hero';
 // Mobile maintenance removed - full responsive support enabled
 import { AdminStats } from './components/AdminStats';
 import { AnalyticsTracker } from './components/AnalyticsTracker';
@@ -838,6 +839,11 @@ function App() {
   // Render terms of service page if on /tos route
   if (currentPath === '/tos') {
     return <TermsOfService />;
+  }
+
+  // Temporary preview page for the IntegrationHero / brand strip
+  if (currentPath === '/preview') {
+    return <IntegrationHero />;
   }
 
   return <MainApp />;
